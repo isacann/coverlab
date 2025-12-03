@@ -3,12 +3,14 @@ import './App.css';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
+import SecondSection from './components/SecondSection';
 
 const Home = () => {
   return (
     <div className="min-h-screen bg-slate-950">
       <Navbar />
       <Hero />
+      <SecondSection />
     </div>
   );
 };
