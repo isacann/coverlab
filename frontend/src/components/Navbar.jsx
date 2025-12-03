@@ -27,7 +27,7 @@ const Navbar = () => {
           </Link>
 
           {/* Center Menu - Visible to All Users */}
-          <div className="hidden md:flex items-center gap-8 bg-slate-800/50 px-6 py-3 rounded-full border border-slate-700/30 backdrop-blur-sm">
+          <div className="hidden md:flex items-center gap-8 bg-slate-900/30 px-6 py-3 rounded-full border border-slate-700/30 backdrop-blur-sm">
             <Link to="/" className="flex items-center gap-2 text-slate-300 hover:text-white transition-colors" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
               <Home size={20} />
               <span className="text-sm">Home</span>
