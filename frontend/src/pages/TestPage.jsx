@@ -128,31 +128,31 @@ const VideoCard = ({ thumbnail, title, channel, views, avatar, isLightMode, isMo
             {title}
           </h3>
           
-          {/* Channel Name - YouTube uses 12px, 400 weight */}
+          {/* Channel Name - YouTube uses 12px, 400 weight, normal (not bold) */}
           <p 
-            className={`mb-0.5 ${
+            className={`mb-0.5 font-normal ${
               isLightMode ? 'text-[#606060]' : 'text-[#aaaaaa]'
             }`} 
             style={{ 
               fontFamily: 'Roboto, Arial, sans-serif',
               fontSize: '12px',
               lineHeight: '18px',
-              fontWeight: 400
+              fontWeight: 'normal'
             }}
           >
             {channel}
           </p>
           
-          {/* Views & Date - YouTube uses 12px, 400 weight */}
+          {/* Views & Date - YouTube uses 12px, 400 weight, normal (not bold) */}
           <p 
-            className={`${
+            className={`font-normal ${
               isLightMode ? 'text-[#606060]' : 'text-[#aaaaaa]'
             }`} 
             style={{ 
               fontFamily: 'Roboto, Arial, sans-serif',
               fontSize: '12px',
               lineHeight: '18px',
-              fontWeight: 400
+              fontWeight: 'normal'
             }}
           >
             {views}
