@@ -8,10 +8,16 @@ import { Home, Wand2, BarChart3, FlaskConical, Settings, LogOut, Zap } from 'luc
 const Navbar = () => {
   const { user, profile, credits, signOut } = useAuth();
   const navigate = useNavigate();
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   const handleLogout = async () => {
-    await signOut();
-    navigate('/');
+    try {
+      setIsDropdownOpen(false);
+      await signOut();
+      navigate('/', { replace: true });
+    } catch (error) {
+      console.error('Logout error:', error);
+    }
   };
 
   return (
