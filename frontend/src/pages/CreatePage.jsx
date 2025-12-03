@@ -302,7 +302,7 @@ const CreatePage = () => {
         </div>
       </div>
     </div>
-    </>
+    </AccessGuard>
   );
 };
 
