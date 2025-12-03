@@ -475,7 +475,7 @@ const TestPage = () => {
         </div>
       </div>
     </div>
-    </>
+    </ProGuard>
   );
 };
 
