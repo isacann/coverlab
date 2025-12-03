@@ -1,10 +1,26 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Button } from '../components/ui/button';
+import { supabase } from '../utils/supabase';
 
 const LoginPage = () => {
-  const handleGoogleLogin = () => {
-    // TODO: Google OAuth integration will be here
-    console.log('Google login clicked');
+  const [loading, setLoading] = useState(false);
+
+  const handleGoogleLogin = async () => {
+    try {
+      setLoading(true);
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: `${window.location.origin}/auth/callback`,
+        },
+      });
+
+      if (error) throw error;
+    } catch (error) {
+      console.error('Error logging in with Google:', error);
+      alert('Giriş yapılırken bir hata oluştu. Lütfen tekrar deneyin.');
+      setLoading(false);
+    }
   };
 
   return (
