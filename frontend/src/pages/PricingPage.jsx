@@ -251,12 +251,6 @@ const PricingPage = () => {
             </div>
           </div>
 
-          {/* FAQ or Trust Section (Optional) */}
-          <div className="mt-20 text-center">
-            <p className="text-slate-500 text-sm" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
-              Tüm planlar 7 gün para iade garantisi ile gelir. İstediğiniz zaman iptal edebilirsiniz.
-            </p>
-          </div>
         </div>
       </div>
     </div>
