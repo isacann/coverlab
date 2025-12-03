@@ -92,7 +92,7 @@ const VideoCard = ({ thumbnail, title, channel, views, avatar, isLightMode, isMo
   return (
     <div className={`${isMobile ? 'flex gap-3' : 'flex flex-col'} cursor-pointer group`}>
       {/* Thumbnail */}
-      <div className={`relative ${isMobile ? 'w-40 flex-shrink-0' : 'w-full'} ${isUserVideo ? 'ring-4 ring-blue-500 ring-offset-2 ring-offset-slate-900' : ''} rounded-lg`}>
+      <div className={`relative ${isMobile ? 'w-40 flex-shrink-0' : 'w-full'} rounded-lg`}>
         <img 
           src={thumbnail} 
           alt={title}
