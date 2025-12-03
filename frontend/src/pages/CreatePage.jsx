@@ -187,19 +187,19 @@ const CreatePage = () => {
                     </div>
                   ) : (
                     <div className="space-y-4">
-                      <div className="relative group">
+                      <div className="relative group bg-slate-800/50 rounded-lg p-4 border-2 border-slate-600">
                         <img 
                           src={previewImage} 
                           alt="Preview" 
-                          className="w-full h-48 object-cover rounded-lg border-2 border-slate-600"
+                          className="w-full h-auto max-h-64 object-contain rounded-lg"
                         />
-                        <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg flex items-center justify-center">
+                        <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg flex items-center justify-center">
                           <label
                             htmlFor="referansGorsel"
-                            className="cursor-pointer bg-slate-800 hover:bg-slate-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+                            className="cursor-pointer bg-cyan-500 hover:bg-cyan-600 text-white px-6 py-3 rounded-lg text-sm font-semibold transition-colors shadow-lg"
                             style={{ fontFamily: 'Geist Sans, sans-serif' }}
                           >
-                            Değiştir
+                            Görseli Değiştir
                           </label>
                         </div>
                         <input
@@ -210,6 +210,9 @@ const CreatePage = () => {
                           className="hidden"
                         />
                       </div>
+                      <p className="text-slate-400 text-xs text-center" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
+                        Görseli değiştirmek için üzerine gelin
+                      </p>
                     </div>
                   )}
                 </div>
