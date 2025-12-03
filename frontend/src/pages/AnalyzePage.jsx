@@ -138,7 +138,7 @@ const AnalyzePage = () => {
   };
 
   return (
-    <ProGuard>
+    <AccessGuard requirePro={true}>
       <div className="min-h-screen bg-[#0a0a0a]">
         {/* Background */}
       <div 
