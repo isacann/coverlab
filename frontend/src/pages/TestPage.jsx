@@ -147,7 +147,7 @@ const TestPage = () => {
   const [viewsMeta, setViewsMeta] = useState('1.2M görüntüleme • 1 gün önce');
   const [device, setDevice] = useState('desktop'); // desktop | mobile
   const [theme, setTheme] = useState('dark'); // dark | light
-  const [shuffled, setShuffled] = useState(false);
+  const [shuffledCompetitors, setShuffledCompetitors] = useState(COMPETITORS); // Store shuffled array
 
   const handleFileUpload = (e) => {
     const files = Array.from(e.target.files);
