@@ -158,41 +158,78 @@ const CreatePage = () => {
                   <Label htmlFor="referansGorsel" className="text-white text-sm font-medium mb-2 block" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
                     Referans Görsel Yükle (Yüz/Stil)
                   </Label>
-                  <div className="relative">
-                    <input
-                      id="referansGorsel"
-                      type="file"
-                      accept="image/*"
-                      onChange={handleFileUpload}
-                      className="hidden"
-                    />
-                    <label
-                      htmlFor="referansGorsel"
-                      className="flex items-center justify-center gap-2 bg-slate-800/50 border-2 border-dashed border-slate-600 hover:border-cyan-500 rounded-lg p-6 cursor-pointer transition-all"
-                    >
-                      <Upload size={24} className="text-slate-400" />
-                      <span className="text-slate-300" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
-                        {previewImage ? 'Görsel Yüklendi ✓' : 'Görsel Seç'}
-                      </span>
-                    </label>
-                  </div>
-                  {previewImage && (
-                    <div className="mt-4">
-                      <img src={previewImage} alt="Preview" className="w-full h-32 object-cover rounded-lg" />
+                  
+                  {!previewImage ? (
+                    <div className="relative">
+                      <input
+                        id="referansGorsel"
+                        type="file"
+                        accept="image/*"
+                        onChange={handleFileUpload}
+                        className="hidden"
+                      />
+                      <label
+                        htmlFor="referansGorsel"
+                        className="flex flex-col items-center justify-center gap-3 bg-slate-800/50 border-2 border-dashed border-slate-600 hover:border-cyan-500 rounded-lg p-8 cursor-pointer transition-all hover:bg-slate-800/70"
+                      >
+                        <div className="w-16 h-16 bg-slate-700/50 rounded-full flex items-center justify-center">
+                          <Upload size={28} className="text-cyan-400" />
+                        </div>
+                        <div className="text-center">
+                          <p className="text-slate-300 font-medium mb-1" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
+                            Görsel Yükle
+                          </p>
+                          <p className="text-slate-500 text-sm" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
+                            PNG, JPG veya JPEG (Max 10MB)
+                          </p>
+                        </div>
+                      </label>
+                    </div>
+                  ) : (
+                    <div className="space-y-4">
+                      <div className="relative group">
+                        <img 
+                          src={previewImage} 
+                          alt="Preview" 
+                          className="w-full h-48 object-cover rounded-lg border-2 border-slate-600"
+                        />
+                        <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg flex items-center justify-center">
+                          <label
+                            htmlFor="referansGorsel"
+                            className="cursor-pointer bg-slate-800 hover:bg-slate-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+                            style={{ fontFamily: 'Geist Sans, sans-serif' }}
+                          >
+                            Değiştir
+                          </label>
+                        </div>
+                        <input
+                          id="referansGorsel"
+                          type="file"
+                          accept="image/*"
+                          onChange={handleFileUpload}
+                          className="hidden"
+                        />
+                      </div>
                     </div>
                   )}
                 </div>
 
                 {/* Creator Status - Only show if file uploaded */}
                 {referansGorsel && (
-                  <div className="flex items-center justify-between bg-slate-800/30 p-4 rounded-lg">
-                    <Label htmlFor="creatorStatus" className="text-white text-sm font-medium" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
-                      Görseldeki kişi benim (Yüzümü Koru)
-                    </Label>
+                  <div className="flex items-center justify-between bg-gradient-to-r from-slate-800/40 to-slate-700/40 p-5 rounded-xl border border-slate-600/50">
+                    <div className="flex-1">
+                      <Label htmlFor="creatorStatus" className="text-white text-sm font-semibold block mb-1" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
+                        Görseldeki kişi benim
+                      </Label>
+                      <p className="text-slate-400 text-xs" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
+                        Yüzünüzü koruyarak thumbnail oluştur
+                      </p>
+                    </div>
                     <Switch
                       id="creatorStatus"
                       checked={creatorStatus}
                       onCheckedChange={(checked) => setValue('creatorStatus', checked)}
+                      className="data-[state=checked]:bg-cyan-500"
                     />
                   </div>
                 )}
