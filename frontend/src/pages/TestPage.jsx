@@ -236,14 +236,7 @@ const TestPage = () => {
   const videoList = getVideoList();
 
   return (
-    <>
-      <LoginModal isOpen={showLoginModal} onClose={() => setShowLoginModal(false)} />
-      <UpgradeModal 
-        isOpen={showUpgradeModal} 
-        onClose={() => setShowUpgradeModal(false)}
-        feature="A/B Test"
-      />
-      
+    <ProGuard>
       <div className="min-h-screen bg-[#0a0a0a]">
         {/* Background */}
       <div 
