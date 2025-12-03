@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
 import { Upload, Smile, Sparkles, Box, Tag, Flame, Loader2 } from 'lucide-react';
+import { useAuth } from '../contexts/AuthContext';
+import LoginModal from '../components/modals/LoginModal';
+import UpgradeModal from '../components/modals/UpgradeModal';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
 
 // DEMO DATA - MrBeast Example (Outstanding Performance)
