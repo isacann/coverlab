@@ -80,8 +80,11 @@ const CreatePage = () => {
   const creatorStatus = watch('creatorStatus');
 
   return (
-    <div className="min-h-screen relative overflow-hidden bg-slate-950">
-      {/* Background Image - Same as Hero */}
+    <>
+      <LoginModal isOpen={showLoginModal} onClose={() => setShowLoginModal(false)} />
+      
+      <div className="min-h-screen relative overflow-hidden bg-slate-950">
+        {/* Background Image - Same as Hero */}
       <div 
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
         style={{
