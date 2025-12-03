@@ -43,18 +43,6 @@ const AnalyzePage = () => {
   const handleFileUpload = (file) => {
     if (!file || !file.type.startsWith('image/')) return;
 
-    // Check if user is logged in
-    if (isGuest) {
-      setShowLoginModal(true);
-      return;
-    }
-
-    // Check if user is PRO (only PRO can analyze)
-    if (!isPro) {
-      setShowUpgradeModal(true);
-      return;
-    }
-
     const imageUrl = URL.createObjectURL(file);
     
     // Show scanning state
