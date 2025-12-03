@@ -41,11 +41,8 @@ const Navbar = () => {
             <Link to="/pricing" className="text-slate-300 hover:text-white transition-colors text-sm font-medium hidden sm:block" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
               Pricing
             </Link>
-            <Button variant="ghost" className="text-slate-300 hover:text-white hover:bg-slate-800/50" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
+            <Button className="bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
               Login
-            </Button>
-            <Button className="bg-gradient-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600 text-white" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
-              Sign Up
             </Button>
           </div>
         </div>
