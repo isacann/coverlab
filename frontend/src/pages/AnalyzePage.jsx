@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Upload, Smile, Sparkles, Box, Tag, Flame, Loader2 } from 'lucide-react';
-import ProGuard from '../components/ProGuard';
+import AccessGuard from '../components/AccessGuard';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
 
 // DEMO DATA - MrBeast Example (Outstanding Performance)
