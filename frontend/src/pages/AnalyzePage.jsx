@@ -369,7 +369,7 @@ const AnalyzePage = () => {
         </div>
       </div>
     </div>
-    </ProGuard>
+    </AccessGuard>
   );
 };
 
