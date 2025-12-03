@@ -1,22 +1,55 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
-import { supabase } from '../utils/supabase';
+import { createContext, useContext, useEffect, useState } from "react";
+import { supabase } from "../utils/supabase";
 
-const AuthContext = createContext({});
-
-export const useAuth = () => {
-  const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error('useAuth must be used within AuthProvider');
-  }
-  return context;
-};
+const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // Fetch user profile from public.profiles table
+  useEffect(() => {
+    // 1. Check active session
+    const checkUser = async () => {
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        
+        if (session?.user) {
+          setUser(session.user);
+          await fetchProfile(session.user.id);
+        } else {
+          setUser(null);
+          setProfile(null);
+        }
+      } catch (error) {
+        console.error("Auth init error:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    checkUser();
+
+    // 2. Listen for changes (Login/Logout)
+    const { data: listener } = supabase.auth.onAuthStateChange(async (_event, session) => {
+      if (session?.user) {
+        setUser(session.user);
+        // Only fetch profile if we haven't already or if user changed
+        if (!profile || profile.id !== session.user.id) {
+           await fetchProfile(session.user.id);
+        }
+      } else {
+        setUser(null);
+        setProfile(null);
+        setLoading(false);
+      }
+    });
+
+    return () => {
+      listener.subscription.unsubscribe();
+    };
+  }, []);
+
   const fetchProfile = async (userId) => {
     try {
       const { data, error } = await supabase
@@ -24,70 +57,35 @@ export const AuthProvider = ({ children }) => {
         .select('*')
         .eq('id', userId)
         .single();
-
+      
       if (error) throw error;
       setProfile(data);
     } catch (error) {
-      console.error('Error fetching profile:', error);
-      setProfile(null);
+      console.error("Profile fetch error:", error);
+      // Fallback for new users who might not have a profile row yet
+      setProfile({ credits: 5, subscription_plan: 'free' }); 
     }
   };
 
-  useEffect(() => {
-    // Check active sessions and sets the user
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setUser(session?.user ?? null);
-      if (session?.user) {
-        fetchProfile(session.user.id);
-      }
-      setLoading(false);
-    });
-
-    // Listen for changes on auth state
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-      console.log('Auth state changed:', event, session);
-      setUser(session?.user ?? null);
-      
-      if (session?.user) {
-        await fetchProfile(session.user.id);
-      } else {
-        setProfile(null);
-      }
-      
-      setLoading(false);
-    });
-
-    return () => subscription.unsubscribe();
-  }, []);
-
   const signOut = async () => {
-    try {
-      console.log('Signing out...');
-      const { error } = await supabase.auth.signOut();
-      if (error) throw error;
-      
-      setUser(null);
-      setProfile(null);
-      console.log('Signed out successfully');
-      
-      // Force reload to clear any cached state
-      window.location.href = '/';
-    } catch (error) {
-      console.error('Error signing out:', error);
-      alert('Çıkış yapılırken bir hata oluştu');
-    }
+    await supabase.auth.signOut();
+    setUser(null);
+    setProfile(null);
+    window.location.href = "/"; // Force redirect to home
   };
 
   const value = {
     user,
     profile,
     loading,
-    signOut,
-    credits: profile?.credits || 0,
     isPro: profile?.subscription_plan === 'pro',
-    isFree: user && profile?.subscription_plan !== 'pro',
-    isGuest: !user,
+    credits: profile?.credits || 0,
+    signOut,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+};
+
+export const useAuth = () => {
+  return useContext(AuthContext);
 };
