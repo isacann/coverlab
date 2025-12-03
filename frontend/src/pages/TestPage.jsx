@@ -90,13 +90,13 @@ const COMPETITORS = [
 
 const VideoCard = ({ thumbnail, title, channel, views, avatar, isLightMode, isMobile, isUserVideo }) => {
   return (
-    <div className={`${isMobile ? 'flex gap-3' : 'flex flex-col'} cursor-pointer group`}>
+    <div className={`${isMobile ? 'flex gap-2' : 'flex flex-col'} cursor-pointer group`}>
       {/* Thumbnail */}
-      <div className={`relative ${isMobile ? 'w-40 flex-shrink-0' : 'w-full'} rounded-lg`}>
+      <div className={`relative ${isMobile ? 'w-40 flex-shrink-0' : 'w-full'} rounded-xl overflow-hidden`}>
         <img 
           src={thumbnail} 
           alt={title}
-          className="w-full aspect-video object-cover rounded-lg"
+          className="w-full aspect-video object-cover"
         />
       </div>
 
@@ -104,28 +104,57 @@ const VideoCard = ({ thumbnail, title, channel, views, avatar, isLightMode, isMo
       <div className={`${isMobile ? 'flex-1 py-1' : 'mt-3'} flex gap-3`}>
         {/* Avatar - Only show on desktop */}
         {!isMobile && (
-          <div className={`w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0 ${
-            isLightMode ? 'bg-slate-300 text-slate-700' : 'bg-slate-700 text-white'
-          }`} style={{ fontFamily: 'Geist Sans, sans-serif' }}>
+          <div className={`w-9 h-9 rounded-full flex items-center justify-center text-xs font-semibold flex-shrink-0 ${
+            isLightMode ? 'bg-red-600 text-white' : 'bg-slate-700 text-white'
+          }`} style={{ fontFamily: 'Roboto, sans-serif' }}>
             {avatar}
           </div>
         )}
 
         {/* Text */}
         <div className="flex-1 min-w-0">
-          <h3 className={`font-semibold text-sm line-clamp-2 mb-1 ${
-            isLightMode ? 'text-slate-900' : 'text-white'
-          }`} style={{ fontFamily: 'Geist Sans, sans-serif' }}>
+          {/* Title - YouTube uses Roboto, 14px, 500 weight, line-height 20px, max 2 lines */}
+          <h3 
+            className={`font-medium line-clamp-2 mb-1 ${
+              isLightMode ? 'text-[#0f0f0f]' : 'text-[#f1f1f1]'
+            }`} 
+            style={{ 
+              fontFamily: 'Roboto, Arial, sans-serif',
+              fontSize: '14px',
+              lineHeight: '20px',
+              fontWeight: 500
+            }}
+          >
             {title}
           </h3>
-          <p className={`text-xs mb-0.5 ${
-            isLightMode ? 'text-slate-600' : 'text-slate-400'
-          }`} style={{ fontFamily: 'Geist Sans, sans-serif' }}>
+          
+          {/* Channel Name - YouTube uses 12px, 400 weight */}
+          <p 
+            className={`mb-0.5 ${
+              isLightMode ? 'text-[#606060]' : 'text-[#aaaaaa]'
+            }`} 
+            style={{ 
+              fontFamily: 'Roboto, Arial, sans-serif',
+              fontSize: '12px',
+              lineHeight: '18px',
+              fontWeight: 400
+            }}
+          >
             {channel}
           </p>
-          <p className={`text-xs ${
-            isLightMode ? 'text-slate-500' : 'text-slate-500'
-          }`} style={{ fontFamily: 'Geist Sans, sans-serif' }}>
+          
+          {/* Views & Date - YouTube uses 12px, 400 weight */}
+          <p 
+            className={`${
+              isLightMode ? 'text-[#606060]' : 'text-[#aaaaaa]'
+            }`} 
+            style={{ 
+              fontFamily: 'Roboto, Arial, sans-serif',
+              fontSize: '12px',
+              lineHeight: '18px',
+              fontWeight: 400
+            }}
+          >
             {views}
           </p>
         </div>
