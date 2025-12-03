@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
 import { Upload, Monitor, Smartphone, Sun, Moon, Shuffle, X } from 'lucide-react';
-import { useAuth } from '../contexts/AuthContext';
-import LoginModal from '../components/modals/LoginModal';
-import UpgradeModal from '../components/modals/UpgradeModal';
+import ProGuard from '../components/ProGuard';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
