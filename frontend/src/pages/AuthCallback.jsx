@@ -9,8 +9,8 @@ const AuthCallback = () => {
     // Handle the OAuth callback
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session) {
-        // Redirect to dashboard after successful login
-        navigate('/dashboard', { replace: true });
+        // Redirect to Create page (main generator tool) after successful login
+        navigate('/create', { replace: true });
       } else {
         // Redirect to login if no session
         navigate('/login', { replace: true });
