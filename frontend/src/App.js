@@ -11,6 +11,7 @@ import CreatePage from './pages/CreatePage';
 import AnalyzePage from './pages/AnalyzePage';
 import TestPage from './pages/TestPage';
 import PricingPage from './pages/PricingPage';
+import LoginPage from './pages/LoginPage';
 
 const Home = () => {
   return (
@@ -35,6 +36,7 @@ function App() {
           <Route path="/analyze" element={<><Navbar /><AnalyzePage /></>} />
           <Route path="/test" element={<><Navbar /><TestPage /></>} />
           <Route path="/pricing" element={<><Navbar /><PricingPage /></>} />
+          <Route path="/login" element={<LoginPage />} />
           <Route path="/dashboard" element={<div className="min-h-screen bg-slate-950 flex items-center justify-center text-white">Dashboard Page</div>} />
         </Routes>
       </BrowserRouter>
