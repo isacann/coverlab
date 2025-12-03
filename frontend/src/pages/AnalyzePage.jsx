@@ -36,9 +36,6 @@ const DEMO_DATA = {
 };
 
 const AnalyzePage = () => {
-  const { isGuest, isPro } = useAuth();
-  const [showLoginModal, setShowLoginModal] = useState(false);
-  const [showUpgradeModal, setShowUpgradeModal] = useState(false);
   const [analysis, setAnalysis] = useState(DEMO_DATA); // START WITH DEMO
   const [isScanning, setIsScanning] = useState(false);
   const [activeTab, setActiveTab] = useState("faces");
