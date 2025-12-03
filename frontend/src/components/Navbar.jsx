@@ -67,7 +67,7 @@ const Navbar = () => {
               </Link>
             ) : (
               // Logged In User - Show Profile Dropdown
-              <DropdownMenu>
+              <DropdownMenu open={isDropdownOpen} onOpenChange={setIsDropdownOpen}>
                 <DropdownMenuTrigger asChild>
                   <button className="flex items-center gap-3 bg-slate-800/50 hover:bg-slate-800 px-4 py-2 rounded-full border border-slate-700/30 transition-all">
                     {/* User Avatar */}
