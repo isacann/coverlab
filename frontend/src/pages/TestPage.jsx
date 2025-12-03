@@ -167,6 +167,9 @@ const VideoCard = ({ thumbnail, title, channel, views, avatar, isLightMode, isMo
 };
 
 const TestPage = () => {
+  const { isGuest, isPro } = useAuth();
+  const [showLoginModal, setShowLoginModal] = useState(false);
+  const [showUpgradeModal, setShowUpgradeModal] = useState(false);
   const [uploadedThumbnails, setUploadedThumbnails] = useState([]);
   const [activeIndex, setActiveIndex] = useState(0);
   const [videoTitle, setVideoTitle] = useState('Mükemmel Bir Video Başlığı Buraya Gelecek');
