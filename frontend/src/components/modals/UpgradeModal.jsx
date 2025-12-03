@@ -21,11 +21,11 @@ const UpgradeModal = ({ isOpen, onClose, feature = 'bu \u00f6zellik' }) => {
           <div className="mx-auto w-16 h-16 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-full flex items-center justify-center mb-4">
             <Crown size={32} className="text-white" />
           </div>
-          <DialogTitle className="text-2xl text-center" style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}>
-            PRO'ya Yükselt
+          <DialogTitle className="text-2xl text-center text-white" style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}>
+            PRO'ya Y\u00fckselt
           </DialogTitle>
           <DialogDescription className="text-slate-400 text-center" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
-            {feature} sadece PRO üyeler için kullanılabilir.
+            {feature} sadece PRO \u00fcyeler i\u00e7in kullan\u0131labilir.
           </DialogDescription>
         </DialogHeader>
         
