@@ -56,34 +56,12 @@ function App() {
             <Route path="/login" element={<LoginPage />} />
             <Route path="/auth/callback" element={<AuthCallback />} />
             
-            {/* Protected Routes */}
-            <Route 
-              path="/create" 
-              element={
-                <ProtectedRoute>
-                  <Navbar />
-                  <CreatePage />
-                </ProtectedRoute>
-              } 
-            />
-            <Route 
-              path="/analyze" 
-              element={
-                <ProtectedRoute>
-                  <Navbar />
-                  <AnalyzePage />
-                </ProtectedRoute>
-              } 
-            />
-            <Route 
-              path="/test" 
-              element={
-                <ProtectedRoute>
-                  <Navbar />
-                  <TestPage />
-                </ProtectedRoute>
-              } 
-            />
+            {/* Tool Pages - Open to all, restrictions handled inside */}
+            <Route path="/create" element={<><Navbar /><CreatePage /></>} />
+            <Route path="/analyze" element={<><Navbar /><AnalyzePage /></>} />
+            <Route path="/test" element={<><Navbar /><TestPage /></>} />
+            
+            {/* Dashboard - Protected */}
             <Route 
               path="/dashboard" 
               element={
