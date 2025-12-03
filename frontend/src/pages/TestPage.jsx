@@ -92,17 +92,12 @@ const VideoCard = ({ thumbnail, title, channel, views, avatar, isLightMode, isMo
   return (
     <div className={`${isMobile ? 'flex gap-3' : 'flex flex-col'} cursor-pointer group`}>
       {/* Thumbnail */}
-      <div className={`relative ${isMobile ? 'w-40 flex-shrink-0' : 'w-full'} ${isUserVideo ? 'ring-2 ring-blue-500 rounded-lg' : ''}`}>
+      <div className={`relative ${isMobile ? 'w-40 flex-shrink-0' : 'w-full'} ${isUserVideo ? 'ring-4 ring-blue-500 ring-offset-2 ring-offset-slate-900' : ''} rounded-lg`}>
         <img 
           src={thumbnail} 
           alt={title}
           className="w-full aspect-video object-cover rounded-lg"
         />
-        {isUserVideo && (
-          <div className="absolute top-2 right-2 bg-blue-500 text-white text-xs font-bold px-2 py-1 rounded" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
-            SİZİN
-          </div>
-        )}
       </div>
 
       {/* Content */}
