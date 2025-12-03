@@ -62,7 +62,8 @@ const LoginPage = () => {
           {/* Google Login Button */}
           <Button
             onClick={handleGoogleLogin}
-            className="w-full bg-white hover:bg-gray-50 text-gray-700 font-medium py-6 rounded-lg flex items-center justify-center gap-3 shadow-lg transition-all duration-200 hover:shadow-xl"
+            disabled={loading}
+            className="w-full bg-white hover:bg-gray-50 text-gray-700 font-medium py-6 rounded-lg flex items-center justify-center gap-3 shadow-lg transition-all duration-200 hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
             style={{ fontFamily: 'Geist Sans, sans-serif' }}
           >
             {/* Google Logo SVG */}
