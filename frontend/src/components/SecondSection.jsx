@@ -3,10 +3,7 @@ import { Button } from './ui/button';
 
 const SecondSection = () => {
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-slate-950">
-      {/* Smooth Gradient Transition from Hero */}
-      <div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-black via-black/80 to-transparent z-10"></div>
-      
+    <section className="relative min-h-screen flex items-start justify-center overflow-hidden bg-slate-950 pt-24">
       {/* Background Image */}
       <div 
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
@@ -19,7 +16,7 @@ const SecondSection = () => {
       </div>
 
       {/* Content */}
-      <div className="relative z-20 max-w-4xl mx-auto px-6 text-center">
+      <div className="relative z-10 max-w-4xl mx-auto px-6 text-center">
         {/* Headline */}
         <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight" style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}>
           Lorem Ipsum Dolor Sit Amet
