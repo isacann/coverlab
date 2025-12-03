@@ -138,14 +138,7 @@ const AnalyzePage = () => {
   };
 
   return (
-    <>
-      <LoginModal isOpen={showLoginModal} onClose={() => setShowLoginModal(false)} />
-      <UpgradeModal 
-        isOpen={showUpgradeModal} 
-        onClose={() => setShowUpgradeModal(false)}
-        feature="AI Analiz"
-      />
-      
+    <ProGuard>
       <div className="min-h-screen bg-[#0a0a0a]">
         {/* Background */}
       <div 
