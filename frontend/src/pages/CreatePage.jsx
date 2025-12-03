@@ -55,8 +55,20 @@ const CreatePage = () => {
   };
 
   const onSubmit = (data) => {
+    // Check if user is logged in
+    if (isGuest) {
+      setShowLoginModal(true);
+      return;
+    }
+
+    // Check if user has credits
+    if (credits <= 0) {
+      alert('Krediniz bitmi\u015f! L\u00fctfen kredi sat\u0131n al\u0131n.');
+      return;
+    }
+
     console.log('Form Data:', data);
-    console.log('Referans Görsel (Base64):', referansGorsel);
+    console.log('Referans G\u00f6rsel (Base64):', referansGorsel);
     // TODO: API call will be here
     
     // Mock: Set a generated image after submission
