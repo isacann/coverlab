@@ -174,16 +174,15 @@ const TestPage = () => {
   };
 
   const handleShuffle = () => {
-    setShuffled(!shuffled);
+    // Shuffle ONCE and save the result
+    const shuffled = [...COMPETITORS].sort(() => Math.random() - 0.5);
+    setShuffledCompetitors(shuffled);
   };
 
   // Build video list
   const getVideoList = () => {
-    let videos = [...COMPETITORS];
-    
-    if (shuffled) {
-      videos = videos.sort(() => Math.random() - 0.5);
-    }
+    // Use the saved shuffled array (not re-shuffling on every render)
+    let videos = [...shuffledCompetitors];
 
     // Insert user's video at position 1 (2nd video)
     if (uploadedThumbnails.length > 0) {
