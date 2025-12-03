@@ -18,20 +18,35 @@ const SecondSection = () => {
       {/* Content */}
       <div className="relative z-10 max-w-4xl mx-auto px-6 text-center">
         {/* Headline */}
-        <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight" style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}>
+        <h2 
+          className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight" 
+          style={{ 
+            fontFamily: 'Plus Jakarta Sans, sans-serif',
+            textShadow: '0 4px 20px rgba(0, 0, 0, 0.8), 0 2px 10px rgba(0, 0, 0, 0.9)'
+          }}
+        >
           Lorem Ipsum Dolor Sit Amet
         </h2>
 
         {/* Subheadline */}
-        <p className="text-lg md:text-xl text-slate-200 mb-10 leading-relaxed" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
+        <p 
+          className="text-lg md:text-xl text-slate-200 mb-10 leading-relaxed" 
+          style={{ 
+            fontFamily: 'Geist Sans, sans-serif',
+            textShadow: '0 3px 15px rgba(0, 0, 0, 0.8), 0 1px 8px rgba(0, 0, 0, 0.9)'
+          }}
+        >
           Consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam.
         </p>
 
         {/* CTA Button */}
         <Button 
           size="lg"
-          className="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white text-lg px-8 py-6 rounded-lg shadow-2xl hover:shadow-cyan-500/50 transition-all duration-300 transform hover:scale-105"
-          style={{ fontFamily: 'Geist Sans, sans-serif' }}
+          className="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white text-lg px-8 py-6 rounded-lg transition-all duration-300 transform hover:scale-105"
+          style={{ 
+            fontFamily: 'Geist Sans, sans-serif',
+            boxShadow: '0 8px 30px rgba(0, 0, 0, 0.6), 0 0 40px rgba(6, 182, 212, 0.3)'
+          }}
         >
           Hemen Başla
         </Button>
