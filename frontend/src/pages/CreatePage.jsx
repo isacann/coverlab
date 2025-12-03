@@ -73,9 +73,7 @@ const CreatePage = () => {
   const creatorStatus = watch('creatorStatus');
 
   return (
-    <>
-      <LoginModal isOpen={showLoginModal} onClose={() => setShowLoginModal(false)} />
-      
+    <AccessGuard requirePro={false}>
       <div className="min-h-screen relative overflow-hidden bg-slate-950">
         {/* Background Image - Same as Hero */}
       <div 
