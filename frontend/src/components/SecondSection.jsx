@@ -8,7 +8,7 @@ const SecondSection = () => {
       <div 
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
         style={{
-          backgroundImage: 'url("https://customer-assets.emergentagent.com/job_youclicker/artifacts/xv33nz9h_IKJILnS64v1qs97cIhIlP.png")',
+          backgroundImage: 'url("https://customer-assets.emergentagent.com/job_youclicker/artifacts/zcpjgvha_WwftwYrqSEhXBmO_kGidh.png")',
         }}
       >
         {/* Dark Overlay */}
