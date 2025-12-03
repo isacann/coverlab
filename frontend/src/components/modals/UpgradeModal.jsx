@@ -4,7 +4,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 import { Button } from '../ui/button';
 import { Crown, Zap } from 'lucide-react';
 
-const UpgradeModal = ({ isOpen, onClose, feature = 'bu özellik' }) => {
+const UpgradeModal = ({ isOpen, onClose, feature = 'bu \u00f6zellik' }) => {
   const navigate = useNavigate();
 
   const handleUpgrade = () => {
@@ -12,9 +12,11 @@ const UpgradeModal = ({ isOpen, onClose, feature = 'bu özellik' }) => {
     navigate('/pricing');
   };
 
+  if (!isOpen) return null;
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="bg-slate-900 border-slate-700 text-white">
+      <DialogContent className="bg-slate-900 border-slate-700 text-white sm:max-w-md">
         <DialogHeader>
           <div className="mx-auto w-16 h-16 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-full flex items-center justify-center mb-4">
             <Crown size={32} className="text-white" />
