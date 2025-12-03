@@ -179,18 +179,23 @@ const TestPage = () => {
     // Use the saved shuffled array (not re-shuffling on every render)
     let videos = [...shuffledCompetitors];
 
-    // Insert user's video at position 1 (2nd video)
+    // Insert ALL user thumbnails at different positions
     if (uploadedThumbnails.length > 0) {
-      const userVideo = {
-        id: 'user-video',
-        thumbnail: uploadedThumbnails[activeIndex].url,
-        title: videoTitle,
-        channel: channelName,
-        avatar: channelName.substring(0, 2).toUpperCase(),
-        views: viewsMeta,
-        isUserVideo: true
-      };
-      videos.splice(1, 0, userVideo);
+      // Insert thumbnails from back to front to maintain correct positions
+      const positions = [1, 3, 5]; // Positions for 1st, 2nd, 3rd thumbnails
+      
+      for (let i = uploadedThumbnails.length - 1; i >= 0; i--) {
+        const userVideo = {
+          id: `user-video-${i}`,
+          thumbnail: uploadedThumbnails[i].url,
+          title: videoTitle,
+          channel: channelName,
+          avatar: channelName.substring(0, 2).toUpperCase(),
+          views: viewsMeta,
+          isUserVideo: true
+        };
+        videos.splice(positions[i], 0, userVideo);
+      }
     }
 
     return videos;
