@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Upload, Monitor, Smartphone, Sun, Moon, Shuffle, X } from 'lucide-react';
-import ProGuard from '../components/ProGuard';
+import AccessGuard from '../components/AccessGuard';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
