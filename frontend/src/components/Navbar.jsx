@@ -1,23 +1,33 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
 import { Button } from './ui/button';
-import { Home, Wand2, BarChart3, FlaskConical } from 'lucide-react';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from './ui/dropdown-menu';
+import { Home, Wand2, BarChart3, FlaskConical, Settings, LogOut, Zap } from 'lucide-react';
 
 const Navbar = () => {
+  const { user, profile, credits, signOut } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    await signOut();
+    navigate('/');
+  };
+
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-slate-950/40 backdrop-blur-lg border-b border-slate-800/30">
+    <nav className="fixed top-0 left-0 right-0 z-50 bg-slate-900/80 backdrop-blur-md border-b border-slate-800/30">
       <div className="max-w-7xl mx-auto px-6 py-4">
         <div className="flex items-center justify-between">
           {/* Logo */}
-          <Link to="/" className="flex items-center">
+          <Link to="/" className="flex items-center gap-2">
             <span className="text-2xl font-bold text-white tracking-tight">
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 font-extrabold italic" style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}>C</span>
               <span style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}>overLab</span>
             </span>
           </Link>
 
-          {/* Center Menu */}
-          <div className="hidden md:flex items-center gap-8 bg-slate-900/30 px-6 py-3 rounded-full border border-slate-700/30 backdrop-blur-sm">
+          {/* Center Menu - Visible to All Users */}
+          <div className="hidden md:flex items-center gap-8 bg-slate-800/50 px-6 py-3 rounded-full border border-slate-700/30 backdrop-blur-sm">
             <Link to="/" className="flex items-center gap-2 text-slate-300 hover:text-white transition-colors" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
               <Home size={20} />
               <span className="text-sm">Home</span>
@@ -36,16 +46,67 @@ const Navbar = () => {
             </Link>
           </div>
 
-          {/* Right Buttons */}
+          {/* Right Side - Conditional Rendering */}
           <div className="flex items-center gap-6">
             <Link to="/pricing" className="text-slate-300 hover:text-white transition-colors text-sm font-medium" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
               Pricing
             </Link>
-            <Link to="/login">
-              <Button className="bg-gradient-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600 text-white" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
-                Login
-              </Button>
-            </Link>
+
+            {!user ? (
+              // Guest User - Show Login Button
+              <Link to="/login">
+                <Button className="bg-gradient-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600 text-white" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
+                  Login
+                </Button>
+              </Link>
+            ) : (
+              // Logged In User - Show Profile Dropdown
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <button className="flex items-center gap-3 bg-slate-800/50 hover:bg-slate-800 px-4 py-2 rounded-full border border-slate-700/30 transition-all">
+                    {/* User Avatar */}
+                    <img 
+                      src={user?.user_metadata?.avatar_url || 'https://ui-avatars.com/api/?name=' + (user?.email || 'User')}
+                      alt="User Avatar"
+                      className="w-8 h-8 rounded-full"
+                    />
+                    {/* User Name */}
+                    <span className="text-white text-sm font-medium hidden sm:block" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
+                      {user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'User'}
+                    </span>
+                  </button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-56 bg-slate-900 border-slate-700">
+                  {/* Credits Badge */}
+                  <DropdownMenuLabel className="font-normal">
+                    <div className="flex items-center gap-2 bg-blue-500/10 px-3 py-2 rounded-lg border border-blue-500/30">
+                      <Zap size={16} className="text-blue-400" />
+                      <span className="text-white font-semibold" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
+                        Kredi: {credits}
+                      </span>
+                    </div>
+                  </DropdownMenuLabel>
+                  
+                  <DropdownMenuSeparator className="bg-slate-700" />
+                  
+                  {/* Settings */}
+                  <DropdownMenuItem className="text-slate-300 hover:text-white hover:bg-slate-800 cursor-pointer" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
+                    <Settings size={16} className="mr-2" />
+                    Ayarlar
+                  </DropdownMenuItem>
+                  
+                  {/* Logout */}
+                  <DropdownMenuItem 
+                    onClick={handleLogout}
+                    className="text-red-400 hover:text-red-300 hover:bg-slate-800 cursor-pointer" 
+                    style={{ fontFamily: 'Geist Sans, sans-serif' }}
+                  >
+                    <LogOut size={16} className="mr-2" />
+                    Çıkış Yap
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            )}
           </div>
         </div>
       </div>
