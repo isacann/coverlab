@@ -5,6 +5,8 @@ import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import SecondSection from './components/SecondSection';
 import ThirdSection from './components/ThirdSection';
+import FourthSection from './components/FourthSection';
+import Footer from './components/Footer';
 import CreatePage from './pages/CreatePage';
 
 const Home = () => {
@@ -14,6 +16,8 @@ const Home = () => {
       <Hero />
       <SecondSection />
       <ThirdSection />
+      <FourthSection />
+      <Footer />
     </div>
   );
 };
