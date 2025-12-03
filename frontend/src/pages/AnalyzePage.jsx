@@ -155,8 +155,16 @@ const AnalyzePage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a]">
-      {/* Background */}
+    <>
+      <LoginModal isOpen={showLoginModal} onClose={() => setShowLoginModal(false)} />
+      <UpgradeModal 
+        isOpen={showUpgradeModal} 
+        onClose={() => setShowUpgradeModal(false)}
+        feature="AI Analiz"
+      />
+      
+      <div className="min-h-screen bg-[#0a0a0a]">
+        {/* Background */}
       <div 
         className="fixed inset-0 bg-cover bg-center bg-no-repeat opacity-20"
         style={{
