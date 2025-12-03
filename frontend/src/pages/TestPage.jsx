@@ -263,10 +263,7 @@ const TestPage = () => {
                 {uploadedThumbnails.map((thumb, idx) => (
                   <div 
                     key={thumb.id}
-                    className={`relative group cursor-pointer rounded-lg overflow-hidden border-2 transition-all ${
-                      activeIndex === idx ? 'border-blue-500 ring-2 ring-blue-500/50' : 'border-slate-700 hover:border-blue-500/50'
-                    }`}
-                    onClick={() => setActiveIndex(idx)}
+                    className="relative group cursor-pointer rounded-lg overflow-hidden border border-slate-700 hover:border-slate-600 transition-all"
                   >
                     <img src={thumb.url} alt="Thumbnail" className="w-full aspect-video object-cover" />
                     <button
@@ -278,11 +275,9 @@ const TestPage = () => {
                     >
                       <X size={16} />
                     </button>
-                    {activeIndex === idx && (
-                      <div className="absolute top-2 left-2 bg-blue-500 text-white text-xs font-bold px-2 py-1 rounded" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
-                        AKTİF
-                      </div>
-                    )}
+                    <div className="absolute bottom-1 right-1 bg-black/80 text-white text-xs px-1.5 py-0.5 rounded">
+                      #{idx + 1}
+                    </div>
                   </div>
                 ))}
               </div>
