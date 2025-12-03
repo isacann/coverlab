@@ -45,6 +45,7 @@ export const AuthProvider = ({ children }) => {
 
     // Listen for changes on auth state
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      console.log('Auth state changed:', event, session);
       setUser(session?.user ?? null);
       
       if (session?.user) {
@@ -60,9 +61,21 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   const signOut = async () => {
-    await supabase.auth.signOut();
-    setUser(null);
-    setProfile(null);
+    try {
+      console.log('Signing out...');
+      const { error } = await supabase.auth.signOut();
+      if (error) throw error;
+      
+      setUser(null);
+      setProfile(null);
+      console.log('Signed out successfully');
+      
+      // Force reload to clear any cached state
+      window.location.href = '/';
+    } catch (error) {
+      console.error('Error signing out:', error);
+      alert('Çıkış yapılırken bir hata oluştu');
+    }
   };
 
   const value = {
@@ -72,6 +85,8 @@ export const AuthProvider = ({ children }) => {
     signOut,
     credits: profile?.credits || 0,
     isPro: profile?.subscription_plan === 'pro',
+    isFree: user && profile?.subscription_plan !== 'pro',
+    isGuest: !user,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
