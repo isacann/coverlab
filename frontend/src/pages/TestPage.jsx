@@ -180,9 +180,21 @@ const TestPage = () => {
   const [shuffledCompetitors, setShuffledCompetitors] = useState(COMPETITORS); // Store shuffled array
 
   const handleFileUpload = (e) => {
+    // Check if user is logged in
+    if (isGuest) {
+      setShowLoginModal(true);
+      return;
+    }
+
+    // Check if user is PRO (only PRO can test)
+    if (!isPro) {
+      setShowUpgradeModal(true);
+      return;
+    }
+
     const files = Array.from(e.target.files);
     if (uploadedThumbnails.length + files.length > 3) {
-      alert('Maksimum 3 thumbnail yükleyebilirsiniz');
+      alert('Maksimum 3 thumbnail y\u00fckleyebilirsiniz');
       return;
     }
 
