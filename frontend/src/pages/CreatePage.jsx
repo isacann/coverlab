@@ -19,8 +19,7 @@ const formSchema = z.object({
 });
 
 const CreatePage = () => {
-  const { isGuest, credits } = useAuth();
-  const [showLoginModal, setShowLoginModal] = useState(false);
+  const { credits } = useAuth();
   const [referansGorsel, setReferansGorsel] = useState(null);
   const [previewImage, setPreviewImage] = useState(null);
   const [generatedImage, setGeneratedImage] = useState(null);
