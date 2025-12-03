@@ -393,6 +393,7 @@ const AnalyzePage = () => {
         </div>
       </div>
     </div>
+    </>
   );
 };
 
