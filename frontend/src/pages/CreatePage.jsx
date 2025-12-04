@@ -717,7 +717,7 @@ const CreatePage = () => {
             </div>
 
             {/* Recent Work Section */}
-            {mockRecentGenerations.length > 0 && (
+            {recentGenerations.length > 0 && (
               <div className="mt-16">
                 <div className="flex justify-between items-center mb-6">
                   <h2 
