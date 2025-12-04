@@ -1,9 +1,13 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Button } from '../components/ui/button';
 import { supabase } from '../utils/supabase';
+import { useAuth } from '../contexts/AuthContext';
 
 const LoginPage = () => {
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+  const { setUser, setProfile } = useAuth();
 
   const handleGoogleLogin = async () => {
     try {
@@ -19,6 +23,45 @@ const LoginPage = () => {
     } catch (error) {
       console.error('Error logging in with Google:', error);
       alert('Giriş yapılırken bir hata oluştu. Lütfen tekrar deneyin.');
+      setLoading(false);
+    }
+  };
+
+  const handleAdminLogin = async () => {
+    try {
+      setLoading(true);
+      console.log('🔑 Admin backdoor login triggered...');
+
+      // Mock admin user object
+      const adminUser = {
+        id: '6fbc8193-fd49-4b33-847f-93dd457c0886',
+        email: 'admin@coverlab.dev',
+        user_metadata: {
+          full_name: 'Admin User',
+          avatar_url: 'https://ui-avatars.com/api/?name=Admin&background=06b6d4&color=fff'
+        }
+      };
+
+      // Mock admin profile
+      const adminProfile = {
+        id: '6fbc8193-fd49-4b33-847f-93dd457c0886',
+        credits: 999,
+        subscription_plan: 'pro'
+      };
+
+      console.log('✅ Setting admin user:', adminUser);
+      console.log('✅ Setting admin profile:', adminProfile);
+
+      // Manually set user and profile in AuthContext
+      setUser(adminUser);
+      setProfile(adminProfile);
+
+      alert('🎉 Admin girişi başarılı!');
+      navigate('/create');
+    } catch (error) {
+      console.error('❌ Admin login error:', error);
+      alert('Admin girişi başarısız!');
+    } finally {
       setLoading(false);
     }
   };
