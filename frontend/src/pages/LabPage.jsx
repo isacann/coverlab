@@ -338,7 +338,7 @@ const LabPage = () => {
                     )}
 
                     <div className="relative">
-                      <img src={gen.thumbnail} alt={gen.title} className="w-full aspect-video object-cover" />
+                      <img src={gen.image_url} alt={gen.title || 'Thumbnail'} className="w-full aspect-video object-cover" />
                       
                       {/* Hover Actions (Only when NOT in select mode) */}
                       {!isSelectModeGen && (
