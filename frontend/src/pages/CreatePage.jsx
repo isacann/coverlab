@@ -68,12 +68,12 @@ const CreatePage = () => {
 
     // Step 1: Validation
     if (!topic.trim() || !title.trim()) {
-      alert('Lütfen zorunlu alanları doldurun');
+      toast.error('Lütfen zorunlu alanları doldurun');
       return;
     }
 
     if (credits <= 0) {
-      alert('Krediniz bitmiş! Lütfen kredi satın alın.');
+      toast.error('Krediniz bitmiş! Lütfen kredi satın alın.');
       return;
     }
 
@@ -81,17 +81,20 @@ const CreatePage = () => {
 
     setIsGenerating(true);
     setGeneratedImage(null);
+    setIsTemporary(false);
+    setAiSuggestions(null);
+    setShowConfetti(false);
 
     try {
-      // Step 3: Convert image to base64 if exists
+      // Step 2: Convert image to base64 if exists
       let base64String = null;
       if (selectedFile) {
-        console.log('🖼️ Converting image to base64...');
+        console.log('🖼️ Converting and compressing image...');
         base64String = await convertFileToBase64(selectedFile);
         console.log('✅ Image converted (length:', base64String?.length, ')');
       }
 
-      // Step 4: Construct payload
+      // Step 3: Construct payload
       const payload = {
         user_id: user?.id || 'anonymous',
         topic: topic,
@@ -102,7 +105,7 @@ const CreatePage = () => {
         creator_status: isCreator ? 'true' : 'false'
       };
 
-      // Step 5: API Call
+      // Step 4: API Call
       console.log('🚀 Sending payload:', {
         ...payload,
         reference: payload.reference ? `[BASE64 STRING: ${payload.reference.substring(0, 50)}...]` : null
@@ -121,29 +124,83 @@ const CreatePage = () => {
       if (!response.ok) {
         const errorText = await response.text();
         console.error('❌ Webhook error:', errorText);
-        throw new Error(`HTTP ${response.status}: ${errorText}`);
+        throw new Error(`HTTP ${response.status}`);
       }
 
-      // Step 6: Response handling
-      const result = await response.json();
-      console.log('✅ Webhook response:', result);
+      // Step 5: Parse Response
+      const data = await response.json();
+      console.log('✅ Webhook response:', data);
 
-      // Extract image URL from various possible fields
-      const imageUrl = result.imageUrl || result.image_url || result.thumbnail || result.url;
+      // --- SCENARIO A: ERROR ---
+      if (data.status === 'error') {
+        toast.error(data.message || 'Bir hata oluştu. Lütfen tekrar deneyin.');
+        console.error('❌ API Error:', data.message);
+        // Do NOT clear form - user can try again
+        return;
+      }
 
-      if (imageUrl) {
+      // --- SCENARIO B: SUCCESS (Partial or Full) ---
+      if (data.status === 'success') {
+        // 1. Set the generated image
+        const imageUrl = data.image_url || data.imageUrl || data.thumbnail || data.url;
+        
+        if (!imageUrl) {
+          toast.error('Görsel URL alınamadı');
+          console.error('❌ No image URL in success response');
+          return;
+        }
+
         setGeneratedImage(imageUrl);
-        alert('✅ Thumbnail başarıyla oluşturuldu!');
+        console.log('🖼️ Image URL set:', imageUrl);
+
+        // 2. Decrement credits (Visual update)
+        setProfile((prev) => ({
+          ...prev,
+          credits: Math.max(0, (prev?.credits || 0) - 1)
+        }));
+        console.log('💰 Credits decremented');
+
+        // 3. Handle AI Suggestions (if present)
+        if (data.ai_suggestions) {
+          setAiSuggestions(data.ai_suggestions);
+          console.log('💡 AI suggestions received:', data.ai_suggestions);
+        }
+
+        // 4. Check Temporary Status
+        if (data.is_temporary === true) {
+          // Temporary/Fal.ai link - Show warning
+          toast(
+            data.message || '⚠️ Geçici görsel oluşturuldu. Hemen indirin!',
+            {
+              icon: '⚠️',
+              duration: 6000,
+              style: {
+                background: '#f59e0b',
+                color: '#fff',
+              },
+            }
+          );
+          setIsTemporary(true);
+          console.log('⚠️ Temporary image generated');
+        } else {
+          // Full success - Permanent link
+          toast.success(data.message || '✅ Thumbnail başarıyla oluşturuldu!');
+          setIsTemporary(false);
+          
+          // Trigger confetti celebration
+          setShowConfetti(true);
+          setTimeout(() => setShowConfetti(false), 5000);
+          console.log('🎉 Permanent image generated - Confetti!');
+        }
       } else {
-        console.warn('⚠️ No image URL in response');
-        // Mock fallback for testing
-        setGeneratedImage('https://via.placeholder.com/800x450/1e293b/06b6d4?text=Generated+Thumbnail');
-        alert('⚠️ Thumbnail oluşturuldu ancak görsel alınamadı.');
+        // Unknown status
+        toast.error('Bilinmeyen yanıt formatı');
+        console.error('❌ Unknown response status:', data);
       }
 
     } catch (error) {
       console.error('❌ Error during submission:', error);
-      alert('❌ Bir hata oluştu: ' + error.message);
+      toast.error('Sunucuyla bağlantı kurulamadı. İnternetinizi kontrol edin.');
     } finally {
       setIsGenerating(false);
     }
