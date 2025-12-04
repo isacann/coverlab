@@ -25,6 +25,7 @@ const formSchema = z.object({
   videoKonusu: z.string().min(10, 'En az 10 karakter gerekli'),
   videoBasligi: z.string().min(5, 'En az 5 karakter gerekli'),
   thumbnailYazisi: z.string().optional(),
+  ekstraIstek: z.string().optional(),
   creatorStatus: z.boolean().optional(),
 });
 
