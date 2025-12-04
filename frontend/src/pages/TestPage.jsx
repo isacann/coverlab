@@ -91,6 +91,40 @@ const TestPage = () => {
   const [theme, setTheme] = useState('dark'); // dark | light
   const [simulationList, setSimulationList] = useState([]); // Complete video list with user thumbnails injected
 
+  // Initialize simulation list on mount and when thumbnails change
+  useEffect(() => {
+    buildSimulationList();
+  }, [uploadedThumbnails, videoTitle, channelName, viewsMeta]);
+
+  const buildSimulationList = () => {
+    // Step 1: Shuffle competitors
+    const shuffled = [...competitors].sort(() => Math.random() - 0.5);
+
+    // Step 2: Build the list
+    let videoList = [...shuffled];
+
+    // Step 3: Inject user thumbnails at specific positions
+    if (uploadedThumbnails.length > 0) {
+      // Insert thumbnails from back to front to maintain correct positions
+      const positions = [1, 3, 5]; // Positions for 1st, 2nd, 3rd thumbnails
+      
+      for (let i = uploadedThumbnails.length - 1; i >= 0; i--) {
+        const userVideo = {
+          id: `user-video-${i}`,
+          thumbnail: uploadedThumbnails[i].url,
+          title: videoTitle,
+          channel: channelName,
+          avatar: channelName.substring(0, 2).toUpperCase(),
+          views: viewsMeta,
+          isUserVideo: true
+        };
+        videoList.splice(positions[i], 0, userVideo);
+      }
+    }
+
+    setSimulationList(videoList);
+  };
+
   const handleFileUpload = (e) => {
     const files = Array.from(e.target.files);
     if (uploadedThumbnails.length + files.length > 3) {
