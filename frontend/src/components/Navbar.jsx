@@ -95,6 +95,19 @@ const Navbar = () => {
                   
                   <DropdownMenuSeparator className="bg-slate-700" />
                   
+                  {/* My Lab */}
+                  <DropdownMenuItem 
+                    onClick={() => { 
+                      setIsDropdownOpen(false); 
+                      navigate('/lab'); 
+                    }}
+                    className="text-slate-300 hover:text-white hover:bg-slate-800 cursor-pointer" 
+                    style={{ fontFamily: 'Geist Sans, sans-serif' }}
+                  >
+                    <Archive size={16} className="mr-2" />
+                    Laboratuvarım
+                  </DropdownMenuItem>
+                  
                   {/* Settings */}
                   <DropdownMenuItem className="text-slate-300 hover:text-white hover:bg-slate-800 cursor-pointer" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
                     <Settings size={16} className="mr-2" />
