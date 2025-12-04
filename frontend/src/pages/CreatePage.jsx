@@ -62,6 +62,41 @@ const CreatePage = () => {
     setIsCreator(false);
   };
 
+  // Clear entire form
+  const clearForm = () => {
+    setTopic('');
+    setTitle('');
+    setThumbText('');
+    setExtraRequest('');
+    removeImage();
+    setGeneratedImage(null);
+    setIsTemporary(false);
+    setAiSuggestions(null);
+    setShowConfetti(false);
+    toast.success('Form temizlendi');
+  };
+
+  // Re-generate with same settings
+  const handleRegenerate = () => {
+    if (!topic.trim() || !title.trim()) {
+      toast.error('Form alanları boş! Lütfen doldurun.');
+      return;
+    }
+    
+    // Create a synthetic event to re-use handleSubmit
+    const syntheticEvent = { preventDefault: () => {} };
+    handleSubmit(syntheticEvent);
+  };
+
+  // Copy to clipboard helper
+  const copyToClipboard = (text, label) => {
+    navigator.clipboard.writeText(text).then(() => {
+      toast.success(`${label} kopyalandı!`);
+    }).catch(() => {
+      toast.error('Kopyalama başarısız');
+    });
+  };
+
   // Submit Handler
   const handleSubmit = async (e) => {
     e.preventDefault();
