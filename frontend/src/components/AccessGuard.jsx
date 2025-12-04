@@ -7,18 +7,9 @@ export default function AccessGuard({ children, requirePro = false }) {
   const { user, isPro, loading } = useAuth();
   const navigate = useNavigate();
 
-  // 1. Loading State - Show spinner instead of blank page
+  // 1. Loading State - Show content immediately if taking too long
   if (loading) {
-    return (
-      <div className="min-h-screen w-full bg-[#0a0a0a] flex items-center justify-center">
-        <div className="text-center">
-          <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-slate-400" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
-            Yükleniyor...
-          </p>
-        </div>
-      </div>
-    );
+    return null; // Return null to let React Router handle the page render
   }
 
   // 2. Determine Lock Status
