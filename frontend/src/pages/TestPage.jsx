@@ -155,10 +155,11 @@ const TestPage = () => {
 
     const imageFiles = files.filter(file => file.type.startsWith('image/'));
     
-    const newThumbnails = imageFiles.map(file => ({
+    const newThumbnails = imageFiles.map((file, index) => ({
       id: Date.now() + Math.random(),
       url: URL.createObjectURL(file),
-      file
+      file,
+      title: `Video Başlığı ${uploadedThumbnails.length + index + 1}`
     }));
 
     setUploadedThumbnails([...uploadedThumbnails, ...newThumbnails]);
