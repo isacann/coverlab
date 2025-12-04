@@ -30,14 +30,14 @@ export const AuthProvider = ({ children }) => {
 
     checkUser();
 
-    // 2. Listen for changes (Login/Logout)
-    const { data: listener } = supabase.auth.onAuthStateChange(async (_event, session) => {
+    // 2. Listen for auth state changes
+    const { data: listener } = supabase.auth.onAuthStateChange(async (event, session) => {
+      console.log('Auth state changed:', event, session?.user ? 'User logged in' : 'No user');
+      
       if (session?.user) {
         setUser(session.user);
-        // Only fetch profile if we haven't already or if user changed
-        if (!profile || profile.id !== session.user.id) {
-           await fetchProfile(session.user.id);
-        }
+        await fetchProfile(session.user.id);
+        setLoading(false);
       } else {
         setUser(null);
         setProfile(null);
