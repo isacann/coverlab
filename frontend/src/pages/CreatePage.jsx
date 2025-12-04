@@ -311,6 +311,67 @@ const CreatePage = () => {
               )}
             </div>
           </div>
+
+          {/* Recent Work Section */}
+          {mockRecentGenerations.length > 0 && (
+            <div className="mt-16">
+              <div className="flex justify-between items-center mb-6">
+                <h2 
+                  className="text-2xl md:text-3xl font-bold text-white"
+                  style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}
+                >
+                  Son Çalışmalar
+                </h2>
+                <Button
+                  onClick={() => navigate('/lab')}
+                  variant="ghost"
+                  className="text-cyan-400 hover:text-cyan-300 hover:bg-slate-800/50"
+                  style={{ fontFamily: 'Geist Sans, sans-serif' }}
+                >
+                  Tümünü Gör
+                  <ArrowRight size={16} className="ml-2" />
+                </Button>
+              </div>
+
+              {/* Horizontal Scrolling Cards */}
+              <div className="flex gap-6 overflow-x-auto pb-4 scrollbar-thin scrollbar-thumb-slate-700 scrollbar-track-slate-900">
+                {mockRecentGenerations.map((gen) => (
+                  <Card 
+                    key={gen.id}
+                    className="flex-shrink-0 w-[320px] bg-slate-900/50 backdrop-blur-sm border-slate-700/50 overflow-hidden cursor-pointer group hover:border-cyan-500 transition-all"
+                    onClick={() => setLightboxImage(gen.thumbnail)}
+                  >
+                    <div className="relative">
+                      <img src={gen.thumbnail} alt={gen.title} className="w-full aspect-video object-cover" />
+                      <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                        <div className="bg-cyan-500 hover:bg-cyan-600 text-white p-3 rounded-full">
+                          <Eye size={20} />
+                        </div>
+                      </div>
+                    </div>
+                    <div className="p-4">
+                      <h3 className="text-white font-semibold mb-1 truncate" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
+                        {gen.title}
+                      </h3>
+                      <p className="text-slate-500 text-sm" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
+                        {gen.date}
+                      </p>
+                    </div>
+                  </Card>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Lightbox */}
+          {lightboxImage && (
+            <div 
+              className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-4"
+              onClick={() => setLightboxImage(null)}
+            >
+              <img src={lightboxImage} alt="Preview" className="max-w-full max-h-full rounded-lg" />
+            </div>
+          )}
         </div>
       </div>
     </div>
