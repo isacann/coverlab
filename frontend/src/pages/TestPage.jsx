@@ -338,14 +338,6 @@ const TestPage = () => {
                   Video Bilgileri
                 </Label>
                 
-                <Input
-                  placeholder="Video Başlığı"
-                  value={videoTitle}
-                  onChange={(e) => setVideoTitle(e.target.value)}
-                  className="bg-slate-800 border-slate-600 text-white text-sm h-9"
-                  style={{ fontFamily: 'Geist Sans, sans-serif' }}
-                />
-                
                 <div className="grid grid-cols-2 gap-2">
                   <Input
                     placeholder="Kanal Adı"
