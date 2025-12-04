@@ -97,6 +97,7 @@ const TestPage = () => {
   const [device, setDevice] = useState('desktop'); // desktop | mobile
   const [theme, setTheme] = useState('dark'); // dark | light
   const [simulationList, setSimulationList] = useState([]); // Complete video list with user thumbnails injected
+  const [isDragging, setIsDragging] = useState(false); // Drag & drop state
 
   // Cleanup blob URLs on unmount
   useEffect(() => {
