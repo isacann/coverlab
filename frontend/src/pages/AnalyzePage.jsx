@@ -378,83 +378,133 @@ const AnalyzePage = () => {
               {/* RIGHT SIDE - Analysis Results */}
               <div>
                 <Card className="bg-slate-900/80 backdrop-blur-xl border-slate-800 p-6">
-                  {/* Score Card */}
-                  <div className="text-center mb-8 pb-6 border-b border-slate-800">
-                    <div className="inline-flex items-center justify-center w-32 h-32 rounded-full bg-gradient-to-br from-purple-500 to-pink-600 mb-4">
-                      <span className="text-5xl font-bold text-white" style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}>
-                        {analysisResult.score}
-                      </span>
-                    </div>
-                    <h3 className="text-2xl font-bold text-white mb-1" style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}>
-                      {analysisResult.rating}
-                    </h3>
-                    <p className="text-slate-400" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
-                      CTR Tahmini
-                    </p>
-                  </div>
-
-                  {/* Tabs - NO LABELS TAB */}
-                  <Tabs defaultValue="faces" className="w-full">
-                    <TabsList className="grid w-full grid-cols-3 bg-slate-800 p-1 rounded-lg mb-6">
-                      <TabsTrigger 
-                        value="faces"
-                        className="data-[state=active]:bg-purple-500 data-[state=active]:text-white text-slate-400"
-                      >
-                        <Smile size={16} className="mr-2" />
-                        Yüzler
-                      </TabsTrigger>
-                      <TabsTrigger 
-                        value="vibe"
-                        className="data-[state=active]:bg-purple-500 data-[state=active]:text-white text-slate-400"
-                      >
-                        <Flame size={16} className="mr-2" />
-                        Vibe
-                      </TabsTrigger>
-                      <TabsTrigger 
-                        value="objects"
-                        className="data-[state=active]:bg-purple-500 data-[state=active]:text-white text-slate-400"
-                      >
-                        <Box size={16} className="mr-2" />
-                        Nesneler
-                      </TabsTrigger>
-                    </TabsList>
-
-                    {/* Faces Tab */}
-                    <TabsContent value="faces" className="space-y-4">
-                      {analysisResult.faces.map((item, idx) => (
-                        <ProgressBar 
-                          key={idx}
-                          label={item.label}
-                          value={item.value}
-                          color="blue"
-                        />
-                      ))}
-                    </TabsContent>
-
-                    {/* Vibe Tab */}
-                    <TabsContent value="vibe" className="space-y-4">
-                      {analysisResult.vibe.map((item, idx) => (
-                        <div key={idx} className="flex justify-between items-center py-2">
-                          <span className="text-white font-medium" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
-                            {item.label}
+                  {/* DEMO MODE or RESULTS MODE - Show Analysis */}
+                  {(mode === 'demo' || mode === 'results') && !isAnalyzing && (
+                    <>
+                      {/* Score Card */}
+                      <div className="text-center mb-8 pb-6 border-b border-slate-800">
+                        <div className="inline-flex items-center justify-center w-32 h-32 rounded-full bg-gradient-to-br from-purple-500 to-pink-600 mb-4">
+                          <span className="text-5xl font-bold text-white" style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}>
+                            {analysisResult.score}
                           </span>
-                          {renderDots(item.value)}
                         </div>
-                      ))}
-                    </TabsContent>
+                        <h3 className="text-2xl font-bold text-white mb-1" style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}>
+                          {analysisResult.rating}
+                        </h3>
+                        <p className="text-slate-400" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
+                          CTR Tahmini
+                        </p>
+                      </div>
 
-                    {/* Objects Tab */}
-                    <TabsContent value="objects" className="space-y-4">
-                      {analysisResult.objects.map((item, idx) => (
-                        <ProgressBar 
-                          key={idx}
-                          label={item.label}
-                          value={item.value}
-                          color="cyan"
-                        />
-                      ))}
-                    </TabsContent>
-                  </Tabs>
+                      {/* Tabs - NO LABELS TAB */}
+                      <Tabs defaultValue="faces" className="w-full">
+                        <TabsList className="grid w-full grid-cols-3 bg-slate-800 p-1 rounded-lg mb-6">
+                          <TabsTrigger 
+                            value="faces"
+                            className="data-[state=active]:bg-purple-500 data-[state=active]:text-white text-slate-400"
+                          >
+                            <Smile size={16} className="mr-2" />
+                            Yüzler
+                          </TabsTrigger>
+                          <TabsTrigger 
+                            value="vibe"
+                            className="data-[state=active]:bg-purple-500 data-[state=active]:text-white text-slate-400"
+                          >
+                            <Flame size={16} className="mr-2" />
+                            Vibe
+                          </TabsTrigger>
+                          <TabsTrigger 
+                            value="objects"
+                            className="data-[state=active]:bg-purple-500 data-[state=active]:text-white text-slate-400"
+                          >
+                            <Box size={16} className="mr-2" />
+                            Nesneler
+                          </TabsTrigger>
+                        </TabsList>
+
+                        {/* Faces Tab */}
+                        <TabsContent value="faces" className="space-y-4">
+                          {analysisResult.faces.map((item, idx) => (
+                            <ProgressBar 
+                              key={idx}
+                              label={item.label}
+                              value={item.value}
+                              color="blue"
+                            />
+                          ))}
+                        </TabsContent>
+
+                        {/* Vibe Tab */}
+                        <TabsContent value="vibe" className="space-y-4">
+                          {analysisResult.vibe.map((item, idx) => (
+                            <div key={idx} className="flex justify-between items-center py-2">
+                              <span className="text-white font-medium" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
+                                {item.label}
+                              </span>
+                              {renderDots(item.value)}
+                            </div>
+                          ))}
+                        </TabsContent>
+
+                        {/* Objects Tab */}
+                        <TabsContent value="objects" className="space-y-4">
+                          {analysisResult.objects.map((item, idx) => (
+                            <ProgressBar 
+                              key={idx}
+                              label={item.label}
+                              value={item.value}
+                              color="cyan"
+                            />
+                          ))}
+                        </TabsContent>
+                      </Tabs>
+                    </>
+                  )}
+
+                  {/* UPLOAD MODE - Ready to Analyze */}
+                  {mode === 'upload' && !isAnalyzing && (
+                    <div className="text-center py-20">
+                      <div className="inline-flex items-center justify-center w-24 h-24 rounded-full bg-slate-800 mb-6">
+                        <Sparkles size={40} className="text-purple-400" />
+                      </div>
+                      <h3 className="text-2xl font-bold text-white mb-3" style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}>
+                        Analiz için Hazır
+                      </h3>
+                      <p className="text-slate-400 max-w-sm mx-auto" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
+                        Video başlığınızı girin ve "Analiz Et" butonuna basın
+                      </p>
+                    </div>
+                  )}
+
+                  {/* ANALYZING STATE - AI Processing */}
+                  {isAnalyzing && (
+                    <div className="text-center py-20">
+                      <div className="inline-flex items-center justify-center w-24 h-24 rounded-full bg-gradient-to-br from-purple-500 to-pink-600 mb-6 animate-pulse">
+                        <Loader2 size={40} className="text-white animate-spin" />
+                      </div>
+                      <h3 className="text-2xl font-bold text-white mb-3" style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}>
+                        Yapay Zeka ile Analiz Ediliyor...
+                      </h3>
+                      <p className="text-slate-400 max-w-sm mx-auto mb-6" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
+                        Thumbnail'ınız detaylı olarak inceleniyor
+                      </p>
+                      {/* Progress Steps */}
+                      <div className="space-y-3 text-left max-w-md mx-auto">
+                        <div className="flex items-center gap-3 text-slate-300">
+                          <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
+                          <span className="text-sm">Görsel işleniyor...</span>
+                        </div>
+                        <div className="flex items-center gap-3 text-slate-300">
+                          <div className="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></div>
+                          <span className="text-sm">Yüz ve nesne analizi yapılıyor...</span>
+                        </div>
+                        <div className="flex items-center gap-3 text-slate-300">
+                          <div className="w-2 h-2 rounded-full bg-purple-500 animate-pulse"></div>
+                          <span className="text-sm">CTR tahmini hesaplanıyor...</span>
+                        </div>
+                      </div>
+                    </div>
+                  )}
                 </Card>
               </div>
             </div>
