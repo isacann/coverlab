@@ -363,15 +363,17 @@ const LabPage = () => {
                     </div>
                     <div className="p-4">
                       <h3 className="text-white font-semibold mb-1" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
-                        {gen.title}
+                        {gen.title || 'Thumbnail'}
                       </h3>
                       <p className="text-slate-500 text-sm" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
-                        {gen.date}
+                        {formatDate(gen.created_at)}
                       </p>
                     </div>
                   </Card>
                 ))}
               </div>
+                </>
+              )}
 
               {/* Empty State */}
               {generations.length === 0 && (
