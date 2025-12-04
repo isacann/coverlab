@@ -122,10 +122,9 @@ const TestPage = () => {
       thumbnail: video.thumbnail + '?t=' + Date.now()
     }));
 
-    // Step 3: Inject user thumbnails at specific positions
+    // Step 2: Inject user thumbnails at specific positions
     if (uploadedThumbnails.length > 0) {
-      // Insert thumbnails from back to front to maintain correct positions
-      const positions = [1, 3, 5]; // Positions for 1st, 2nd, 3rd thumbnails
+      const positions = [1, 3, 5];
       
       for (let i = uploadedThumbnails.length - 1; i >= 0; i--) {
         const userVideo = {
