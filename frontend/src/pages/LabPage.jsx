@@ -74,8 +74,65 @@ const mockAnalyses = [
 ];
 
 const LabPage = () => {
+  // State Management
   const [selectedAnalysis, setSelectedAnalysis] = useState(null);
   const [lightboxImage, setLightboxImage] = useState(null);
+  
+  // Selection states for deletion
+  const [isSelectModeGen, setIsSelectModeGen] = useState(false);
+  const [isSelectModeAna, setIsSelectModeAna] = useState(false);
+  const [selectedGens, setSelectedGens] = useState([]);
+  const [selectedAnas, setSelectedAnas] = useState([]);
+  
+  // Data states with mock data
+  const [generations, setGenerations] = useState(mockGenerations);
+  const [analyses, setAnalyses] = useState(mockAnalyses);
+  
+  // Handlers for Generations
+  const toggleSelectModeGen = () => {
+    setIsSelectModeGen(!isSelectModeGen);
+    setSelectedGens([]);
+  };
+  
+  const toggleGenSelection = (id) => {
+    setSelectedGens(prev => 
+      prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]
+    );
+  };
+  
+  const deleteSelectedGens = () => {
+    setGenerations(prev => prev.filter(g => !selectedGens.includes(g.id)));
+    setSelectedGens([]);
+    setIsSelectModeGen(false);
+  };
+  
+  const deleteSingleGen = (id, e) => {
+    e.stopPropagation();
+    setGenerations(prev => prev.filter(g => g.id !== id));
+  };
+  
+  // Handlers for Analyses
+  const toggleSelectModeAna = () => {
+    setIsSelectModeAna(!isSelectModeAna);
+    setSelectedAnas([]);
+  };
+  
+  const toggleAnaSelection = (id) => {
+    setSelectedAnas(prev => 
+      prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]
+    );
+  };
+  
+  const deleteSelectedAnas = () => {
+    setAnalyses(prev => prev.filter(a => !selectedAnas.includes(a.id)));
+    setSelectedAnas([]);
+    setIsSelectModeAna(false);
+  };
+  
+  const deleteSingleAna = (id, e) => {
+    e.stopPropagation();
+    setAnalyses(prev => prev.filter(a => a.id !== id));
+  };
 
   return (
     <AccessGuard requirePro={false}>
