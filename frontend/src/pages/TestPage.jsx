@@ -107,10 +107,10 @@ const TestPage = () => {
     };
   }, []);
 
-  // Initialize simulation list on mount and when thumbnails change
+  // Initialize simulation list ONCE on mount only
   useEffect(() => {
     buildSimulationList();
-  }, [uploadedThumbnails, videoTitle, channelName, viewsMeta]);
+  }, []);
 
   const buildSimulationList = () => {
     // Step 1: Shuffle competitors
