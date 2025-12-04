@@ -266,70 +266,74 @@ const TestPage = () => {
                 </p>
               </div>
 
-              {/* Upload Zone - Compact */}
-              <div className="space-y-3">
+              {/* Upload Zone - Compact Grid */}
+              <div className="space-y-2">
                 <Label className="text-white text-sm font-semibold" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
                   Thumbnail'lar ({uploadedThumbnails.length}/3)
                 </Label>
                 
-                {uploadedThumbnails.length < 3 && (
-                  <div 
-                    className="border-2 border-dashed border-blue-500/50 rounded-lg p-3 text-center cursor-pointer hover:border-blue-500 hover:bg-slate-800/50 transition-all"
-                    onClick={() => document.getElementById('testFileInput').click()}
-                  >
-                    <input
-                      id="testFileInput"
-                      type="file"
-                      accept="image/*"
-                      multiple
-                      onChange={handleFileUpload}
-                      className="hidden"
-                    />
-                    <Upload size={20} className="text-blue-400 mx-auto mb-1" />
-                    <p className="text-white text-xs font-medium" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
-                      Tıkla veya Sürükle
-                    </p>
-                  </div>
-                )}
+                {/* Hidden File Input */}
+                <input
+                  id="testFileInput"
+                  type="file"
+                  accept="image/*"
+                  multiple
+                  onChange={handleFileUpload}
+                  className="hidden"
+                />
 
-                {/* Uploaded Thumbnails - Horizontal Grid */}
-                {uploadedThumbnails.length > 0 && (
-                  <div className="space-y-3">
-                    {uploadedThumbnails.map((thumb, idx) => (
-                      <div key={thumb.id} className="space-y-2">
-                        {/* Thumbnail Preview */}
-                        <div className="relative group rounded-lg overflow-hidden border border-slate-700 hover:border-slate-600 transition-all">
-                          <img 
-                            src={thumb.url} 
-                            alt={`Thumbnail ${idx + 1}`} 
-                            className="w-full aspect-video object-cover"
-                          />
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              removeThumbnail(thumb.id);
-                            }}
-                            className="absolute top-1.5 right-1.5 bg-red-500 hover:bg-red-600 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
-                          >
-                            <X size={14} />
-                          </button>
-                          <div className="absolute bottom-1 left-1 bg-blue-500 text-white text-xs px-2 py-0.5 rounded font-semibold">
-                            #{idx + 1}
-                          </div>
-                        </div>
-                        
-                        {/* Title Input */}
-                        <Input
-                          placeholder={`Thumbnail ${idx + 1} başlığı`}
-                          value={thumb.title}
-                          onChange={(e) => updateThumbnailTitle(thumb.id, e.target.value)}
-                          className="bg-slate-800 border-slate-600 text-white text-xs h-8"
-                          style={{ fontFamily: 'Geist Sans, sans-serif' }}
+                {/* Horizontal Grid Layout */}
+                <div className="grid grid-cols-3 gap-2">
+                  {/* Uploaded Thumbnails */}
+                  {uploadedThumbnails.map((thumb, idx) => (
+                    <div key={thumb.id} className="flex flex-col gap-1">
+                      {/* Thumbnail Card */}
+                      <div className="relative group rounded overflow-hidden border border-slate-700 hover:border-slate-600 transition-all">
+                        <img 
+                          src={thumb.url} 
+                          alt={`Thumbnail ${idx + 1}`} 
+                          className="w-full aspect-video object-cover"
                         />
+                        {/* Remove Button */}
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            removeThumbnail(thumb.id);
+                          }}
+                          className="absolute top-1 right-1 bg-red-500 hover:bg-red-600 text-white rounded-full p-0.5 opacity-0 group-hover:opacity-100 transition-opacity"
+                        >
+                          <X size={12} />
+                        </button>
+                        {/* Number Badge */}
+                        <div className="absolute bottom-0.5 left-0.5 bg-blue-500 text-white text-[10px] px-1 py-0.5 rounded font-bold">
+                          #{idx + 1}
+                        </div>
                       </div>
-                    ))}
-                  </div>
-                )}
+                      
+                      {/* Title Input - Compact */}
+                      <Input
+                        placeholder="Başlık..."
+                        value={thumb.title}
+                        onChange={(e) => updateThumbnailTitle(thumb.id, e.target.value)}
+                        className="bg-slate-800 border-slate-600 text-white text-[10px] h-6 px-1.5"
+                        style={{ fontFamily: 'Geist Sans, sans-serif' }}
+                      />
+                    </div>
+                  ))}
+                  
+                  {/* Add Button (if space available) */}
+                  {uploadedThumbnails.length < 3 && (
+                    <div 
+                      className="flex flex-col items-center justify-center border-2 border-dashed border-blue-500/50 rounded cursor-pointer hover:border-blue-500 hover:bg-slate-800/50 transition-all aspect-video"
+                      onClick={() => document.getElementById('testFileInput').click()}
+                    >
+                      <Upload size={16} className="text-blue-400 mb-0.5" />
+                      <p className="text-white text-[9px] font-medium" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
+                        Ekle
+                      </p>
+                    </div>
+                  )}
+                </div>
               </div>
 
               {/* Metadata Inputs - Compact Grid */}
