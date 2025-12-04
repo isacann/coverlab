@@ -73,10 +73,19 @@ export const AuthProvider = ({ children }) => {
   };
 
   const signOut = async () => {
-    await supabase.auth.signOut();
-    setUser(null);
-    setProfile(null);
-    window.location.href = "/"; // Force redirect to home
+    try {
+      setLoading(true);
+      await supabase.auth.signOut();
+      setUser(null);
+      setProfile(null);
+      window.location.href = "/";
+    } catch (error) {
+      console.error("Logout error:", error);
+      // Force logout even if API fails
+      setUser(null);
+      setProfile(null);
+      window.location.href = "/";
+    }
   };
 
   const value = {
