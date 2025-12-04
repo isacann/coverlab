@@ -172,10 +172,22 @@ const LabPage = () => {
     );
   };
   
-  const deleteSelectedGens = () => {
-    setGenerations(prev => prev.filter(g => !selectedGens.includes(g.id)));
-    setSelectedGens([]);
-    setIsSelectModeGen(false);
+  const deleteSelectedGens = async () => {
+    try {
+      const { error } = await supabase
+        .from('generations')
+        .delete()
+        .in('id', selectedGens);
+
+      if (error) throw error;
+      setGenerations(prev => prev.filter(g => !selectedGens.includes(g.id)));
+      setSelectedGens([]);
+      setIsSelectModeGen(false);
+      toast.success(`${selectedGens.length} üretim silindi`);
+    } catch (error) {
+      console.error('Delete error:', error);
+      toast.error('Silme işlemi başarısız');
+    }
   };
   
   const deleteSingleGen = async (id, e) => {
