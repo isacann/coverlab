@@ -233,8 +233,10 @@ const TestPage = () => {
   };
 
   const handleShuffle = () => {
-    // Re-build the entire simulation list with a new shuffle
-    buildSimulationList();
+    // Shuffle both competitors AND user thumbnail positions
+    const shuffled = [...competitors].sort(() => Math.random() - 0.5);
+    setShuffledCompetitors(shuffled);
+    // buildSimulationList will be called automatically via useEffect
   };
 
   const isLightMode = theme === 'light';
