@@ -121,6 +121,24 @@ const TestPage = () => {
     }
   }, [uploadedThumbnails, channelName, viewsMeta, shuffledCompetitors]);
 
+  // Generate random positions for user thumbnails (only when thumbnails are added/removed)
+  const generateUserThumbnailPositions = (count) => {
+    const maxPosition = 10; // Insert within first 10 videos
+    const usedPositions = new Set();
+    const positions = [];
+    
+    for (let i = 0; i < count; i++) {
+      let pos;
+      do {
+        pos = Math.floor(Math.random() * maxPosition);
+      } while (usedPositions.has(pos));
+      usedPositions.add(pos);
+      positions.push(pos);
+    }
+    
+    return positions;
+  };
+
   const buildSimulationList = () => {
     // Use the pre-shuffled competitors list
     const videoList = shuffledCompetitors.map(video => ({
