@@ -6,9 +6,12 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel,
 import { Home, Wand2, BarChart3, FlaskConical, Settings, LogOut, Zap, Archive } from 'lucide-react';
 
 const Navbar = () => {
-  const { user, profile, credits, signOut } = useAuth();
+  const { user, profile, credits, signOut, loading } = useAuth();
   const navigate = useNavigate();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  
+  // Debug log
+  console.log('Navbar - User:', user ? 'Logged in' : 'Guest', 'Credits:', credits);
 
   const handleLogout = async () => {
     try {
