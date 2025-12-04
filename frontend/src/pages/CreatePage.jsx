@@ -75,9 +75,10 @@ const CreatePage = () => {
       return;
     }
 
+    setIsGenerating(true);
+    setGeneratedImage(null);
+
     try {
-      setGeneratedImage(null); // Reset previous image
-      
       // Prepare webhook payload
       const payload = {
         userId: user?.id || null,
@@ -85,11 +86,11 @@ const CreatePage = () => {
         videoBasligi: data.videoBasligi,
         thumbnailYazisi: data.thumbnailYazisi || null,
         ekstraIstek: data.ekstraIstek || null,
-        referansGorsel: referansGorsel || null, // Already in base64 data URI format
+        referansGorsel: referansGorsel || null,
         creatorStatus: data.creatorStatus || false
       };
 
-      console.log('Sending to n8n webhook:', payload);
+      console.log('🚀 Sending to n8n webhook:', payload);
 
       // Call n8n webhook
       const response = await fetch('https://n8n.getoperiqo.com/webhook/abb2e2e0-d8f4-486d-b89d-a63cc331e122', {
@@ -97,28 +98,35 @@ const CreatePage = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(payload)
+        body: JSON.stringify(payload),
+        mode: 'cors'
       });
 
+      console.log('📡 Response status:', response.status);
+
       if (!response.ok) {
-        throw new Error('Webhook request failed');
+        const errorText = await response.text();
+        console.error('❌ Webhook error:', errorText);
+        throw new Error(`Webhook failed: ${response.status}`);
       }
 
       const result = await response.json();
-      console.log('Webhook response:', result);
+      console.log('✅ Webhook response:', result);
 
-      // Set generated image from response (adjust based on actual response structure)
-      if (result.imageUrl) {
-        setGeneratedImage(result.imageUrl);
+      // Set generated image from response
+      if (result.imageUrl || result.image_url || result.thumbnail) {
+        setGeneratedImage(result.imageUrl || result.image_url || result.thumbnail);
+        alert('Thumbnail başarıyla oluşturuldu!');
       } else {
-        // Fallback
-        setGeneratedImage('https://via.placeholder.com/800x450/1e293b/06b6d4?text=Generated+Thumbnail');
+        console.warn('⚠️ No image URL in response:', result);
+        alert('Thumbnail oluşturuldu ancak görsel alınamadı.');
       }
 
-      alert('Thumbnail başarıyla oluşturuldu!');
     } catch (error) {
-      console.error('Error:', error);
-      alert('Bir hata oluştu. Lütfen tekrar deneyin.');
+      console.error('❌ Error:', error);
+      alert('Bir hata oluştu: ' + error.message);
+    } finally {
+      setIsGenerating(false);
     }
   };
 
