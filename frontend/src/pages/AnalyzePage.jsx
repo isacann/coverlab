@@ -457,6 +457,69 @@ const AnalyzePage = () => {
               </div>
             </div>
           </div>
+
+          {/* Recent Work Section */}
+          {mockRecentAnalyses.length > 0 && (
+            <div className="mt-16 max-w-7xl mx-auto px-6">
+              <div className="flex justify-between items-center mb-6">
+                <h2 
+                  className="text-2xl md:text-3xl font-bold text-white"
+                  style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}
+                >
+                  Son Çalışmalar
+                </h2>
+                <Button
+                  onClick={() => navigate('/lab')}
+                  variant="ghost"
+                  className="text-cyan-400 hover:text-cyan-300 hover:bg-slate-800/50"
+                  style={{ fontFamily: 'Geist Sans, sans-serif' }}
+                >
+                  Tümünü Gör
+                  <ArrowRight size={16} className="ml-2" />
+                </Button>
+              </div>
+
+              {/* Horizontal Scrolling Cards */}
+              <div className="flex gap-6 overflow-x-auto pb-4 scrollbar-thin scrollbar-thumb-slate-700 scrollbar-track-slate-900">
+                {mockRecentAnalyses.map((ana) => (
+                  <Card 
+                    key={ana.id}
+                    className="flex-shrink-0 w-[320px] bg-slate-900/50 backdrop-blur-sm border-slate-700/50 overflow-hidden cursor-pointer group hover:border-cyan-500 transition-all"
+                    onClick={() => setSelectedAnalysis(ana)}
+                  >
+                    <div className="relative">
+                      <img src={ana.thumbnail} alt={ana.title} className="w-full aspect-video object-cover" />
+                      <div className="absolute top-2 right-2 bg-blue-500 text-white px-3 py-1 rounded-full text-sm font-bold">
+                        {ana.score}/100
+                      </div>
+                      <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                        <div className="bg-cyan-500 hover:bg-cyan-600 text-white px-6 py-3 rounded-lg font-semibold transition-transform hover:scale-105">
+                          Detayları Gör
+                        </div>
+                      </div>
+                    </div>
+                    <div className="p-4">
+                      <h3 className="text-white font-semibold mb-1 truncate" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
+                        {ana.title}
+                      </h3>
+                      <p className="text-slate-500 text-sm" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
+                        {ana.date} • {ana.rating}
+                      </p>
+                    </div>
+                  </Card>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Analysis Detail Modal */}
+          {selectedAnalysis && (
+            <AnalysisDetailModal 
+              analysis={selectedAnalysis} 
+              isOpen={!!selectedAnalysis} 
+              onClose={() => setSelectedAnalysis(null)}
+            />
+          )}
         </div>
       </div>
     </div>
