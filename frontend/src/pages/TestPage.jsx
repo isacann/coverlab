@@ -107,10 +107,10 @@ const TestPage = () => {
     };
   }, []);
 
-  // Initialize simulation list ONCE on mount only
+  // Initialize simulation list on mount and when data changes
   useEffect(() => {
     buildSimulationList();
-  }, []);
+  }, [uploadedThumbnails]);
 
   const buildSimulationList = () => {
     // Step 1: Shuffle competitors
