@@ -15,6 +15,7 @@ import TestPage from './pages/TestPage';
 import PricingPage from './pages/PricingPage';
 import LoginPage from './pages/LoginPage';
 import AuthCallback from './pages/AuthCallback';
+import LabPage from './pages/LabPage';
 
 const Home = () => {
   return (
