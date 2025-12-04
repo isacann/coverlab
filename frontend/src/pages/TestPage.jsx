@@ -149,6 +149,12 @@ const TestPage = () => {
   };
 
   const removeThumbnail = (id) => {
+    // Revoke blob URL to clear cache
+    const thumbnail = uploadedThumbnails.find(t => t.id === id);
+    if (thumbnail?.url) {
+      URL.revokeObjectURL(thumbnail.url);
+    }
+    
     const newThumbnails = uploadedThumbnails.filter(t => t.id !== id);
     setUploadedThumbnails(newThumbnails);
     if (activeIndex >= newThumbnails.length) {
