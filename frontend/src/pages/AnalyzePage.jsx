@@ -531,6 +531,35 @@ const AnalyzePage = () => {
                             />
                           ))}
                         </TabsContent>
+
+                        {/* Heatmap Tab */}
+                        <TabsContent value="heatmap" className="space-y-4">
+                          <div className="text-center py-8">
+                            <Eye size={48} className="mx-auto mb-4 text-purple-400" />
+                            <h4 className="text-xl font-bold text-white mb-3" style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}>
+                              Isı Haritası
+                            </h4>
+                            <p className="text-slate-400 text-sm mb-6" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
+                              Sol taraftaki thumbnail üzerinde dikkat çekme bölgelerini görebilirsiniz
+                            </p>
+                            
+                            {/* Legend */}
+                            <div className="space-y-3 max-w-xs mx-auto text-left">
+                              <div className="flex items-center gap-3">
+                                <div className="w-6 h-6 rounded-full bg-red-500/40 border-2 border-red-500"></div>
+                                <span className="text-white text-sm">Yüksek Dikkat</span>
+                              </div>
+                              <div className="flex items-center gap-3">
+                                <div className="w-6 h-6 rounded-full bg-yellow-500/40 border-2 border-yellow-500"></div>
+                                <span className="text-white text-sm">Orta Dikkat</span>
+                              </div>
+                              <div className="flex items-center gap-3">
+                                <div className="w-6 h-6 rounded-full bg-blue-500/40 border-2 border-blue-500"></div>
+                                <span className="text-white text-sm">Düşük Dikkat</span>
+                              </div>
+                            </div>
+                          </div>
+                        </TabsContent>
                       </Tabs>
                     </>
                   )}
