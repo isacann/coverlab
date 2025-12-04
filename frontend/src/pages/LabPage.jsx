@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
 import { Card } from '../components/ui/card';
-import { Eye, Download } from 'lucide-react';
+import { Button } from '../components/ui/button';
+import { Eye, Download, Trash2, CheckSquare, Square } from 'lucide-react';
 import AnalysisDetailModal from '../components/modals/AnalysisDetailModal';
 import AccessGuard from '../components/AccessGuard';
 
