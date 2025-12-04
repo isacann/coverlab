@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import AccessGuard from '../components/AccessGuard';
@@ -12,14 +12,7 @@ import { Upload, Download, Wand2, Eye, ArrowRight, AlertTriangle, RefreshCw, Rot
 import { convertFileToBase64, formatFileSize } from '../utils/imageHelpers';
 import toast, { Toaster } from 'react-hot-toast';
 import Confetti from 'react-confetti';
-
-// Mock Recent Generations
-const mockRecentGenerations = [
-  { id: 1, thumbnail: 'https://picsum.photos/seed/gen1/400/225', title: 'İstanbul Vlog Kapağı', date: '2 saat önce' },
-  { id: 2, thumbnail: 'https://picsum.photos/seed/gen2/400/225', title: 'Tech Review 2024', date: '5 saat önce' },
-  { id: 3, thumbnail: 'https://picsum.photos/seed/gen3/400/225', title: 'Gaming Montaj', date: '1 gün önce' },
-  { id: 4, thumbnail: 'https://picsum.photos/seed/gen4/400/225', title: 'Yemek Tarifi', date: '2 gün önce' },
-];
+import { supabase } from '../utils/supabase';
 
 const CreatePage = () => {
   const { credits, user, setProfile } = useAuth();
