@@ -256,7 +256,7 @@ const AnalyzePage = () => {
                     onDragOver={handleDragOver}
                     className="relative group"
                   >
-                    {/* Demo Image with Heatmap */}
+                    {/* Demo Image with Conditional Heatmap */}
                     <div className="relative rounded-2xl overflow-hidden border-4 border-purple-500/30">
                       <img 
                         src={DEMO_DATA.imageUrl} 
@@ -264,8 +264,8 @@ const AnalyzePage = () => {
                         className="w-full aspect-video object-cover"
                       />
                       
-                      {/* Heatmap Overlay */}
-                      {DEMO_DATA.heatmap_points && DEMO_DATA.heatmap_points.map((point, idx) => (
+                      {/* Heatmap Overlay - Only show when heatmap tab is active */}
+                      {activeTab === 'heatmap' && DEMO_DATA.heatmap_points && DEMO_DATA.heatmap_points.map((point, idx) => (
                         <div
                           key={idx}
                           className="absolute rounded-full animate-pulse"
