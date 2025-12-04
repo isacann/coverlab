@@ -48,12 +48,28 @@ const GenerationDetailModal = ({ generation, isOpen, onClose, onDelete }) => {
     });
   };
 
-  const handleDownload = () => {
-    const link = document.createElement('a');
-    link.href = generation.image_url;
-    link.download = `coverlab-${generation.id}.jpg`;
-    link.click();
-    toast.success('İndirme başladı!');
+  const handleDownload = async () => {
+    try {
+      // Fetch the image as a blob to force download
+      const response = await fetch(generation.image_url);
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `coverlab-${generation.title || 'thumbnail'}-${Date.now()}.jpg`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      
+      // Clean up the blob URL
+      window.URL.revokeObjectURL(url);
+      
+      toast.success('İndirme başladı!');
+    } catch (error) {
+      console.error('Download error:', error);
+      toast.error('İndirme başarısız');
+    }
   };
 
   const handleDelete = () => {
