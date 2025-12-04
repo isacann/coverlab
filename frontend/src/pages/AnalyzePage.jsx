@@ -1,7 +1,96 @@
 import React, { useState } from 'react';
-import { Upload, Smile, Sparkles, Box, Tag, Flame, Loader2 } from 'lucide-react';
+import { Upload, Smile, Sparkles, Box, Tag, Flame, Loader2, ArrowRight, Eye } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import AccessGuard from '../components/AccessGuard';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
+import { Card } from '../components/ui/card';
+import { Button } from '../components/ui/button';
+import AnalysisDetailModal from '../components/modals/AnalysisDetailModal';
+
+// Mock Recent Analyses
+const mockRecentAnalyses = [
+  {
+    id: 1,
+    thumbnail: 'https://picsum.photos/seed/ana1/400/225',
+    title: 'MrBeast Analizi',
+    date: '1 saat önce',
+    score: 92,
+    rating: 'Mükemmel',
+    faces_data: [
+      { label: 'Mutluluk', value: 95 },
+      { label: 'Şaşkınlık', value: 78 },
+      { label: 'Öfke', value: 5 }
+    ],
+    vibe_data: [
+      { label: 'Merak', value: 5 },
+      { label: 'Kışkırtıcılık', value: 4 },
+      { label: 'Gizem', value: 3 }
+    ],
+    objects_data: [
+      { label: 'İnsan', value: 99 },
+      { label: 'Yat', value: 95 },
+      { label: 'Deniz', value: 88 }
+    ],
+    heatmap_data: [
+      { x: 30, y: 40, color: 'red' },
+      { x: 70, y: 50, color: 'yellow' }
+    ]
+  },
+  {
+    id: 2,
+    thumbnail: 'https://picsum.photos/seed/ana2/400/225',
+    title: 'Gaming Setup',
+    date: '3 saat önce',
+    score: 85,
+    rating: 'Çok İyi',
+    faces_data: [
+      { label: 'Mutluluk', value: 80 },
+      { label: 'Şaşkınlık', value: 40 },
+      { label: 'Öfke', value: 10 }
+    ],
+    vibe_data: [
+      { label: 'Merak', value: 4 },
+      { label: 'Kışkırtıcılık', value: 3 },
+      { label: 'Gizem', value: 2 }
+    ],
+    objects_data: [
+      { label: 'İnsan', value: 95 },
+      { label: 'Bilgisayar', value: 92 },
+      { label: 'Oda', value: 85 }
+    ],
+    heatmap_data: [
+      { x: 40, y: 35, color: 'red' },
+      { x: 60, y: 55, color: 'yellow' }
+    ]
+  },
+  {
+    id: 3,
+    thumbnail: 'https://picsum.photos/seed/ana3/400/225',
+    title: 'Vlog Thumbnail',
+    date: '1 gün önce',
+    score: 78,
+    rating: 'İyi',
+    faces_data: [
+      { label: 'Mutluluk', value: 70 },
+      { label: 'Şaşkınlık', value: 30 },
+      { label: 'Öfke', value: 5 }
+    ],
+    vibe_data: [
+      { label: 'Merak', value: 3 },
+      { label: 'Kışkırtıcılık', value: 2 },
+      { label: 'Gizem', value: 1 }
+    ],
+    objects_data: [
+      { label: 'İnsan', value: 90 },
+      { label: 'Şehir', value: 85 },
+      { label: 'Gökyüzü', value: 75 }
+    ],
+    heatmap_data: [
+      { x: 45, y: 40, color: 'red' },
+      { x: 55, y: 50, color: 'yellow' }
+    ]
+  },
+];
 
 // DEMO DATA - MrBeast Example (Outstanding Performance)
 const DEMO_DATA = {
