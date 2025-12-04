@@ -263,34 +263,65 @@ const LabPage = () => {
 
             {/* Generations Tab */}
             <TabsContent value="generations">
-              {/* Selection Toolbar */}
-              <div className="flex justify-between items-center mb-6">
-                <Button
-                  variant={isSelectModeGen ? "default" : "outline"}
-                  onClick={toggleSelectModeGen}
-                  className={isSelectModeGen ? "bg-blue-500 hover:bg-blue-600 text-white" : "border-slate-700 text-slate-300 hover:text-white hover:bg-slate-800"}
-                  style={{ fontFamily: 'Geist Sans, sans-serif' }}
-                >
-                  {isSelectModeGen ? <CheckSquare size={16} className="mr-2" /> : <Square size={16} className="mr-2" />}
-                  {isSelectModeGen ? 'Seçimi İptal Et' : 'Seç'}
-                </Button>
-                
-                {isSelectModeGen && selectedGens.length > 0 && (
-                  <span className="text-slate-400 text-sm" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
-                    {selectedGens.length} öğe seçildi
-                  </span>
-                )}
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {generations.map((gen) => (
-                  <Card 
-                    key={gen.id} 
-                    className={`bg-slate-900 border-slate-700 overflow-hidden cursor-pointer group hover:border-blue-500 transition-all relative ${
-                      selectedGens.includes(gen.id) ? 'ring-2 ring-blue-500' : ''
-                    }`}
-                    onClick={() => isSelectModeGen ? toggleGenSelection(gen.id) : setLightboxImage(gen.thumbnail)}
+              {/* Loading State */}
+              {isLoadingGens ? (
+                <div className="flex flex-col items-center justify-center py-20">
+                  <Loader2 className="w-12 h-12 text-cyan-400 animate-spin mb-4" />
+                  <p className="text-slate-400" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
+                    Üretimler yükleniyor...
+                  </p>
+                </div>
+              ) : generations.length === 0 ? (
+                /* Empty State */
+                <div className="flex flex-col items-center justify-center py-20">
+                  <div className="w-24 h-24 bg-slate-800/50 rounded-full flex items-center justify-center mb-6">
+                    <Wand2 size={40} className="text-slate-500" />
+                  </div>
+                  <h3 className="text-2xl font-bold text-white mb-3" style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}>
+                    Henüz bir şey üretmediniz
+                  </h3>
+                  <p className="text-slate-400 mb-6" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
+                    İlk thumbnail'inizi oluşturmak için Create sayfasına gidin
+                  </p>
+                  <Button
+                    onClick={() => navigate('/create')}
+                    className="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white px-8 py-6 text-lg font-semibold"
+                    style={{ fontFamily: 'Geist Sans, sans-serif' }}
                   >
+                    <Wand2 className="mr-2" size={20} />
+                    Thumbnail Oluştur
+                  </Button>
+                </div>
+              ) : (
+                <>
+                  {/* Selection Toolbar */}
+                  <div className="flex justify-between items-center mb-6">
+                    <Button
+                      variant={isSelectModeGen ? "default" : "outline"}
+                      onClick={toggleSelectModeGen}
+                      className={isSelectModeGen ? "bg-blue-500 hover:bg-blue-600 text-white" : "border-slate-700 text-slate-300 hover:text-white hover:bg-slate-800"}
+                      style={{ fontFamily: 'Geist Sans, sans-serif' }}
+                    >
+                      {isSelectModeGen ? <CheckSquare size={16} className="mr-2" /> : <Square size={16} className="mr-2" />}
+                      {isSelectModeGen ? 'Seçimi İptal Et' : 'Seç'}
+                    </Button>
+                    
+                    {isSelectModeGen && selectedGens.length > 0 && (
+                      <span className="text-slate-400 text-sm" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
+                        {selectedGens.length} öğe seçildi
+                      </span>
+                    )}
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {generations.map((gen) => (
+                      <Card 
+                        key={gen.id} 
+                        className={`bg-slate-900 border-slate-700 overflow-hidden cursor-pointer group hover:border-blue-500 transition-all relative ${
+                          selectedGens.includes(gen.id) ? 'ring-2 ring-blue-500' : ''
+                        }`}
+                        onClick={() => isSelectModeGen ? toggleGenSelection(gen.id) : setSelectedGeneration(gen)}
+                      >
                     {/* Selection Checkbox Overlay */}
                     {isSelectModeGen && (
                       <div className="absolute top-3 left-3 z-10">
