@@ -93,6 +93,8 @@ export const AuthProvider = ({ children }) => {
     isPro: profile?.subscription_plan === 'pro',
     credits: profile?.credits || 0,
     signOut,
+    setUser,
+    setProfile,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
