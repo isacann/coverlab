@@ -487,6 +487,16 @@ const LabPage = () => {
             </div>
           )}
 
+          {/* Generation Detail Modal */}
+          {selectedGeneration && (
+            <GenerationDetailModal 
+              generation={selectedGeneration} 
+              isOpen={!!selectedGeneration} 
+              onClose={() => setSelectedGeneration(null)}
+              onDelete={deleteSingleGen}
+            />
+          )}
+
           {/* Analysis Detail Modal */}
           {selectedAnalysis && (
             <AnalysisDetailModal 
