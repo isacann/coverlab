@@ -313,67 +313,62 @@ const TestPage = () => {
                 ))}
               </div>
 
-              {/* Video Title */}
-              <div className="space-y-2">
-                <Label htmlFor="videoTitle" className="text-white font-semibold" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
-                  Video Başlığı
+              {/* Metadata Inputs - Compact Grid */}
+              <div className="space-y-3">
+                <Label className="text-white text-sm font-semibold" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
+                  Video Bilgileri
                 </Label>
+                
                 <Input
-                  id="videoTitle"
+                  placeholder="Video Başlığı"
                   value={videoTitle}
                   onChange={(e) => setVideoTitle(e.target.value)}
-                  className="bg-slate-800 border-slate-600 text-white"
+                  className="bg-slate-800 border-slate-600 text-white text-sm h-9"
                   style={{ fontFamily: 'Geist Sans, sans-serif' }}
                 />
+                
+                <div className="grid grid-cols-2 gap-2">
+                  <Input
+                    placeholder="Kanal Adı"
+                    value={channelName}
+                    onChange={(e) => setChannelName(e.target.value)}
+                    className="bg-slate-800 border-slate-600 text-white text-xs h-8"
+                    style={{ fontFamily: 'Geist Sans, sans-serif' }}
+                  />
+                  <Input
+                    placeholder="Görüntülenme"
+                    value={viewsMeta}
+                    onChange={(e) => setViewsMeta(e.target.value)}
+                    className="bg-slate-800 border-slate-600 text-white text-xs h-8"
+                    style={{ fontFamily: 'Geist Sans, sans-serif' }}
+                  />
+                </div>
               </div>
 
-              {/* Channel Name */}
-              <div className="space-y-2">
-                <Label htmlFor="channelName" className="text-white font-semibold" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
-                  Kanal Adı
+              {/* Controls - Compact Toggles */}
+              <div className="space-y-3">
+                <Label className="text-white text-sm font-semibold" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
+                  Görünüm
                 </Label>
-                <Input
-                  id="channelName"
-                  value={channelName}
-                  onChange={(e) => setChannelName(e.target.value)}
-                  className="bg-slate-800 border-slate-600 text-white"
-                  style={{ fontFamily: 'Geist Sans, sans-serif' }}
-                />
-              </div>
-
-              {/* Views Meta */}
-              <div className="space-y-2">
-                <Label htmlFor="viewsMeta" className="text-white font-semibold" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
-                  Görüntülenme
-                </Label>
-                <Input
-                  id="viewsMeta"
-                  value={viewsMeta}
-                  onChange={(e) => setViewsMeta(e.target.value)}
-                  className="bg-slate-800 border-slate-600 text-white"
-                  style={{ fontFamily: 'Geist Sans, sans-serif' }}
-                />
-              </div>
-
-              {/* Device Toggle */}
-              <div className="space-y-2">
-                <Label className="text-white font-semibold" style={{ fontFamily: 'Geist Sans, sans-serif' }}>Cihaz</Label>
+                
+                {/* Device + Theme in single row */}
                 <div className="flex gap-2">
                   <Button
                     onClick={() => setDevice('desktop')}
-                    className={`flex-1 ${
+                    size="sm"
+                    className={`flex-1 h-8 ${
                       device === 'desktop' 
                         ? 'bg-blue-500 hover:bg-blue-600 text-white' 
                         : 'bg-slate-800 hover:bg-slate-700 text-slate-300'
                     }`}
-                    style={{ fontFamily: 'Geist Sans, sans-serif' }}
                   >
-                    <Monitor size={16} className="mr-2" />
-                    Masaüstü
+                    <Monitor size={14} className="mr-1" />
+                    <span className="text-xs">PC</span>
                   </Button>
                   <Button
                     onClick={() => setDevice('mobile')}
-                    className={`flex-1 ${
+                    size="sm"
+                    className={`flex-1 h-8 ${
                       device === 'mobile' 
                         ? 'bg-blue-500 hover:bg-blue-600 text-white' 
                         : 'bg-slate-800 hover:bg-slate-700 text-slate-300'
