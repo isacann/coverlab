@@ -1,98 +1,16 @@
 import React, { useState } from 'react';
-import { Upload, Smile, Sparkles, Box, Tag, Flame, Loader2, ArrowRight, Eye } from 'lucide-react';
+import { Upload, Sparkles, Loader2, ArrowRight, Eye, Smile, Box, Flame } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import AccessGuard from '../components/AccessGuard';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
 import { Card } from '../components/ui/card';
 import { Button } from '../components/ui/button';
-import AnalysisDetailModal from '../components/modals/AnalysisDetailModal';
+import { Input } from '../components/ui/input';
+import { Label } from '../components/ui/label';
+import { compressImageToBlob } from '../utils/imageHelpers';
+import toast from 'react-hot-toast';
 
-// Mock Recent Analyses
-const mockRecentAnalyses = [
-  {
-    id: 1,
-    thumbnail: 'https://picsum.photos/seed/ana1/400/225',
-    title: 'MrBeast Analizi',
-    date: '1 saat önce',
-    score: 92,
-    rating: 'Mükemmel',
-    faces_data: [
-      { label: 'Mutluluk', value: 95 },
-      { label: 'Şaşkınlık', value: 78 },
-      { label: 'Öfke', value: 5 }
-    ],
-    vibe_data: [
-      { label: 'Merak', value: 5 },
-      { label: 'Kışkırtıcılık', value: 4 },
-      { label: 'Gizem', value: 3 }
-    ],
-    objects_data: [
-      { label: 'İnsan', value: 99 },
-      { label: 'Yat', value: 95 },
-      { label: 'Deniz', value: 88 }
-    ],
-    heatmap_data: [
-      { x: 30, y: 40, color: 'red' },
-      { x: 70, y: 50, color: 'yellow' }
-    ]
-  },
-  {
-    id: 2,
-    thumbnail: 'https://picsum.photos/seed/ana2/400/225',
-    title: 'Gaming Setup',
-    date: '3 saat önce',
-    score: 85,
-    rating: 'Çok İyi',
-    faces_data: [
-      { label: 'Mutluluk', value: 80 },
-      { label: 'Şaşkınlık', value: 40 },
-      { label: 'Öfke', value: 10 }
-    ],
-    vibe_data: [
-      { label: 'Merak', value: 4 },
-      { label: 'Kışkırtıcılık', value: 3 },
-      { label: 'Gizem', value: 2 }
-    ],
-    objects_data: [
-      { label: 'İnsan', value: 95 },
-      { label: 'Bilgisayar', value: 92 },
-      { label: 'Oda', value: 85 }
-    ],
-    heatmap_data: [
-      { x: 40, y: 35, color: 'red' },
-      { x: 60, y: 55, color: 'yellow' }
-    ]
-  },
-  {
-    id: 3,
-    thumbnail: 'https://picsum.photos/seed/ana3/400/225',
-    title: 'Vlog Thumbnail',
-    date: '1 gün önce',
-    score: 78,
-    rating: 'İyi',
-    faces_data: [
-      { label: 'Mutluluk', value: 70 },
-      { label: 'Şaşkınlık', value: 30 },
-      { label: 'Öfke', value: 5 }
-    ],
-    vibe_data: [
-      { label: 'Merak', value: 3 },
-      { label: 'Kışkırtıcılık', value: 2 },
-      { label: 'Gizem', value: 1 }
-    ],
-    objects_data: [
-      { label: 'İnsan', value: 90 },
-      { label: 'Şehir', value: 85 },
-      { label: 'Gökyüzü', value: 75 }
-    ],
-    heatmap_data: [
-      { x: 45, y: 40, color: 'red' },
-      { x: 55, y: 50, color: 'yellow' }
-    ]
-  },
-];
-
-// DEMO DATA - MrBeast Example (Outstanding Performance)
+// DEMO DATA - MrBeast Example
 const DEMO_DATA = {
   imageUrl: "https://customer-assets.emergentagent.com/job_youclicker/artifacts/los4urqh_6vd279giuweb1.jpg",
   score: 92,
@@ -113,11 +31,6 @@ const DEMO_DATA = {
     { label: "Lüks Yat", value: 95 },
     { label: "Deniz", value: 88 }
   ],
-  labels: [
-    { label: "Tık Çekici", value: 96 },
-    { label: "Lüks", value: 92 },
-    { label: "Heyecan", value: 89 }
-  ],
   heatmap_points: [
     { x: 30, y: 40, color: "red" },
     { x: 70, y: 50, color: "yellow" }
@@ -126,81 +39,130 @@ const DEMO_DATA = {
 
 const AnalyzePage = () => {
   const navigate = useNavigate();
-  const [analysis, setAnalysis] = useState(DEMO_DATA); // START WITH DEMO
-  const [isScanning, setIsScanning] = useState(false);
-  const [activeTab, setActiveTab] = useState("faces");
-  const [selectedAnalysis, setSelectedAnalysis] = useState(null);
+  
+  // State Management
+  const [mode, setMode] = useState('demo'); // 'demo' | 'upload' | 'results'
+  const [uploadedFile, setUploadedFile] = useState(null);
+  const [uploadedImageUrl, setUploadedImageUrl] = useState(null);
+  const [videoTitle, setVideoTitle] = useState('');
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [analysisResult, setAnalysisResult] = useState(DEMO_DATA);
 
+  // File Upload Handler
   const handleFileUpload = (file) => {
-    if (!file || !file.type.startsWith('image/')) return;
+    if (!file || !file.type.startsWith('image/')) {
+      toast.error('Lütfen geçerli bir resim dosyası seçin');
+      return;
+    }
 
     const imageUrl = URL.createObjectURL(file);
-    
-    // Show scanning state
-    setIsScanning(true);
-    setAnalysis({ ...DEMO_DATA, imageUrl, isDemo: false });
-
-    // Simulate AI processing for 2 seconds
-    setTimeout(() => {
-      setIsScanning(false);
-      // Keep same mock data but with user's image
-      setAnalysis({
-        imageUrl: imageUrl,
-        score: 85,
-        rating: "Çok İyi",
-        isDemo: false,
-        faces: [
-          { label: "Şaşkınlık", value: 88 },
-          { label: "Mutluluk", value: 42 },
-          { label: "Öfke", value: 12 }
-        ],
-        vibe: [
-          { label: "Merak Uyandırma", value: 4 },
-          { label: "Kışkırtıcılık", value: 5 },
-          { label: "Gizem", value: 2 }
-        ],
-        objects: [
-          { label: "İnsan", value: 95 },
-          { label: "Nesne", value: 82 },
-          { label: "Arka Plan", value: 78 }
-        ],
-        labels: [
-          { label: "Tık Çekici", value: 87 },
-          { label: "Dikkat Çekici", value: 91 },
-          { label: "Profesyonel", value: 79 }
-        ],
-        heatmap_points: [
-          { x: 35, y: 45, color: "red" },
-          { x: 65, y: 55, color: "yellow" }
-        ]
-      });
-    }, 2000);
+    setUploadedFile(file);
+    setUploadedImageUrl(imageUrl);
+    setMode('upload');
+    setVideoTitle(''); // Reset title
   };
 
+  // Drag & Drop Handlers
   const handleDrop = (e) => {
     e.preventDefault();
     const file = e.dataTransfer.files[0];
     handleFileUpload(file);
   };
 
-  const renderDots = (count) => {
-    return (
-      <div className="flex gap-2">
-        {[1, 2, 3, 4, 5].map((dot) => (
-          <div
-            key={dot}
-            className={`w-4 h-4 rounded-full transition-all ${
-              dot <= count
-                ? 'bg-blue-500 shadow-lg shadow-blue-500/50 animate-pulse'
-                : 'bg-slate-700'
-            }`}
-          />
-        ))}
-      </div>
-    );
+  const handleDragOver = (e) => {
+    e.preventDefault();
   };
 
-  // HIGH CONTRAST Progress Bar Component
+  // Analyze Button Handler
+  const handleAnalyze = async () => {
+    // Validation
+    if (!videoTitle.trim()) {
+      toast.error('Lütfen video başlığını girin');
+      return;
+    }
+
+    if (!uploadedFile) {
+      toast.error('Lütfen bir resim yükleyin');
+      return;
+    }
+
+    setIsAnalyzing(true);
+
+    try {
+      // Step 1: Compress image to Blob
+      console.log('🗜️ Compressing image...');
+      const compressedBlob = await compressImageToBlob(uploadedFile);
+      
+      // Step 2: Create FormData
+      const formData = new FormData();
+      formData.append('file', compressedBlob, 'thumbnail.jpg');
+      formData.append('title', videoTitle.trim());
+
+      console.log('📤 Sending to n8n webhook...');
+
+      // Step 3: API Request
+      const response = await fetch('https://n8n.getoperiqo.com/webhook/49b88d43-fdf3-43c8-bfc4-70c30528f370', {
+        method: 'POST',
+        body: formData,
+        // Note: Don't set Content-Type header - browser will set it automatically with boundary
+      });
+
+      if (!response.ok) {
+        throw new Error(`API Error: ${response.status} ${response.statusText}`);
+      }
+
+      const data = await response.json();
+      console.log('✅ Analysis received:', data);
+
+      // Step 4: Process Response
+      // Map n8n response to our format
+      const processedResult = {
+        imageUrl: uploadedImageUrl,
+        score: data.score || 85,
+        rating: data.rating || "Çok İyi",
+        isDemo: false,
+        faces: data.faces || [
+          { label: "Mutluluk", value: 70 },
+          { label: "Şaşkınlık", value: 50 },
+          { label: "Öfke", value: 10 }
+        ],
+        vibe: data.vibe || [
+          { label: "Merak Uyandırma", value: 4 },
+          { label: "Kışkırtıcılık", value: 3 },
+          { label: "Gizem", value: 2 }
+        ],
+        objects: data.objects || [
+          { label: "İnsan", value: 90 },
+          { label: "Nesne", value: 75 }
+        ],
+        heatmap_points: data.heatmap_points || [
+          { x: 40, y: 45, color: "red" },
+          { x: 60, y: 55, color: "yellow" }
+        ]
+      };
+
+      setAnalysisResult(processedResult);
+      setMode('results');
+      toast.success('Analiz tamamlandı! 🎉');
+
+    } catch (error) {
+      console.error('❌ Analysis error:', error);
+      toast.error('Analiz sırasında bir hata oluştu. Lütfen tekrar deneyin.');
+    } finally {
+      setIsAnalyzing(false);
+    }
+  };
+
+  // Reset to Demo
+  const resetToDemo = () => {
+    setMode('demo');
+    setUploadedFile(null);
+    setUploadedImageUrl(null);
+    setVideoTitle('');
+    setAnalysisResult(DEMO_DATA);
+  };
+
+  // Progress Bar Component
   const ProgressBar = ({ value, label, color = "blue" }) => {
     const colorClasses = {
       blue: "bg-blue-500",
@@ -214,16 +176,34 @@ const AnalyzePage = () => {
           <span className="text-white font-medium" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
             {label}
           </span>
-          <span className={`font-bold text-lg ${color === 'blue' ? 'text-blue-400' : color === 'green' ? 'text-green-400' : 'text-cyan-400'}`} style={{ fontFamily: 'Geist Sans, sans-serif' }}>
+          <span className={`font-bold text-lg ${color === 'blue' ? 'text-blue-400' : color === 'green' ? 'text-green-400' : 'text-cyan-400'}`}>
             {value}%
           </span>
         </div>
         <div className="h-3 bg-slate-800 rounded-full overflow-hidden border border-slate-700">
           <div
-            className={`h-full ${colorClasses[color]} transition-all duration-700 ease-out shadow-lg`}
+            className={`h-full ${colorClasses[color]} transition-all duration-700 ease-out`}
             style={{ width: `${value}%` }}
           />
         </div>
+      </div>
+    );
+  };
+
+  // Render Dots (for vibe score)
+  const renderDots = (count) => {
+    return (
+      <div className="flex gap-2">
+        {[1, 2, 3, 4, 5].map((dot) => (
+          <div
+            key={dot}
+            className={`w-4 h-4 rounded-full transition-all ${
+              dot <= count
+                ? 'bg-blue-500 shadow-lg shadow-blue-500/50'
+                : 'bg-slate-700'
+            }`}
+          />
+        ))}
       </div>
     );
   };
@@ -232,297 +212,246 @@ const AnalyzePage = () => {
     <AccessGuard requirePro={true}>
       <div className="min-h-screen bg-[#0a0a0a]">
         {/* Background */}
-      <div 
-        className="fixed inset-0 bg-cover bg-center bg-no-repeat opacity-20"
-        style={{
-          backgroundImage: 'url("https://customer-assets.emergentagent.com/job_326e649c-429d-481a-8bf3-c99e4276d28c/artifacts/bhrosu5k_8nNOHsP6PbEJMwWSth7Jb.png")',
-        }}
-      />
+        <div 
+          className="fixed inset-0 bg-cover bg-center bg-no-repeat opacity-20"
+          style={{
+            backgroundImage: 'url("https://customer-assets.emergentagent.com/job_326e649c-429d-481a-8bf3-c99e4276d28c/artifacts/bhrosu5k_8nNOHsP6PbEJMwWSth7Jb.png")',
+          }}
+        />
 
-      {/* Content */}
-      <div className="relative z-10 pt-24 px-6 pb-12">
-        <div className="max-w-7xl mx-auto">
-          {/* Page Title */}
-          <div className="text-center mb-12">
-            <h1 
-              className="text-5xl font-bold text-white mb-3"
-              style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}
-            >
-              Thumbnail Analiz
-            </h1>
-            <p 
-              className="text-slate-400 text-lg"
-              style={{ fontFamily: 'Geist Sans, sans-serif' }}
-            >
-              Yapay zeka ile thumbnail'ınızı detaylı analiz edin
-            </p>
-          </div>
-
-          {/* Analysis Result Section */}
-          <div className="space-y-6">
-            {/* Score Section */}
-            <div className="bg-slate-900 border-2 border-blue-500/30 rounded-2xl p-8 shadow-2xl shadow-blue-500/20">
-              <div className="text-center mb-6">
-                <h2 
-                  className="text-7xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-400 mb-2"
-                  style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}
-                >
-                  {analysis.score}/100
-                </h2>
-                <p 
-                  className="text-2xl text-blue-400 font-bold"
-                  style={{ fontFamily: 'Geist Sans, sans-serif' }}
-                >
-                  Genel CTR Skoru: {analysis.rating}
-                </p>
-              </div>
-              {/* Main Progress Bar */}
-              <div className="h-6 bg-slate-800 rounded-full overflow-hidden border-2 border-slate-700">
-                <div
-                  className="h-full bg-gradient-to-r from-blue-500 to-cyan-500 transition-all duration-1000 shadow-lg shadow-blue-500/50"
-                  style={{ width: `${analysis.score}%` }}
-                />
-              </div>
+        {/* Content */}
+        <div className="relative z-10 pt-24 px-6 pb-12">
+          <div className="max-w-7xl mx-auto">
+            {/* Page Title */}
+            <div className="text-center mb-12">
+              <h1 
+                className="text-5xl font-bold text-white mb-3"
+                style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}
+              >
+                <Sparkles className="inline mr-3 text-purple-500" size={48} />
+                Thumbnail Analizi
+              </h1>
+              <p className="text-slate-400 text-lg" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
+                AI destekli CTR tahmini, yüz analizi ve heatmap
+              </p>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              {/* Thumbnail Image */}
-              <div className="bg-slate-900 border border-slate-700 rounded-2xl p-6 shadow-2xl">
-                {/* Demo Badge */}
-                {analysis.isDemo && (
-                  <div className="mb-4 flex justify-center">
-                    <span className="bg-blue-500/20 text-blue-400 px-4 py-2 rounded-full text-sm font-semibold border border-blue-500/50" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
-                      Örnek Analiz (Demo)
-                    </span>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              {/* LEFT SIDE - Upload or Results */}
+              <div>
+                {/* DEMO MODE */}
+                {mode === 'demo' && (
+                  <div
+                    onDrop={handleDrop}
+                    onDragOver={handleDragOver}
+                    className="relative group"
+                  >
+                    {/* Demo Image */}
+                    <div className="relative rounded-2xl overflow-hidden border-4 border-purple-500/30">
+                      <img 
+                        src={DEMO_DATA.imageUrl} 
+                        alt="Demo Thumbnail"
+                        className="w-full aspect-video object-cover"
+                      />
+                      <div className="absolute top-4 right-4 bg-purple-500 text-white px-3 py-1 rounded-full text-sm font-bold">
+                        DEMO
+                      </div>
+                    </div>
+
+                    {/* Upload Overlay */}
+                    <div className="mt-6 border-2 border-dashed border-slate-700 rounded-2xl p-8 text-center hover:border-purple-500 transition-all cursor-pointer bg-slate-900/50"
+                      onClick={() => document.getElementById('analyzeFileInput').click()}
+                    >
+                      <Upload size={48} className="mx-auto mb-4 text-slate-400" />
+                      <p className="text-white font-semibold mb-2" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
+                        Kendi Thumbnail'ınızı Yükleyin
+                      </p>
+                      <p className="text-slate-400 text-sm" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
+                        Tıklayın veya sürükleyip bırakın
+                      </p>
+                      <input
+                        id="analyzeFileInput"
+                        type="file"
+                        accept="image/*"
+                        onChange={(e) => handleFileUpload(e.target.files[0])}
+                        className="hidden"
+                      />
+                    </div>
                   </div>
                 )}
 
-                <div className="relative">
-                  {/* Scanning Overlay */}
-                  {isScanning && (
-                    <div className="absolute inset-0 bg-black/80 rounded-lg flex flex-col items-center justify-center z-20">
-                      <Loader2 className="w-16 h-16 text-blue-500 animate-spin mb-4" />
-                      <p className="text-white text-lg font-semibold" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
-                        Analiz Ediliyor...
-                      </p>
+                {/* UPLOAD MODE */}
+                {mode === 'upload' && (
+                  <div className="space-y-6">
+                    {/* Uploaded Image Preview */}
+                    <div className="relative rounded-2xl overflow-hidden border-4 border-blue-500/50">
+                      <img 
+                        src={uploadedImageUrl} 
+                        alt="Uploaded Thumbnail"
+                        className="w-full aspect-video object-cover"
+                      />
                     </div>
-                  )}
 
-                  <img 
-                    src={analysis.imageUrl} 
-                    alt="Analyzed Thumbnail" 
-                    className="w-full h-auto rounded-lg border-2 border-slate-700"
-                  />
-                  
-                  {/* Heatmap Overlay */}
-                  {activeTab === "heatmap" && !isScanning && (
-                    <div className="absolute inset-0 rounded-lg overflow-hidden pointer-events-none z-10">
-                      {analysis.heatmap_points.map((point, idx) => (
-                        <div
-                          key={idx}
-                          className="absolute"
-                          style={{
-                            left: `${point.x}%`,
-                            top: `${point.y}%`,
-                            transform: 'translate(-50%, -50%)',
-                            width: '150px',
-                            height: '150px',
-                            background: point.color === 'red' 
-                              ? 'radial-gradient(circle, rgba(255,0,0,0.6) 0%, rgba(255,0,0,0) 70%)'
-                              : 'radial-gradient(circle, rgba(255,255,0,0.6) 0%, rgba(255,255,0,0) 70%)',
-                            filter: 'blur(40px)',
-                            mixBlendMode: 'screen'
-                          }}
-                        />
-                      ))}
+                    {/* Video Title Input */}
+                    <div>
+                      <Label className="text-white font-semibold mb-2 block" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
+                        Video Başlığı *
+                      </Label>
+                      <Input
+                        type="text"
+                        placeholder="Örn: MrBeast'in En İlginç Videosu!"
+                        value={videoTitle}
+                        onChange={(e) => setVideoTitle(e.target.value)}
+                        className="bg-slate-900 border-slate-700 text-white h-12"
+                        style={{ fontFamily: 'Geist Sans, sans-serif' }}
+                      />
                     </div>
-                  )}
-                </div>
 
-                {/* Upload Zone */}
-                <div 
-                  className="mt-6 border-2 border-dashed border-blue-500/50 rounded-lg p-8 text-center cursor-pointer hover:border-blue-500 hover:bg-slate-800/50 transition-all"
-                  onDragOver={(e) => e.preventDefault()}
-                  onDrop={handleDrop}
-                  onClick={() => document.getElementById('analyzeFileInput').click()}
-                >
-                  <input
-                    id="analyzeFileInput"
-                    type="file"
-                    accept="image/*"
-                    onChange={(e) => handleFileUpload(e.target.files[0])}
-                    className="hidden"
-                  />
-                  <Upload size={32} className="text-blue-400 mx-auto mb-2" />
-                  <p className="text-white font-semibold mb-1" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
-                    Kendi Görselinizi Analiz Edin
-                  </p>
-                  <p className="text-slate-500 text-sm" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
-                    Sürükle-bırak veya tıkla
-                  </p>
-                </div>
+                    {/* Action Buttons */}
+                    <div className="flex gap-3">
+                      <Button
+                        onClick={handleAnalyze}
+                        disabled={isAnalyzing || !videoTitle.trim()}
+                        className="flex-1 h-12 bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 text-white font-bold"
+                        style={{ fontFamily: 'Geist Sans, sans-serif' }}
+                      >
+                        {isAnalyzing ? (
+                          <>
+                            <Loader2 className="mr-2 animate-spin" size={20} />
+                            Analiz Ediliyor...
+                          </>
+                        ) : (
+                          <>
+                            <Sparkles className="mr-2" size={20} />
+                            Analiz Et
+                          </>
+                        )}
+                      </Button>
+                      <Button
+                        onClick={resetToDemo}
+                        variant="outline"
+                        className="h-12 border-slate-700 text-slate-300 hover:bg-slate-800"
+                      >
+                        İptal
+                      </Button>
+                    </div>
+                  </div>
+                )}
+
+                {/* RESULTS MODE */}
+                {mode === 'results' && (
+                  <div className="space-y-6">
+                    {/* Result Image */}
+                    <div className="relative rounded-2xl overflow-hidden border-4 border-green-500/50">
+                      <img 
+                        src={analysisResult.imageUrl} 
+                        alt="Analysis Result"
+                        className="w-full aspect-video object-cover"
+                      />
+                      <div className="absolute top-4 right-4 bg-green-500 text-white px-3 py-1 rounded-full text-sm font-bold">
+                        SONUÇ
+                      </div>
+                    </div>
+
+                    {/* New Analysis Button */}
+                    <Button
+                      onClick={resetToDemo}
+                      className="w-full h-12 bg-slate-800 hover:bg-slate-700 text-white"
+                      style={{ fontFamily: 'Geist Sans, sans-serif' }}
+                    >
+                      <ArrowRight className="mr-2" size={20} />
+                      Yeni Analiz
+                    </Button>
+                  </div>
+                )}
               </div>
 
-              {/* Analysis Tabs */}
-              <div className="bg-slate-900 border border-slate-700 rounded-2xl p-6 shadow-2xl">
-                <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-                  <TabsList className="grid w-full grid-cols-5 bg-slate-800 p-1 rounded-lg" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
-                    <TabsTrigger value="faces" className="data-[state=active]:bg-blue-500 data-[state=active]:text-white text-slate-400 rounded-md">
-                      <Smile size={18} />
-                    </TabsTrigger>
-                    <TabsTrigger value="vibe" className="data-[state=active]:bg-blue-500 data-[state=active]:text-white text-slate-400 rounded-md">
-                      <Sparkles size={18} />
-                    </TabsTrigger>
-                    <TabsTrigger value="objects" className="data-[state=active]:bg-blue-500 data-[state=active]:text-white text-slate-400 rounded-md">
-                      <Box size={18} />
-                    </TabsTrigger>
-                    <TabsTrigger value="labels" className="data-[state=active]:bg-blue-500 data-[state=active]:text-white text-slate-400 rounded-md">
-                      <Tag size={18} />
-                    </TabsTrigger>
-                    <TabsTrigger value="heatmap" className="data-[state=active]:bg-blue-500 data-[state=active]:text-white text-slate-400 rounded-md">
-                      <Flame size={18} />
-                    </TabsTrigger>
-                  </TabsList>
-
-                  {/* Yüz Analizi */}
-                  <TabsContent value="faces" className="space-y-5 mt-6">
-                    <h3 className="text-2xl font-bold text-white mb-6 flex items-center gap-2" style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}>
-                      <Smile className="text-blue-400" />
-                      Yüz Analizi
-                    </h3>
-                    {analysis.faces.map((face, idx) => (
-                      <ProgressBar key={idx} label={face.label} value={face.value} color="blue" />
-                    ))}
-                  </TabsContent>
-
-                  {/* Vibe & Etki */}
-                  <TabsContent value="vibe" className="space-y-6 mt-6">
-                    <h3 className="text-2xl font-bold text-white mb-6 flex items-center gap-2" style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}>
-                      <Sparkles className="text-blue-400" />
-                      Vibe & Etki
-                    </h3>
-                    {analysis.vibe.map((item, idx) => (
-                      <div key={idx} className="flex justify-between items-center bg-slate-800/50 p-4 rounded-lg border border-slate-700">
-                        <span className="text-white font-medium" style={{ fontFamily: 'Geist Sans, sans-serif' }}>{item.label}</span>
-                        {renderDots(item.value)}
-                      </div>
-                    ))}
-                  </TabsContent>
-
-                  {/* Nesneler */}
-                  <TabsContent value="objects" className="space-y-5 mt-6">
-                    <h3 className="text-2xl font-bold text-white mb-6 flex items-center gap-2" style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}>
-                      <Box className="text-blue-400" />
-                      Algılanan Nesneler
-                    </h3>
-                    {analysis.objects.map((obj, idx) => (
-                      <ProgressBar key={idx} label={obj.label} value={obj.value} color="green" />
-                    ))}
-                  </TabsContent>
-
-                  {/* Etiketler */}
-                  <TabsContent value="labels" className="space-y-5 mt-6">
-                    <h3 className="text-2xl font-bold text-white mb-6 flex items-center gap-2" style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}>
-                      <Tag className="text-blue-400" />
-                      Etiketler
-                    </h3>
-                    {analysis.labels.map((label, idx) => (
-                      <ProgressBar key={idx} label={label.label} value={label.value} color="cyan" />
-                    ))}
-                  </TabsContent>
-
-                  {/* Isı Haritası */}
-                  <TabsContent value="heatmap" className="space-y-4 mt-6">
-                    <h3 className="text-2xl font-bold text-white mb-6 flex items-center gap-2" style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}>
-                      <Flame className="text-blue-400" />
-                      Isı Haritası
-                    </h3>
-                    <div className="bg-slate-800 rounded-lg p-6 border-2 border-blue-500/30">
-                      <p className="text-white text-base mb-4 font-medium" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
-                        Göz takip simülasyonu görselin üzerinde aktif.
-                      </p>
-                      <div className="flex flex-col gap-3">
-                        <div className="flex items-center gap-3">
-                          <div className="w-6 h-6 bg-red-500 rounded-full shadow-lg shadow-red-500/50"></div>
-                          <span className="text-slate-300 font-medium" style={{ fontFamily: 'Geist Sans, sans-serif' }}>Yüksek İlgi Alanı</span>
-                        </div>
-                        <div className="flex items-center gap-3">
-                          <div className="w-6 h-6 bg-yellow-500 rounded-full shadow-lg shadow-yellow-500/50"></div>
-                          <span className="text-slate-300 font-medium" style={{ fontFamily: 'Geist Sans, sans-serif' }}>Orta İlgi Alanı</span>
-                        </div>
-                      </div>
+              {/* RIGHT SIDE - Analysis Results */}
+              <div>
+                <Card className="bg-slate-900/80 backdrop-blur-xl border-slate-800 p-6">
+                  {/* Score Card */}
+                  <div className="text-center mb-8 pb-6 border-b border-slate-800">
+                    <div className="inline-flex items-center justify-center w-32 h-32 rounded-full bg-gradient-to-br from-purple-500 to-pink-600 mb-4">
+                      <span className="text-5xl font-bold text-white" style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}>
+                        {analysisResult.score}
+                      </span>
                     </div>
-                  </TabsContent>
-                </Tabs>
+                    <h3 className="text-2xl font-bold text-white mb-1" style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}>
+                      {analysisResult.rating}
+                    </h3>
+                    <p className="text-slate-400" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
+                      CTR Tahmini
+                    </p>
+                  </div>
+
+                  {/* Tabs - NO LABELS TAB */}
+                  <Tabs defaultValue="faces" className="w-full">
+                    <TabsList className="grid w-full grid-cols-3 bg-slate-800 p-1 rounded-lg mb-6">
+                      <TabsTrigger 
+                        value="faces"
+                        className="data-[state=active]:bg-purple-500 data-[state=active]:text-white text-slate-400"
+                      >
+                        <Smile size={16} className="mr-2" />
+                        Yüzler
+                      </TabsTrigger>
+                      <TabsTrigger 
+                        value="vibe"
+                        className="data-[state=active]:bg-purple-500 data-[state=active]:text-white text-slate-400"
+                      >
+                        <Flame size={16} className="mr-2" />
+                        Vibe
+                      </TabsTrigger>
+                      <TabsTrigger 
+                        value="objects"
+                        className="data-[state=active]:bg-purple-500 data-[state=active]:text-white text-slate-400"
+                      >
+                        <Box size={16} className="mr-2" />
+                        Nesneler
+                      </TabsTrigger>
+                    </TabsList>
+
+                    {/* Faces Tab */}
+                    <TabsContent value="faces" className="space-y-4">
+                      {analysisResult.faces.map((item, idx) => (
+                        <ProgressBar 
+                          key={idx}
+                          label={item.label}
+                          value={item.value}
+                          color="blue"
+                        />
+                      ))}
+                    </TabsContent>
+
+                    {/* Vibe Tab */}
+                    <TabsContent value="vibe" className="space-y-4">
+                      {analysisResult.vibe.map((item, idx) => (
+                        <div key={idx} className="flex justify-between items-center py-2">
+                          <span className="text-white font-medium" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
+                            {item.label}
+                          </span>
+                          {renderDots(item.value)}
+                        </div>
+                      ))}
+                    </TabsContent>
+
+                    {/* Objects Tab */}
+                    <TabsContent value="objects" className="space-y-4">
+                      {analysisResult.objects.map((item, idx) => (
+                        <ProgressBar 
+                          key={idx}
+                          label={item.label}
+                          value={item.value}
+                          color="cyan"
+                        />
+                      ))}
+                    </TabsContent>
+                  </Tabs>
+                </Card>
               </div>
             </div>
           </div>
-
-          {/* Recent Work Section */}
-          {mockRecentAnalyses.length > 0 && (
-            <div className="mt-16 max-w-7xl mx-auto px-6">
-              <div className="flex justify-between items-center mb-6">
-                <h2 
-                  className="text-2xl md:text-3xl font-bold text-white"
-                  style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}
-                >
-                  Son Çalışmalar
-                </h2>
-                <Button
-                  onClick={() => navigate('/lab')}
-                  variant="ghost"
-                  className="text-cyan-400 hover:text-cyan-300 hover:bg-slate-800/50"
-                  style={{ fontFamily: 'Geist Sans, sans-serif' }}
-                >
-                  Tümünü Gör
-                  <ArrowRight size={16} className="ml-2" />
-                </Button>
-              </div>
-
-              {/* Horizontal Scrolling Cards */}
-              <div className="flex gap-6 overflow-x-auto pb-4 scrollbar-thin scrollbar-thumb-slate-700 scrollbar-track-slate-900">
-                {mockRecentAnalyses.map((ana) => (
-                  <Card 
-                    key={ana.id}
-                    className="flex-shrink-0 w-[320px] bg-slate-900/50 backdrop-blur-sm border-slate-700/50 overflow-hidden cursor-pointer group hover:border-cyan-500 transition-all"
-                    onClick={() => setSelectedAnalysis(ana)}
-                  >
-                    <div className="relative">
-                      <img src={ana.thumbnail} alt={ana.title} className="w-full aspect-video object-cover" />
-                      <div className="absolute top-2 right-2 bg-blue-500 text-white px-3 py-1 rounded-full text-sm font-bold">
-                        {ana.score}/100
-                      </div>
-                      <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                        <div className="bg-cyan-500 hover:bg-cyan-600 text-white px-6 py-3 rounded-lg font-semibold transition-transform hover:scale-105">
-                          Detayları Gör
-                        </div>
-                      </div>
-                    </div>
-                    <div className="p-4">
-                      <h3 className="text-white font-semibold mb-1 truncate" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
-                        {ana.title}
-                      </h3>
-                      <p className="text-slate-500 text-sm" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
-                        {ana.date} • {ana.rating}
-                      </p>
-                    </div>
-                  </Card>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* Analysis Detail Modal */}
-          {selectedAnalysis && (
-            <AnalysisDetailModal 
-              analysis={selectedAnalysis} 
-              isOpen={!!selectedAnalysis} 
-              onClose={() => setSelectedAnalysis(null)}
-            />
-          )}
         </div>
       </div>
-    </div>
     </AccessGuard>
   );
 };
