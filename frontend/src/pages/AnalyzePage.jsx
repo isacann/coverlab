@@ -125,9 +125,11 @@ const DEMO_DATA = {
 };
 
 const AnalyzePage = () => {
+  const navigate = useNavigate();
   const [analysis, setAnalysis] = useState(DEMO_DATA); // START WITH DEMO
   const [isScanning, setIsScanning] = useState(false);
   const [activeTab, setActiveTab] = useState("faces");
+  const [selectedAnalysis, setSelectedAnalysis] = useState(null);
 
   const handleFileUpload = (file) => {
     if (!file || !file.type.startsWith('image/')) return;
