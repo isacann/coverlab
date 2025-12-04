@@ -90,8 +90,6 @@ const VideoCard = ({ thumbnail, title, channel, views, avatar, isLightMode, isMo
 
 const TestPage = () => {
   const [uploadedThumbnails, setUploadedThumbnails] = useState([]);
-  const [activeIndex, setActiveIndex] = useState(0);
-  const [videoTitle, setVideoTitle] = useState('Mükemmel Bir Video Başlığı Buraya Gelecek');
   const [channelName, setChannelName] = useState('CoverLab Media');
   const [viewsMeta, setViewsMeta] = useState('1.2M görüntüleme • 1 gün önce');
   const [device, setDevice] = useState('desktop'); // desktop | mobile
