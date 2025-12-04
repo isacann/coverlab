@@ -96,6 +96,13 @@ const TestPage = () => {
   const [theme, setTheme] = useState('dark'); // dark | light
   const [simulationList, setSimulationList] = useState([]); // Complete video list with user thumbnails injected
   const [isDragging, setIsDragging] = useState(false); // Drag & drop state
+  const [shuffledCompetitors, setShuffledCompetitors] = useState([]); // Shuffled competitor list
+
+  // Initialize shuffled competitors on mount
+  useEffect(() => {
+    const shuffled = [...competitors].sort(() => Math.random() - 0.5);
+    setShuffledCompetitors(shuffled);
+  }, []);
 
   // Cleanup blob URLs on unmount
   useEffect(() => {
@@ -106,28 +113,42 @@ const TestPage = () => {
     };
   }, []);
 
-  // Initialize simulation list on mount and when data changes
+  // Rebuild simulation list when any relevant data changes
   useEffect(() => {
-    buildSimulationList();
-  }, [uploadedThumbnails]);
+    if (shuffledCompetitors.length > 0) {
+      buildSimulationList();
+    }
+  }, [uploadedThumbnails, channelName, viewsMeta, shuffledCompetitors]);
 
   const buildSimulationList = () => {
-    // Step 1: Shuffle competitors with timestamp to force refresh
-    const shuffled = [...competitors].sort(() => Math.random() - 0.5);
-    
-    // Add cache buster to force image reload
-    const videoList = shuffled.map(video => ({
+    // Use the pre-shuffled competitors list
+    const videoList = shuffledCompetitors.map(video => ({
       ...video,
       thumbnail: video.thumbnail + '?t=' + Date.now()
     }));
 
-    // Step 2: Inject user thumbnails at specific positions
+    // Inject user thumbnails at random positions
     if (uploadedThumbnails.length > 0) {
-      const positions = [1, 3, 5];
+      // Generate random positions for user thumbnails
+      const maxPosition = Math.min(videoList.length, 10); // Insert within first 10 videos
+      const usedPositions = new Set();
+      const positions = [];
       
-      for (let i = uploadedThumbnails.length - 1; i >= 0; i--) {
+      for (let i = 0; i < uploadedThumbnails.length; i++) {
+        let pos;
+        do {
+          pos = Math.floor(Math.random() * maxPosition);
+        } while (usedPositions.has(pos));
+        usedPositions.add(pos);
+        positions.push(pos);
+      }
+      
+      // Sort positions in descending order to insert from end to start
+      positions.sort((a, b) => b - a);
+      
+      for (let i = 0; i < uploadedThumbnails.length; i++) {
         const userVideo = {
-          id: `user-video-${i}`,
+          id: `user-video-${uploadedThumbnails[i].id}`,
           thumbnail: uploadedThumbnails[i].url,
           title: uploadedThumbnails[i].title,
           channel: channelName,
