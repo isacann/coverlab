@@ -738,7 +738,7 @@ const CreatePage = () => {
                 </div>
 
                 <div className="flex gap-6 overflow-x-auto pb-4 scrollbar-thin scrollbar-thumb-slate-700 scrollbar-track-slate-900">
-                  {mockRecentGenerations.map((gen) => (
+                  {recentGenerations.map((gen) => (
                     <Card 
                       key={gen.id}
                       className="flex-shrink-0 w-[320px] bg-slate-900/50 backdrop-blur-sm border-slate-700/50 overflow-hidden cursor-pointer group hover:border-cyan-500 transition-all"
