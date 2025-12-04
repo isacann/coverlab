@@ -158,10 +158,10 @@ const LabPage = () => {
           <Tabs defaultValue="generations" className="w-full">
             <TabsList className="bg-slate-900 mb-8" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
               <TabsTrigger value="generations" className="data-[state=active]:bg-blue-500 data-[state=active]:text-white">
-                Ürettiklerim ({mockGenerations.length})
+                Ürettiklerim ({generations.length})
               </TabsTrigger>
               <TabsTrigger value="analyses" className="data-[state=active]:bg-blue-500 data-[state=active]:text-white">
-                Analizlerim ({mockAnalyses.length})
+                Analizlerim ({analyses.length})
               </TabsTrigger>
             </TabsList>
 
