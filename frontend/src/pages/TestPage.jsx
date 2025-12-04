@@ -203,9 +203,12 @@ const TestPage = () => {
     
     const newThumbnails = uploadedThumbnails.filter(t => t.id !== id);
     setUploadedThumbnails(newThumbnails);
-    if (activeIndex >= newThumbnails.length) {
-      setActiveIndex(Math.max(0, newThumbnails.length - 1));
-    }
+  };
+
+  const updateThumbnailTitle = (id, newTitle) => {
+    setUploadedThumbnails(uploadedThumbnails.map(thumb => 
+      thumb.id === id ? { ...thumb, title: newTitle } : thumb
+    ));
   };
 
   const handleShuffle = () => {
