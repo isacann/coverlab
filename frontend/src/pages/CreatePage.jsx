@@ -342,7 +342,17 @@ const CreatePage = () => {
             {/* Two Column Layout */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
               {/* Left Column - Form */}
-              <div className="bg-slate-900/50 backdrop-blur-xl border border-slate-700/50 rounded-2xl p-8 shadow-2xl">
+              <div className="bg-slate-900/50 backdrop-blur-xl border border-slate-700/50 rounded-2xl p-8 shadow-2xl relative">
+                {/* Clear Form Button */}
+                <button
+                  type="button"
+                  onClick={clearForm}
+                  className="absolute top-4 right-4 text-slate-400 hover:text-red-400 transition-colors p-2 rounded-lg hover:bg-slate-800/50"
+                  title="Formu Temizle"
+                >
+                  <RotateCcw size={18} />
+                </button>
+
                 <form onSubmit={handleSubmit} className="space-y-6">
                   
                   {/* Video Konusu (Required) */}
