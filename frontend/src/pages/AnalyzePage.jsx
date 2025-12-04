@@ -40,6 +40,7 @@ const DEMO_DATA = {
 
 const AnalyzePage = () => {
   const navigate = useNavigate();
+  const { user } = useAuth(); // Get user from AuthContext
   
   // State Management
   const [mode, setMode] = useState('demo'); // 'demo' | 'upload' | 'results'
