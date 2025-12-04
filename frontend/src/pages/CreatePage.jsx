@@ -9,6 +9,7 @@ import { Label } from '../components/ui/label';
 import { Switch } from '../components/ui/switch';
 import { Card } from '../components/ui/card';
 import { Upload, Download, Wand2, Eye, ArrowRight } from 'lucide-react';
+import { convertFileToBase64, formatFileSize } from '../utils/imageHelpers';
 
 // Mock Recent Generations
 const mockRecentGenerations = [
@@ -17,16 +18,6 @@ const mockRecentGenerations = [
   { id: 3, thumbnail: 'https://picsum.photos/seed/gen3/400/225', title: 'Gaming Montaj', date: '1 gün önce' },
   { id: 4, thumbnail: 'https://picsum.photos/seed/gen4/400/225', title: 'Yemek Tarifi', date: '2 gün önce' },
 ];
-
-// Helper function to convert file to base64
-const convertFileToBase64 = (file) => {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onloadend = () => resolve(reader.result);
-    reader.onerror = reject;
-    reader.readAsDataURL(file);
-  });
-};
 
 const CreatePage = () => {
   const { credits, user } = useAuth();
