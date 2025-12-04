@@ -381,13 +381,44 @@ const AnalyzePage = () => {
                 {/* RESULTS MODE */}
                 {mode === 'results' && (
                   <div className="space-y-6">
-                    {/* Result Image */}
+                    {/* Result Image with Heatmap */}
                     <div className="relative rounded-2xl overflow-hidden border-4 border-green-500/50">
                       <img 
                         src={analysisResult.imageUrl} 
                         alt="Analysis Result"
                         className="w-full aspect-video object-cover"
                       />
+                      
+                      {/* Heatmap Overlay */}
+                      {analysisResult.heatmap_points && analysisResult.heatmap_points.map((point, idx) => (
+                        <div
+                          key={idx}
+                          className="absolute rounded-full animate-pulse"
+                          style={{
+                            left: `${point.x}%`,
+                            top: `${point.y}%`,
+                            width: '80px',
+                            height: '80px',
+                            transform: 'translate(-50%, -50%)',
+                            backgroundColor: point.color === 'red' 
+                              ? 'rgba(239, 68, 68, 0.4)' 
+                              : point.color === 'yellow'
+                              ? 'rgba(251, 191, 36, 0.4)'
+                              : 'rgba(59, 130, 246, 0.4)',
+                            border: `3px solid ${point.color === 'red' 
+                              ? 'rgb(239, 68, 68)' 
+                              : point.color === 'yellow'
+                              ? 'rgb(251, 191, 36)'
+                              : 'rgb(59, 130, 246)'}`,
+                            boxShadow: point.color === 'red' 
+                              ? '0 0 20px rgba(239, 68, 68, 0.6)' 
+                              : point.color === 'yellow'
+                              ? '0 0 20px rgba(251, 191, 36, 0.6)'
+                              : '0 0 20px rgba(59, 130, 246, 0.6)',
+                          }}
+                        />
+                      ))}
+                      
                       <div className="absolute top-4 right-4 bg-green-500 text-white px-3 py-1 rounded-full text-sm font-bold">
                         SONUÇ
                       </div>
