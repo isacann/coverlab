@@ -615,44 +615,48 @@ const CreatePage = () => {
                         </h3>
 
                         {/* YouTube Title */}
-                        {aiSuggestions.youtube_basligi && (
-                          <div className="mb-4">
-                            <div className="flex items-center justify-between mb-2">
-                              <label className="text-slate-300 text-sm font-semibold" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
-                                📺 YouTube Başlığı
-                              </label>
-                              <button
-                                onClick={() => copyToClipboard(aiSuggestions.youtube_basligi, 'Başlık')}
-                                className="text-cyan-400 hover:text-cyan-300 transition-colors p-1"
-                              >
-                                <Copy size={16} />
-                              </button>
-                            </div>
-                            <p className="bg-slate-800/50 border border-slate-700 rounded-lg p-3 text-white text-sm" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
-                              {aiSuggestions.youtube_basligi}
+                        <div className="mb-4">
+                          <div className="flex items-center justify-between mb-2">
+                            <label className="text-slate-300 text-sm font-semibold flex items-center gap-1" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
+                              <span className="text-lg">📺</span>
+                              YouTube Başlığı
+                            </label>
+                            <button
+                              onClick={() => copyToClipboard(aiSuggestions.baslik || aiSuggestions.youtube_basligi || 'Başlık yok', 'Başlık')}
+                              className="text-cyan-400 hover:text-cyan-300 transition-colors p-1.5 hover:bg-cyan-500/10 rounded"
+                              title="Kopyala"
+                            >
+                              <Copy size={14} />
+                            </button>
+                          </div>
+                          <div className="bg-slate-800/50 border border-slate-700 rounded-lg p-4">
+                            <p className="text-white text-sm leading-relaxed" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
+                              {aiSuggestions.baslik || aiSuggestions.youtube_basligi || 'Başlık önerisi bulunamadı'}
                             </p>
                           </div>
-                        )}
+                        </div>
 
                         {/* Description */}
-                        {aiSuggestions.aciklama && (
-                          <div>
-                            <div className="flex items-center justify-between mb-2">
-                              <label className="text-slate-300 text-sm font-semibold" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
-                                📝 Açıklama
-                              </label>
-                              <button
-                                onClick={() => copyToClipboard(aiSuggestions.aciklama, 'Açıklama')}
-                                className="text-cyan-400 hover:text-cyan-300 transition-colors p-1"
-                              >
-                                <Copy size={16} />
-                              </button>
-                            </div>
-                            <p className="bg-slate-800/50 border border-slate-700 rounded-lg p-3 text-white text-sm leading-relaxed" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
-                              {aiSuggestions.aciklama}
+                        <div>
+                          <div className="flex items-center justify-between mb-2">
+                            <label className="text-slate-300 text-sm font-semibold flex items-center gap-1" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
+                              <span className="text-lg">📝</span>
+                              Açıklama
+                            </label>
+                            <button
+                              onClick={() => copyToClipboard(aiSuggestions.aciklama || 'Açıklama yok', 'Açıklama')}
+                              className="text-cyan-400 hover:text-cyan-300 transition-colors p-1.5 hover:bg-cyan-500/10 rounded"
+                              title="Kopyala"
+                            >
+                              <Copy size={14} />
+                            </button>
+                          </div>
+                          <div className="bg-slate-800/50 border border-slate-700 rounded-lg p-4">
+                            <p className="text-white text-sm leading-relaxed whitespace-pre-wrap" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
+                              {aiSuggestions.aciklama || 'Açıklama önerisi bulunamadı'}
                             </p>
                           </div>
-                        )}
+                        </div>
                       </div>
                     )}
                   </div>
