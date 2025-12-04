@@ -150,41 +150,12 @@ const TestPage = () => {
   };
 
   const handleShuffle = () => {
-    // Shuffle ONCE and save the result
-    const shuffled = [...COMPETITORS].sort(() => Math.random() - 0.5);
-    setShuffledCompetitors(shuffled);
-  };
-
-  // Build video list
-  const getVideoList = () => {
-    // Use the saved shuffled array (not re-shuffling on every render)
-    let videos = [...shuffledCompetitors];
-
-    // Insert ALL user thumbnails at different positions
-    if (uploadedThumbnails.length > 0) {
-      // Insert thumbnails from back to front to maintain correct positions
-      const positions = [1, 3, 5]; // Positions for 1st, 2nd, 3rd thumbnails
-      
-      for (let i = uploadedThumbnails.length - 1; i >= 0; i--) {
-        const userVideo = {
-          id: `user-video-${i}`,
-          thumbnail: uploadedThumbnails[i].url,
-          title: videoTitle,
-          channel: channelName,
-          avatar: channelName.substring(0, 2).toUpperCase(),
-          views: viewsMeta,
-          isUserVideo: true
-        };
-        videos.splice(positions[i], 0, userVideo);
-      }
-    }
-
-    return videos;
+    // Re-build the entire simulation list with a new shuffle
+    buildSimulationList();
   };
 
   const isLightMode = theme === 'light';
   const isMobile = device === 'mobile';
-  const videoList = getVideoList();
 
   return (
     <AccessGuard requirePro={true}>
