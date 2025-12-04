@@ -208,6 +208,8 @@ const CreatePage = () => {
 
   return (
     <AccessGuard requirePro={false}>
+      <Toaster position="top-center" reverseOrder={false} />
+      {showConfetti && <Confetti recycle={false} numberOfPieces={500} />}
       <div className="min-h-screen relative overflow-hidden bg-slate-950">
         {/* Background Image */}
         <div 
