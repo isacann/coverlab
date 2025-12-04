@@ -459,29 +459,40 @@ const AnalyzePage = () => {
                         </p>
                       </div>
 
-                      {/* Tabs - NO LABELS TAB */}
-                      <Tabs defaultValue="faces" className="w-full">
-                        <TabsList className="grid w-full grid-cols-3 bg-slate-800 p-1 rounded-lg mb-6">
+                      {/* Tabs with Heatmap */}
+                      <Tabs 
+                        defaultValue="faces" 
+                        className="w-full"
+                        onValueChange={(value) => setActiveTab(value)}
+                      >
+                        <TabsList className="grid w-full grid-cols-4 bg-slate-800 p-1 rounded-lg mb-6">
                           <TabsTrigger 
                             value="faces"
-                            className="data-[state=active]:bg-purple-500 data-[state=active]:text-white text-slate-400"
+                            className="data-[state=active]:bg-purple-500 data-[state=active]:text-white text-slate-400 text-xs"
                           >
-                            <Smile size={16} className="mr-2" />
+                            <Smile size={14} className="mr-1" />
                             Yüzler
                           </TabsTrigger>
                           <TabsTrigger 
                             value="vibe"
-                            className="data-[state=active]:bg-purple-500 data-[state=active]:text-white text-slate-400"
+                            className="data-[state=active]:bg-purple-500 data-[state=active]:text-white text-slate-400 text-xs"
                           >
-                            <Flame size={16} className="mr-2" />
+                            <Flame size={14} className="mr-1" />
                             Vibe
                           </TabsTrigger>
                           <TabsTrigger 
                             value="objects"
-                            className="data-[state=active]:bg-purple-500 data-[state=active]:text-white text-slate-400"
+                            className="data-[state=active]:bg-purple-500 data-[state=active]:text-white text-slate-400 text-xs"
                           >
-                            <Box size={16} className="mr-2" />
+                            <Box size={14} className="mr-1" />
                             Nesneler
+                          </TabsTrigger>
+                          <TabsTrigger 
+                            value="heatmap"
+                            className="data-[state=active]:bg-purple-500 data-[state=active]:text-white text-slate-400 text-xs"
+                          >
+                            <Eye size={14} className="mr-1" />
+                            Isı
                           </TabsTrigger>
                         </TabsList>
 
