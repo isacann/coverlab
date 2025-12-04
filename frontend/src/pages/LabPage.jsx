@@ -79,7 +79,11 @@ const mockAnalyses = [
 ];
 
 const LabPage = () => {
+  const { user } = useAuth();
+  const navigate = useNavigate();
+
   // State Management
+  const [selectedGeneration, setSelectedGeneration] = useState(null);
   const [selectedAnalysis, setSelectedAnalysis] = useState(null);
   const [lightboxImage, setLightboxImage] = useState(null);
   
@@ -89,9 +93,72 @@ const LabPage = () => {
   const [selectedGens, setSelectedGens] = useState([]);
   const [selectedAnas, setSelectedAnas] = useState([]);
   
-  // Data states with mock data
-  const [generations, setGenerations] = useState(mockGenerations);
-  const [analyses, setAnalyses] = useState(mockAnalyses);
+  // Data states - REAL DATA
+  const [generations, setGenerations] = useState([]);
+  const [analyses, setAnalyses] = useState([]);
+  const [isLoadingGens, setIsLoadingGens] = useState(true);
+  const [isLoadingAnas, setIsLoadingAnas] = useState(true);
+
+  // Fetch data on mount
+  useEffect(() => {
+    if (user?.id) {
+      fetchGenerations();
+      fetchAnalyses();
+    }
+  }, [user]);
+
+  const fetchGenerations = async () => {
+    try {
+      setIsLoadingGens(true);
+      const { data, error } = await supabase
+        .from('generations')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      setGenerations(data || []);
+    } catch (error) {
+      console.error('Error fetching generations:', error);
+      toast.error('Üretimler yüklenemedi');
+    } finally {
+      setIsLoadingGens(false);
+    }
+  };
+
+  const fetchAnalyses = async () => {
+    try {
+      setIsLoadingAnas(true);
+      const { data, error } = await supabase
+        .from('analyses')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      setAnalyses(data || []);
+    } catch (error) {
+      console.error('Error fetching analyses:', error);
+      toast.error('Analizler yüklenemedi');
+    } finally {
+      setIsLoadingAnas(false);
+    }
+  };
+
+  const formatDate = (dateString) => {
+    if (!dateString) return 'Tarih bilinmiyor';
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffMs = now - date;
+    const diffMins = Math.floor(diffMs / 60000);
+    const diffHours = Math.floor(diffMs / 3600000);
+    const diffDays = Math.floor(diffMs / 86400000);
+
+    if (diffMins < 60) return `${diffMins} dakika önce`;
+    if (diffHours < 24) return `${diffHours} saat önce`;
+    if (diffDays < 7) return `${diffDays} gün önce`;
+    return `${Math.floor(diffDays / 7)} hafta önce`;
+  };
   
   // Handlers for Generations
   const toggleSelectModeGen = () => {
