@@ -128,24 +128,10 @@ const TestPage = () => {
       thumbnail: video.thumbnail + '?t=' + Date.now()
     }));
 
-    // Inject user thumbnails at random positions
-    if (uploadedThumbnails.length > 0) {
-      // Generate random positions for user thumbnails
-      const maxPosition = Math.min(videoList.length, 10); // Insert within first 10 videos
-      const usedPositions = new Set();
-      const positions = [];
-      
-      for (let i = 0; i < uploadedThumbnails.length; i++) {
-        let pos;
-        do {
-          pos = Math.floor(Math.random() * maxPosition);
-        } while (usedPositions.has(pos));
-        usedPositions.add(pos);
-        positions.push(pos);
-      }
-      
-      // Sort positions in descending order to insert from end to start
-      positions.sort((a, b) => b - a);
+    // Inject user thumbnails using FIXED positions from state
+    if (uploadedThumbnails.length > 0 && userThumbnailPositions.length === uploadedThumbnails.length) {
+      // Use the pre-calculated positions from state
+      const sortedPositions = [...userThumbnailPositions].sort((a, b) => b - a);
       
       for (let i = 0; i < uploadedThumbnails.length; i++) {
         const userVideo = {
@@ -157,7 +143,7 @@ const TestPage = () => {
           views: viewsMeta,
           isUserVideo: true
         };
-        videoList.splice(positions[i], 0, userVideo);
+        videoList.splice(sortedPositions[i], 0, userVideo);
       }
     }
 
