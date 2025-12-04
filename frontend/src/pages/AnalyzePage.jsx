@@ -88,6 +88,11 @@ const AnalyzePage = () => {
       return;
     }
 
+    if (!user?.id) {
+      toast.error('Lütfen giriş yapın');
+      return;
+    }
+
     setIsAnalyzing(true);
 
     try {
@@ -99,8 +104,10 @@ const AnalyzePage = () => {
       const formData = new FormData();
       formData.append('file', compressedBlob, 'thumbnail.jpg');
       formData.append('title', videoTitle.trim());
+      formData.append('user_id', user.id); // Add user_id to request
 
       console.log('📤 Sending to n8n webhook...');
+      console.log('👤 User ID:', user.id);
 
       // Step 3: API Request
       const response = await fetch('https://n8n.getoperiqo.com/webhook/49b88d43-fdf3-43c8-bfc4-70c30528f370', {
