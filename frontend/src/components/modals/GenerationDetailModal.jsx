@@ -108,15 +108,15 @@ const GenerationDetailModal = ({ generation, isOpen, onClose, onDelete }) => {
             </div>
           </div>
 
-          {/* Right Column - Info */}
-          <div className="space-y-6">
-            {/* Title */}
+          {/* Right Column - Info (2/5 = 40%) */}
+          <div className="md:col-span-2 space-y-6">
+            {/* Video Description (User's Topic) */}
             <div>
               <label className="text-slate-400 text-sm font-medium mb-1 block" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
-                Başlık
+                Video Konusu
               </label>
-              <p className="text-white text-lg font-semibold" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
-                {generation.title || 'Başlıksız'}
+              <p className="text-white text-sm leading-relaxed" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
+                {generation.video_description || generation.user_description || 'Açıklama yok'}
               </p>
             </div>
 
