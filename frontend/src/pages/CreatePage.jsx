@@ -67,21 +67,58 @@ const CreatePage = () => {
     }
   };
 
-  const onSubmit = (data) => {
+  const onSubmit = async (data) => {
     // Check if user has credits
     if (credits <= 0) {
-      alert('Krediniz bitmi\u015f! L\u00fctfen kredi sat\u0131n al\u0131n.');
+      alert('Krediniz bitmiş! Lütfen kredi satın alın.');
       return;
     }
 
-    console.log('Form Data:', data);
-    console.log('Referans G\u00f6rsel (Base64):', referansGorsel);
-    // TODO: API call will be here
-    
-    // Mock: Set a generated image after submission
-    setTimeout(() => {
-      setGeneratedImage('https://via.placeholder.com/800x450/1e293b/06b6d4?text=Generated+Thumbnail');
-    }, 1000);
+    try {
+      setGeneratedImage(null); // Reset previous image
+      
+      // Prepare webhook payload
+      const payload = {
+        userId: user?.id || null,
+        videoKonusu: data.videoKonusu,
+        videoBasligi: data.videoBasligi,
+        thumbnailYazisi: data.thumbnailYazisi || null,
+        ekstraIstek: data.ekstraIstek || null,
+        referansGorsel: referansGorsel || null, // Already in base64 data URI format
+        creatorStatus: data.creatorStatus || false
+      };
+
+      console.log('Sending to n8n webhook:', payload);
+
+      // Call n8n webhook
+      const response = await fetch('https://n8n.getoperiqo.com/webhook/abb2e2e0-d8f4-486d-b89d-a63cc331e122', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload)
+      });
+
+      if (!response.ok) {
+        throw new Error('Webhook request failed');
+      }
+
+      const result = await response.json();
+      console.log('Webhook response:', result);
+
+      // Set generated image from response (adjust based on actual response structure)
+      if (result.imageUrl) {
+        setGeneratedImage(result.imageUrl);
+      } else {
+        // Fallback
+        setGeneratedImage('https://via.placeholder.com/800x450/1e293b/06b6d4?text=Generated+Thumbnail');
+      }
+
+      alert('Thumbnail başarıyla oluşturuldu!');
+    } catch (error) {
+      console.error('Error:', error);
+      alert('Bir hata oluştu. Lütfen tekrar deneyin.');
+    }
   };
 
   const creatorStatus = watch('creatorStatus');
