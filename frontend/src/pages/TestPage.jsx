@@ -129,7 +129,7 @@ const TestPage = () => {
         const userVideo = {
           id: `user-video-${i}`,
           thumbnail: uploadedThumbnails[i].url,
-          title: videoTitle,
+          title: uploadedThumbnails[i].title,
           channel: channelName,
           avatar: channelName.substring(0, 2).toUpperCase(),
           views: viewsMeta,
