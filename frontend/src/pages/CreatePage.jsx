@@ -8,7 +8,7 @@ import { Textarea } from '../components/ui/textarea';
 import { Label } from '../components/ui/label';
 import { Switch } from '../components/ui/switch';
 import { Card } from '../components/ui/card';
-import { Upload, Download, Wand2, Eye, ArrowRight, AlertTriangle } from 'lucide-react';
+import { Upload, Download, Wand2, Eye, ArrowRight, AlertTriangle, RefreshCw, RotateCcw, Copy } from 'lucide-react';
 import { convertFileToBase64, formatFileSize } from '../utils/imageHelpers';
 import toast, { Toaster } from 'react-hot-toast';
 import Confetti from 'react-confetti';
