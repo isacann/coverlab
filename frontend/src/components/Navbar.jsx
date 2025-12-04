@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { Button } from './ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from './ui/dropdown-menu';
-import { Home, Wand2, BarChart3, FlaskConical, Settings, LogOut, Zap } from 'lucide-react';
+import { Home, Wand2, BarChart3, FlaskConical, Settings, LogOut, Zap, Archive } from 'lucide-react';
 
 const Navbar = () => {
   const { user, profile, credits, signOut } = useAuth();
