@@ -372,13 +372,13 @@ const TestPage = () => {
                 </p>
               </div>
 
-              {/* Video Grid */}
+              {/* Video Grid - Scrollable for 60+ items */}
               <div className={`${
                 isMobile 
                   ? 'flex flex-col gap-4' 
                   : 'grid grid-cols-3 xl:grid-cols-4 gap-x-4 gap-y-8'
               }`}>
-                {videoList.map((video) => (
+                {simulationList.map((video) => (
                   <VideoCard
                     key={video.id}
                     thumbnail={video.thumbnail}
@@ -392,6 +392,15 @@ const TestPage = () => {
                   />
                 ))}
               </div>
+              
+              {/* Show count */}
+              {simulationList.length > 0 && (
+                <div className={`mt-8 text-center text-sm ${
+                  isLightMode ? 'text-slate-600' : 'text-slate-400'
+                }`} style={{ fontFamily: 'Geist Sans, sans-serif' }}>
+                  Toplam {simulationList.length} video gösteriliyor
+                </div>
+              )}
             </div>
           </div>
         </div>
