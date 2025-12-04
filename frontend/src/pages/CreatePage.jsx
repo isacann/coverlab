@@ -22,7 +22,7 @@ const mockRecentGenerations = [
 ];
 
 const CreatePage = () => {
-  const { credits, user } = useAuth();
+  const { credits, user, setProfile } = useAuth();
   const navigate = useNavigate();
 
   // Form State
@@ -37,6 +37,9 @@ const CreatePage = () => {
   // UI State
   const [isGenerating, setIsGenerating] = useState(false);
   const [generatedImage, setGeneratedImage] = useState(null);
+  const [isTemporary, setIsTemporary] = useState(false);
+  const [aiSuggestions, setAiSuggestions] = useState(null);
+  const [showConfetti, setShowConfetti] = useState(false);
   const [lightboxImage, setLightboxImage] = useState(null);
 
   // File Upload Handler
