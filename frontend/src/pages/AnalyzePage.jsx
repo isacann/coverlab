@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Upload, Sparkles, Loader2, ArrowRight, Eye, Smile, Box, Flame } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
 import AccessGuard from '../components/AccessGuard';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
 import { Card } from '../components/ui/card';
