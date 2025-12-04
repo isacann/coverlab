@@ -49,6 +49,7 @@ const AnalyzePage = () => {
   const [videoTitle, setVideoTitle] = useState('');
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [analysisResult, setAnalysisResult] = useState(DEMO_DATA);
+  const [activeTab, setActiveTab] = useState('faces'); // Track active tab for heatmap visibility
 
   // File Upload Handler
   const handleFileUpload = (file) => {
