@@ -549,6 +549,7 @@ const CreatePage = () => {
                       </div>
                     )}
 
+                    {/* Generated Image with Loading Overlay */}
                     <div className="relative">
                       <img 
                         src={generatedImage} 
@@ -561,36 +562,99 @@ const CreatePage = () => {
                           Geçici
                         </div>
                       )}
+                      
+                      {/* Loading Overlay when regenerating */}
+                      {isGenerating && (
+                        <div className="absolute inset-0 bg-black/70 backdrop-blur-sm rounded-lg flex items-center justify-center">
+                          <div className="text-center">
+                            <div className="w-16 h-16 border-4 border-cyan-500 border-t-transparent rounded-full animate-spin mx-auto mb-3"></div>
+                            <p className="text-white font-semibold" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
+                              Yeniden oluşturuluyor...
+                            </p>
+                          </div>
+                        </div>
+                      )}
                     </div>
 
-                    {/* AI Suggestions */}
+                    {/* Action Buttons (The Hook) */}
+                    <div className="grid grid-cols-2 gap-3">
+                      {/* Primary: Re-generate */}
+                      <Button
+                        onClick={handleRegenerate}
+                        disabled={isGenerating}
+                        className="col-span-2 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 hover:from-blue-600 hover:via-purple-600 hover:to-pink-600 text-white py-6 text-lg font-bold shadow-lg shadow-purple-500/50 disabled:opacity-50 disabled:cursor-not-allowed transition-all hover:scale-105"
+                        style={{ fontFamily: 'Geist Sans, sans-serif' }}
+                      >
+                        <RefreshCw className="mr-2" size={20} />
+                        Tekrar Oluştur (1 Kredi)
+                      </Button>
+
+                      {/* Secondary: Download */}
+                      <Button
+                        onClick={() => {
+                          const link = document.createElement('a');
+                          link.href = generatedImage;
+                          link.download = 'coverlab-thumbnail.jpg';
+                          link.click();
+                          toast.success('İndirme başladı! ✅');
+                        }}
+                        variant="outline"
+                        className="col-span-2 border-slate-600 text-slate-300 hover:text-white hover:bg-slate-800 py-6 text-lg font-semibold"
+                        style={{ fontFamily: 'Geist Sans, sans-serif' }}
+                      >
+                        <Download className="mr-2" size={20} />
+                        {isTemporary ? 'Hemen İndir ⚠️' : 'İndir'}
+                      </Button>
+                    </div>
+
+                    {/* AI Suggestions - Glassmorphism Card */}
                     {aiSuggestions && (
-                      <div className="bg-blue-500/20 border border-blue-500 rounded-lg p-4">
-                        <p className="text-blue-200 font-semibold text-sm mb-2" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
-                          💡 AI Önerileri
-                        </p>
-                        <p className="text-blue-300 text-xs" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
-                          {aiSuggestions}
-                        </p>
+                      <div className="bg-gradient-to-br from-cyan-500/10 to-blue-500/10 backdrop-blur-xl border border-cyan-500/30 rounded-xl p-6 shadow-lg">
+                        <h3 className="text-cyan-300 font-bold text-lg mb-4 flex items-center gap-2" style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}>
+                          ✨ AI Tavsiyeleri
+                        </h3>
+
+                        {/* YouTube Title */}
+                        {aiSuggestions.youtube_basligi && (
+                          <div className="mb-4">
+                            <div className="flex items-center justify-between mb-2">
+                              <label className="text-slate-300 text-sm font-semibold" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
+                                📺 YouTube Başlığı
+                              </label>
+                              <button
+                                onClick={() => copyToClipboard(aiSuggestions.youtube_basligi, 'Başlık')}
+                                className="text-cyan-400 hover:text-cyan-300 transition-colors p-1"
+                              >
+                                <Copy size={16} />
+                              </button>
+                            </div>
+                            <p className="bg-slate-800/50 border border-slate-700 rounded-lg p-3 text-white text-sm" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
+                              {aiSuggestions.youtube_basligi}
+                            </p>
+                          </div>
+                        )}
+
+                        {/* Description */}
+                        {aiSuggestions.aciklama && (
+                          <div>
+                            <div className="flex items-center justify-between mb-2">
+                              <label className="text-slate-300 text-sm font-semibold" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
+                                📝 Açıklama
+                              </label>
+                              <button
+                                onClick={() => copyToClipboard(aiSuggestions.aciklama, 'Açıklama')}
+                                className="text-cyan-400 hover:text-cyan-300 transition-colors p-1"
+                              >
+                                <Copy size={16} />
+                              </button>
+                            </div>
+                            <p className="bg-slate-800/50 border border-slate-700 rounded-lg p-3 text-white text-sm leading-relaxed" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
+                              {aiSuggestions.aciklama}
+                            </p>
+                          </div>
+                        )}
                       </div>
                     )}
-
-                    <Button
-                      onClick={() => {
-                        const link = document.createElement('a');
-                        link.href = generatedImage;
-                        link.download = 'thumbnail.jpg';
-                        link.click();
-                        if (isTemporary) {
-                          toast.success('Görsel indirildi! ✅');
-                        }
-                      }}
-                      className="w-full bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white py-6 text-lg font-semibold"
-                      style={{ fontFamily: 'Geist Sans, sans-serif' }}
-                    >
-                      <Download className="mr-2" size={20} />
-                      {isTemporary ? 'Hemen İndir ⚠️' : 'İndir'}
-                    </Button>
                   </div>
                 ) : (
                   <div className="text-center">
