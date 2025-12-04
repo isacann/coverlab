@@ -113,11 +113,14 @@ const TestPage = () => {
   }, [uploadedThumbnails]);
 
   const buildSimulationList = () => {
-    // Step 1: Shuffle competitors
+    // Step 1: Shuffle competitors with timestamp to force refresh
     const shuffled = [...competitors].sort(() => Math.random() - 0.5);
-
-    // Step 2: Build the list
-    let videoList = [...shuffled];
+    
+    // Add cache buster to force image reload
+    const videoList = shuffled.map(video => ({
+      ...video,
+      thumbnail: video.thumbnail + '?t=' + Date.now()
+    }));
 
     // Step 3: Inject user thumbnails at specific positions
     if (uploadedThumbnails.length > 0) {
