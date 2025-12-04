@@ -35,6 +35,47 @@ const CreatePage = () => {
   const [showConfetti, setShowConfetti] = useState(false);
   const [lightboxImage, setLightboxImage] = useState(null);
 
+  // Recent Work State
+  const [recentGenerations, setRecentGenerations] = useState([]);
+
+  // Fetch recent generations on mount
+  useEffect(() => {
+    if (user?.id) {
+      fetchRecentGenerations();
+    }
+  }, [user]);
+
+  const fetchRecentGenerations = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('generations')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false })
+        .limit(10);
+
+      if (error) throw error;
+      setRecentGenerations(data || []);
+    } catch (error) {
+      console.error('Error fetching recent generations:', error);
+    }
+  };
+
+  const formatDate = (dateString) => {
+    if (!dateString) return 'Tarih bilinmiyor';
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffMs = now - date;
+    const diffMins = Math.floor(diffMs / 60000);
+    const diffHours = Math.floor(diffMs / 3600000);
+    const diffDays = Math.floor(diffMs / 86400000);
+
+    if (diffMins < 60) return `${diffMins} dakika önce`;
+    if (diffHours < 24) return `${diffHours} saat önce`;
+    if (diffDays < 7) return `${diffDays} gün önce`;
+    return `${Math.floor(diffDays / 7)} hafta önce`;
+  };
+
   // File Upload Handler
   const handleFileUpload = (e) => {
     const file = e.target.files[0];
