@@ -146,18 +146,53 @@ const TestPage = () => {
 
   const handleFileUpload = (e) => {
     const files = Array.from(e.target.files);
+    processFiles(files);
+  };
+
+  const processFiles = (files) => {
     if (uploadedThumbnails.length + files.length > 3) {
-      alert('Maksimum 3 thumbnail y\u00fckleyebilirsiniz');
+      alert('Maksimum 3 thumbnail yükleyebilirsiniz');
       return;
     }
 
-    const newThumbnails = files.map(file => ({
+    const imageFiles = files.filter(file => file.type.startsWith('image/'));
+    
+    const newThumbnails = imageFiles.map(file => ({
       id: Date.now() + Math.random(),
       url: URL.createObjectURL(file),
       file
     }));
 
     setUploadedThumbnails([...uploadedThumbnails, ...newThumbnails]);
+  };
+
+  // Drag & Drop handlers
+  const handleDragEnter = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (e.currentTarget === e.target) {
+      setIsDragging(false);
+    }
+  };
+
+  const handleDragOver = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+  };
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+
+    const files = Array.from(e.dataTransfer.files);
+    processFiles(files);
   };
 
   const removeThumbnail = (id) => {
