@@ -61,6 +61,7 @@ function App() {
             <Route path="/create" element={<><Navbar /><CreatePage /></>} />
             <Route path="/analyze" element={<><Navbar /><AnalyzePage /></>} />
             <Route path="/test" element={<><Navbar /><TestPage /></>} />
+            <Route path="/lab" element={<><Navbar /><LabPage /></>} />
             
             {/* Dashboard - Protected */}
             <Route 
