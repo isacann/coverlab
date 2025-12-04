@@ -431,25 +431,62 @@ const CreatePage = () => {
                   </div>
                 ) : generatedImage ? (
                   <div className="w-full space-y-6">
+                    {/* Temporary Badge */}
+                    {isTemporary && (
+                      <div className="bg-orange-500/20 border border-orange-500 rounded-lg p-4 flex items-start gap-3">
+                        <AlertTriangle className="text-orange-400 flex-shrink-0 mt-0.5" size={20} />
+                        <div>
+                          <p className="text-orange-200 font-semibold text-sm mb-1" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
+                            ⚠️ Geçici Link
+                          </p>
+                          <p className="text-orange-300 text-xs" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
+                            Bu görsel yakında silinecek. Hemen indirin!
+                          </p>
+                        </div>
+                      </div>
+                    )}
+
                     <div className="relative">
                       <img 
                         src={generatedImage} 
                         alt="Generated Thumbnail" 
                         className="w-full rounded-lg shadow-2xl"
                       />
+                      {isTemporary && (
+                        <div className="absolute top-3 right-3 bg-orange-500 text-white px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1">
+                          <AlertTriangle size={12} />
+                          Geçici
+                        </div>
+                      )}
                     </div>
+
+                    {/* AI Suggestions */}
+                    {aiSuggestions && (
+                      <div className="bg-blue-500/20 border border-blue-500 rounded-lg p-4">
+                        <p className="text-blue-200 font-semibold text-sm mb-2" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
+                          💡 AI Önerileri
+                        </p>
+                        <p className="text-blue-300 text-xs" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
+                          {aiSuggestions}
+                        </p>
+                      </div>
+                    )}
+
                     <Button
                       onClick={() => {
                         const link = document.createElement('a');
                         link.href = generatedImage;
                         link.download = 'thumbnail.jpg';
                         link.click();
+                        if (isTemporary) {
+                          toast.success('Görsel indirildi! ✅');
+                        }
                       }}
                       className="w-full bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white py-6 text-lg font-semibold"
                       style={{ fontFamily: 'Geist Sans, sans-serif' }}
                     >
                       <Download className="mr-2" size={20} />
-                      İndir
+                      {isTemporary ? 'Hemen İndir ⚠️' : 'İndir'}
                     </Button>
                   </div>
                 ) : (
