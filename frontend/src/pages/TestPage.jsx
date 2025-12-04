@@ -254,6 +254,12 @@ const TestPage = () => {
     // Shuffle both competitors AND user thumbnail positions
     const shuffled = [...competitors].sort(() => Math.random() - 0.5);
     setShuffledCompetitors(shuffled);
+    
+    // Also regenerate random positions for user thumbnails
+    if (uploadedThumbnails.length > 0) {
+      const newPositions = generateUserThumbnailPositions(uploadedThumbnails.length);
+      setUserThumbnailPositions(newPositions);
+    }
     // buildSimulationList will be called automatically via useEffect
   };
 
