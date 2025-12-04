@@ -199,13 +199,19 @@ const CreatePage = () => {
         }));
         console.log('💰 Credits decremented');
 
-        // 3. Handle AI Suggestions (if present) - SAFELY
+        // 3. Handle AI Suggestions (if present) - SAFELY PARSE
         if (data.ai_suggestions) {
-          const suggestionsText = typeof data.ai_suggestions === 'string' 
-            ? data.ai_suggestions 
-            : JSON.stringify(data.ai_suggestions);
-          setAiSuggestions(suggestionsText);
-          console.log('💡 AI suggestions received');
+          try {
+            // Parse if it's a JSON string, otherwise use as-is
+            const suggestions = typeof data.ai_suggestions === 'string' 
+              ? JSON.parse(data.ai_suggestions) 
+              : data.ai_suggestions;
+            setAiSuggestions(suggestions);
+            console.log('💡 AI suggestions received:', suggestions);
+          } catch (e) {
+            console.error('Failed to parse AI suggestions:', e);
+            setAiSuggestions(null);
+          }
         }
 
         // 4. Check Temporary Status
