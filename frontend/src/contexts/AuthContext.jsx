@@ -59,11 +59,14 @@ export const AuthProvider = ({ children }) => {
         .single();
       
       if (error) throw error;
+      console.log('Profile fetched:', data);
       setProfile(data);
     } catch (error) {
       console.error("Profile fetch error:", error);
-      // Fallback for new users who might not have a profile row yet
-      setProfile({ credits: 5, subscription_plan: 'free' }); 
+      // Fallback for new users
+      const fallbackProfile = { id: userId, credits: 5, subscription_plan: 'free' };
+      console.log('Using fallback profile:', fallbackProfile);
+      setProfile(fallbackProfile); 
     }
   };
 
