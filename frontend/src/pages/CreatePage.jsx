@@ -742,10 +742,10 @@ const CreatePage = () => {
                     <Card 
                       key={gen.id}
                       className="flex-shrink-0 w-[320px] bg-slate-900/50 backdrop-blur-sm border-slate-700/50 overflow-hidden cursor-pointer group hover:border-cyan-500 transition-all"
-                      onClick={() => setLightboxImage(gen.thumbnail)}
+                      onClick={() => setLightboxImage(gen.image_url)}
                     >
                       <div className="relative">
-                        <img src={gen.thumbnail} alt={gen.title} className="w-full aspect-video object-cover" />
+                        <img src={gen.image_url} alt={gen.title || 'Thumbnail'} className="w-full aspect-video object-cover" />
                         <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                           <div className="bg-cyan-500 hover:bg-cyan-600 text-white p-3 rounded-full">
                             <Eye size={20} />
@@ -754,10 +754,10 @@ const CreatePage = () => {
                       </div>
                       <div className="p-4">
                         <h3 className="text-white font-semibold mb-1 truncate" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
-                          {gen.title}
+                          {gen.title || 'Thumbnail'}
                         </h3>
                         <p className="text-slate-500 text-sm" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
-                          {gen.date}
+                          {formatDate(gen.created_at)}
                         </p>
                       </div>
                     </Card>
