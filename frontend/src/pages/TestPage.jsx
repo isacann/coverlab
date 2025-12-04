@@ -7,6 +7,9 @@ import { Label } from '../components/ui/label';
 import { competitors } from '../data/competitors';
 
 const VideoCard = ({ thumbnail, title, channel, views, avatar, isLightMode, isMobile, isUserVideo }) => {
+  // Check if avatar is a URL or text initials
+  const isAvatarUrl = avatar && (avatar.startsWith('http://') || avatar.startsWith('https://'));
+  
   return (
     <div className={`${isMobile ? 'flex gap-2' : 'flex flex-col'} cursor-pointer group`}>
       {/* Thumbnail */}
@@ -22,10 +25,14 @@ const VideoCard = ({ thumbnail, title, channel, views, avatar, isLightMode, isMo
       <div className={`${isMobile ? 'flex-1 py-1' : 'mt-3'} flex gap-3`}>
         {/* Avatar - Only show on desktop */}
         {!isMobile && (
-          <div className={`w-9 h-9 rounded-full flex items-center justify-center text-xs font-semibold flex-shrink-0 ${
+          <div className={`w-9 h-9 rounded-full flex items-center justify-center text-xs font-semibold flex-shrink-0 overflow-hidden ${
             isLightMode ? 'bg-red-600 text-white' : 'bg-slate-700 text-white'
           }`} style={{ fontFamily: 'Roboto, sans-serif' }}>
-            {avatar}
+            {isAvatarUrl ? (
+              <img src={avatar} alt={channel} className="w-full h-full object-cover" />
+            ) : (
+              avatar
+            )}
           </div>
         )}
 
