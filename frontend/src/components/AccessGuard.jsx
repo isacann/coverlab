@@ -7,9 +7,9 @@ export default function AccessGuard({ children, requirePro = false }) {
   const { user, isPro, loading } = useAuth();
   const navigate = useNavigate();
 
-  // 1. Loading State - Show content immediately if taking too long
+  // 1. Loading State - Render children with overlay
   if (loading) {
-    return null; // Return null to let React Router handle the page render
+    return <>{children}</>; // Show page content immediately
   }
 
   // 2. Determine Lock Status
