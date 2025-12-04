@@ -30,7 +30,7 @@ const formSchema = z.object({
 });
 
 const CreatePage = () => {
-  const { credits } = useAuth();
+  const { credits, user } = useAuth();
   const navigate = useNavigate();
   const [referansGorsel, setReferansGorsel] = useState(null);
   const [previewImage, setPreviewImage] = useState(null);
