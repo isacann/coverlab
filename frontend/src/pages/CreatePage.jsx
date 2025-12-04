@@ -214,6 +214,20 @@ const CreatePage = () => {
                   />
                 </div>
 
+                {/* Ekstra İstek */}
+                <div>
+                  <Label htmlFor="ekstraIstek" className="text-white text-sm font-medium mb-2 block" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
+                    Ekstra belirtmek istediğiniz bir istek (Opsiyonel)
+                  </Label>
+                  <Textarea
+                    id="ekstraIstek"
+                    {...register('ekstraIstek')}
+                    placeholder="Örn: Arka planda mavi gökyüzü olsun, daha renkli olsun vb."
+                    className="bg-slate-800/50 border-slate-600 text-white placeholder:text-slate-400 min-h-[80px] resize-none"
+                    style={{ fontFamily: 'Geist Sans, sans-serif' }}
+                  />
+                </div>
+
                 {/* Referans Görsel Upload */}
                 <div>
                   <Label htmlFor="referansGorsel" className="text-white text-sm font-medium mb-2 block" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
