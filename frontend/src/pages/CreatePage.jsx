@@ -105,37 +105,76 @@ const CreatePage = () => {
         creator_status: isCreator ? 'true' : 'false'
       };
 
-      // Step 4: API Call
+      // Step 4: API Call (NO TIMEOUT - Let it run as long as needed)
       console.log('🚀 Sending payload:', {
         ...payload,
         reference: payload.reference ? `[BASE64 STRING: ${payload.reference.substring(0, 50)}...]` : null
       });
+      console.log('⏳ Waiting for response (may take 60-90 seconds)...');
 
-      const response = await fetch('https://n8n.getoperiqo.com/webhook/abb2e2e0-d8f4-486d-b89d-a63cc331e122', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(payload)
-      });
+      let response;
+      let data;
 
-      console.log('📡 Response status:', response.status);
+      try {
+        response = await fetch('https://n8n.getoperiqo.com/webhook/abb2e2e0-d8f4-486d-b89d-a63cc331e122', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(payload),
+          // NO timeout specified - browser default (usually 5+ minutes)
+        });
 
-      if (!response.ok) {
-        const errorText = await response.text();
-        console.error('❌ Webhook error:', errorText);
-        throw new Error(`HTTP ${response.status}`);
+        console.log('📡 Response received! Status:', response.status);
+
+      } catch (fetchError) {
+        console.error('❌ Network error during fetch:', fetchError);
+        throw new Error('Network hatası. İnternet bağlantınızı kontrol edin.');
       }
 
-      // Step 5: Parse Response
-      const data = await response.json();
-      console.log('✅ Webhook response:', data);
+      // Step 5: Check HTTP status
+      if (!response.ok) {
+        let errorText;
+        try {
+          errorText = await response.text();
+        } catch (e) {
+          errorText = 'Bilinmeyen hata';
+        }
+        console.error('❌ HTTP Error:', response.status, errorText);
+        throw new Error(`Sunucu hatası (${response.status})`);
+      }
+
+      // Step 6: Parse JSON response
+      try {
+        data = await response.json();
+        console.log('✅ Response parsed:', data);
+      } catch (parseError) {
+        console.error('❌ JSON parse error:', parseError);
+        throw new Error('Sunucu yanıtı okunamadı');
+      }
+
+      // Step 7: Handle response scenarios
 
       // --- SCENARIO A: ERROR ---
       if (data.status === 'error') {
-        toast.error(data.message || 'Bir hata oluştu. Lütfen tekrar deneyin.');
-        console.error('❌ API Error:', data.message);
-        // Do NOT clear form - user can try again
+        // Safely extract error message (handle nested objects)
+        let errorMessage = 'Bir hata oluştu. Lütfen tekrar deneyin.';
+        
+        if (typeof data.message === 'string') {
+          errorMessage = data.message;
+        } else if (data.message && typeof data.message === 'object') {
+          // Handle Turkish nested objects like {baslik: "...", aciklama: "..."}
+          if (data.message.aciklama) {
+            errorMessage = data.message.aciklama;
+          } else if (data.message.baslik) {
+            errorMessage = data.message.baslik;
+          } else {
+            errorMessage = JSON.stringify(data.message);
+          }
+        }
+        
+        toast.error(errorMessage);
+        console.error('❌ API Error:', data);
         return;
       }
 
@@ -160,31 +199,39 @@ const CreatePage = () => {
         }));
         console.log('💰 Credits decremented');
 
-        // 3. Handle AI Suggestions (if present)
+        // 3. Handle AI Suggestions (if present) - SAFELY
         if (data.ai_suggestions) {
-          setAiSuggestions(data.ai_suggestions);
-          console.log('💡 AI suggestions received:', data.ai_suggestions);
+          const suggestionsText = typeof data.ai_suggestions === 'string' 
+            ? data.ai_suggestions 
+            : JSON.stringify(data.ai_suggestions);
+          setAiSuggestions(suggestionsText);
+          console.log('💡 AI suggestions received');
         }
 
         // 4. Check Temporary Status
         if (data.is_temporary === true) {
-          // Temporary/Fal.ai link - Show warning
-          toast(
-            data.message || '⚠️ Geçici görsel oluşturuldu. Hemen indirin!',
-            {
-              icon: '⚠️',
-              duration: 6000,
-              style: {
-                background: '#f59e0b',
-                color: '#fff',
-              },
-            }
-          );
+          // Safely extract message
+          const messageText = typeof data.message === 'string' 
+            ? data.message 
+            : '⚠️ Geçici görsel oluşturuldu. Hemen indirin!';
+
+          toast(messageText, {
+            icon: '⚠️',
+            duration: 6000,
+            style: {
+              background: '#f59e0b',
+              color: '#fff',
+            },
+          });
           setIsTemporary(true);
           console.log('⚠️ Temporary image generated');
         } else {
           // Full success - Permanent link
-          toast.success(data.message || '✅ Thumbnail başarıyla oluşturuldu!');
+          const messageText = typeof data.message === 'string' 
+            ? data.message 
+            : '✅ Thumbnail başarıyla oluşturuldu!';
+
+          toast.success(messageText);
           setIsTemporary(false);
           
           // Trigger confetti celebration
@@ -200,9 +247,14 @@ const CreatePage = () => {
 
     } catch (error) {
       console.error('❌ Error during submission:', error);
-      toast.error('Sunucuyla bağlantı kurulamadı. İnternetinizi kontrol edin.');
+      
+      // User-friendly error message
+      const errorMessage = error.message || 'Beklenmeyen bir hata oluştu';
+      toast.error(errorMessage);
+      
     } finally {
       setIsGenerating(false);
+      console.log('🏁 Generation process completed');
     }
   };
 
