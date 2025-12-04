@@ -89,7 +89,7 @@ const TestPage = () => {
   const [viewsMeta, setViewsMeta] = useState('1.2M görüntüleme • 1 gün önce');
   const [device, setDevice] = useState('desktop'); // desktop | mobile
   const [theme, setTheme] = useState('dark'); // dark | light
-  const [shuffledCompetitors, setShuffledCompetitors] = useState(COMPETITORS); // Store shuffled array
+  const [simulationList, setSimulationList] = useState([]); // Complete video list with user thumbnails injected
 
   const handleFileUpload = (e) => {
     const files = Array.from(e.target.files);
