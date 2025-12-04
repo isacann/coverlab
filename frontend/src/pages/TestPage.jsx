@@ -231,27 +231,48 @@ const TestPage = () => {
       <div className="relative z-10 pt-20">
         <div className="flex h-screen">
           {/* LEFT SIDEBAR - CONTROLS */}
-          <div className="w-[350px] bg-slate-900 border-r border-slate-700 overflow-y-auto">
-            <div className="p-6 space-y-6">
+          <div 
+            className="w-[320px] bg-slate-900 border-r border-slate-700 flex flex-col"
+            onDragEnter={handleDragEnter}
+            onDragOver={handleDragOver}
+            onDragLeave={handleDragLeave}
+            onDrop={handleDrop}
+          >
+            {/* Drag & Drop Overlay */}
+            {isDragging && (
+              <div className="absolute inset-0 bg-blue-500/20 backdrop-blur-sm border-4 border-blue-500 border-dashed z-50 flex items-center justify-center">
+                <div className="text-center">
+                  <Upload size={48} className="text-blue-400 mx-auto mb-3 animate-bounce" />
+                  <p className="text-white text-lg font-bold" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
+                    Bırak ve Test Et
+                  </p>
+                  <p className="text-blue-200 text-sm" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
+                    Max 3 thumbnail
+                  </p>
+                </div>
+              </div>
+            )}
+
+            <div className="p-5 space-y-4 flex-1 overflow-y-auto">
               {/* Header */}
               <div>
-                <h2 className="text-2xl font-bold text-white mb-1" style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}>
-                  Önizleme Ayarları
+                <h2 className="text-xl font-bold text-white mb-1" style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}>
+                  Test Ayarları
                 </h2>
-                <p className="text-slate-400 text-sm" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
-                  A/B test yapın ve karşılaştırın
+                <p className="text-slate-400 text-xs" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
+                  A/B test için thumbnail ekleyin
                 </p>
               </div>
 
-              {/* Upload Zone */}
-              <div className="space-y-3">
-                <Label className="text-white font-semibold" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
-                  Thumbnail'larınız (Max 3)
+              {/* Upload Zone - Compact */}
+              <div className="space-y-2">
+                <Label className="text-white text-sm font-semibold" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
+                  Thumbnail'lar ({uploadedThumbnails.length}/3)
                 </Label>
                 
                 {uploadedThumbnails.length < 3 && (
                   <div 
-                    className="border-2 border-dashed border-blue-500/50 rounded-lg p-6 text-center cursor-pointer hover:border-blue-500 hover:bg-slate-800/50 transition-all"
+                    className="border-2 border-dashed border-blue-500/50 rounded-lg p-4 text-center cursor-pointer hover:border-blue-500 hover:bg-slate-800/50 transition-all"
                     onClick={() => document.getElementById('testFileInput').click()}
                   >
                     <input
@@ -262,12 +283,9 @@ const TestPage = () => {
                       onChange={handleFileUpload}
                       className="hidden"
                     />
-                    <Upload size={32} className="text-blue-400 mx-auto mb-2" />
-                    <p className="text-white text-sm font-medium" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
-                      Thumbnail Ekle
-                    </p>
-                    <p className="text-slate-500 text-xs" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
-                      {uploadedThumbnails.length}/3
+                    <Upload size={24} className="text-blue-400 mx-auto mb-1" />
+                    <p className="text-white text-xs font-medium" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
+                      Tıkla veya Sürükle
                     </p>
                   </div>
                 )}
