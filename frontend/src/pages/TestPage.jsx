@@ -234,6 +234,14 @@ const TestPage = () => {
     
     const newThumbnails = uploadedThumbnails.filter(t => t.id !== id);
     setUploadedThumbnails(newThumbnails);
+    
+    // Regenerate positions for remaining thumbnails
+    if (newThumbnails.length > 0) {
+      const newPositions = generateUserThumbnailPositions(newThumbnails.length);
+      setUserThumbnailPositions(newPositions);
+    } else {
+      setUserThumbnailPositions([]);
+    }
   };
 
   const updateThumbnailTitle = (id, newTitle) => {
