@@ -1,10 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
 import { Card } from '../components/ui/card';
 import { Button } from '../components/ui/button';
-import { Eye, Download, Trash2, CheckSquare, Square } from 'lucide-react';
+import { Eye, Download, Trash2, CheckSquare, Square, Loader2, Wand2 } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import AnalysisDetailModal from '../components/modals/AnalysisDetailModal';
+import GenerationDetailModal from '../components/modals/GenerationDetailModal';
 import AccessGuard from '../components/AccessGuard';
+import { useAuth } from '../contexts/AuthContext';
+import { supabase } from '../utils/supabase';
+import toast from 'react-hot-toast';
 
 // MOCK DATA
 const mockGenerations = [
