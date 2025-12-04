@@ -67,11 +67,8 @@ const GenerationDetailModal = ({ generation, isOpen, onClose, onDelete }) => {
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-5xl bg-slate-900 border-slate-700 text-white max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle className="text-2xl font-bold text-white flex items-center justify-between" style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}>
+          <DialogTitle className="text-2xl font-bold text-white" style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}>
             Üretim Detayları
-            <button onClick={onClose} className="text-slate-400 hover:text-white">
-              <X size={24} />
-            </button>
           </DialogTitle>
         </DialogHeader>
 
