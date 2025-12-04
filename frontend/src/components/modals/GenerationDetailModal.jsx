@@ -75,9 +75,9 @@ const GenerationDetailModal = ({ generation, isOpen, onClose, onDelete }) => {
           </DialogTitle>
         </DialogHeader>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
-          {/* Left Column - Image */}
-          <div className="space-y-4">
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-6 mt-4">
+          {/* Left Column - Image (3/5 = 60%) */}
+          <div className="md:col-span-3 space-y-4">
             <div className="relative rounded-lg overflow-hidden">
               <img 
                 src={generation.image_url} 
