@@ -119,7 +119,7 @@ const TestPage = () => {
     if (shuffledCompetitors.length > 0) {
       buildSimulationList();
     }
-  }, [uploadedThumbnails, channelName, viewsMeta, shuffledCompetitors]);
+  }, [uploadedThumbnails, channelName, viewsMeta, shuffledCompetitors, userThumbnailPositions]);
 
   // Generate random positions for user thumbnails (only when thumbnails are added/removed)
   const generateUserThumbnailPositions = (count) => {
