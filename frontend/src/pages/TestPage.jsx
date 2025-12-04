@@ -375,50 +375,47 @@ const TestPage = () => {
                     }`}
                     style={{ fontFamily: 'Geist Sans, sans-serif' }}
                   >
-                    <Smartphone size={16} className="mr-2" />
-                    Mobil
+                    <Smartphone size={14} className="mr-1" />
+                    <span className="text-xs">Mobil</span>
                   </Button>
                 </div>
-              </div>
 
-              {/* Theme Toggle */}
-              <div className="space-y-2">
-                <Label className="text-white font-semibold" style={{ fontFamily: 'Geist Sans, sans-serif' }}>Tema</Label>
+                {/* Theme Toggle - Same Row */}
                 <div className="flex gap-2">
                   <Button
                     onClick={() => setTheme('dark')}
-                    className={`flex-1 ${
+                    size="sm"
+                    className={`flex-1 h-8 ${
                       theme === 'dark' 
-                        ? 'bg-blue-500 hover:bg-blue-600 text-white' 
-                        : 'bg-slate-800 hover:bg-slate-700 text-slate-300'
+                        ? 'bg-slate-700 hover:bg-slate-600 text-white' 
+                        : 'bg-slate-800 hover:bg-slate-700 text-slate-400'
                     }`}
-                    style={{ fontFamily: 'Geist Sans, sans-serif' }}
                   >
-                    <Moon size={16} className="mr-2" />
-                    Karanlık
+                    <Moon size={14} className="mr-1" />
+                    <span className="text-xs">Koyu</span>
                   </Button>
                   <Button
                     onClick={() => setTheme('light')}
-                    className={`flex-1 ${
+                    size="sm"
+                    className={`flex-1 h-8 ${
                       theme === 'light' 
-                        ? 'bg-blue-500 hover:bg-blue-600 text-white' 
-                        : 'bg-slate-800 hover:bg-slate-700 text-slate-300'
+                        ? 'bg-slate-200 hover:bg-slate-100 text-slate-900' 
+                        : 'bg-slate-800 hover:bg-slate-700 text-slate-400'
                     }`}
-                    style={{ fontFamily: 'Geist Sans, sans-serif' }}
                   >
-                    <Sun size={16} className="mr-2" />
-                    Aydınlık
+                    <Sun size={14} className="mr-1" />
+                    <span className="text-xs">Açık</span>
                   </Button>
                 </div>
               </div>
 
-              {/* Shuffle Button */}
+              {/* Shuffle Button - Compact */}
               <Button
                 onClick={handleShuffle}
-                className="w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white"
+                className="w-full h-9 bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 text-white text-sm"
                 style={{ fontFamily: 'Geist Sans, sans-serif' }}
               >
-                <Shuffle size={16} className="mr-2" />
+                <Shuffle size={14} className="mr-2" />
                 Sırayı Karıştır
               </Button>
             </div>
