@@ -255,13 +255,44 @@ const AnalyzePage = () => {
                     onDragOver={handleDragOver}
                     className="relative group"
                   >
-                    {/* Demo Image */}
+                    {/* Demo Image with Heatmap */}
                     <div className="relative rounded-2xl overflow-hidden border-4 border-purple-500/30">
                       <img 
                         src={DEMO_DATA.imageUrl} 
                         alt="Demo Thumbnail"
                         className="w-full aspect-video object-cover"
                       />
+                      
+                      {/* Heatmap Overlay */}
+                      {DEMO_DATA.heatmap_points && DEMO_DATA.heatmap_points.map((point, idx) => (
+                        <div
+                          key={idx}
+                          className="absolute rounded-full animate-pulse"
+                          style={{
+                            left: `${point.x}%`,
+                            top: `${point.y}%`,
+                            width: '80px',
+                            height: '80px',
+                            transform: 'translate(-50%, -50%)',
+                            backgroundColor: point.color === 'red' 
+                              ? 'rgba(239, 68, 68, 0.4)' 
+                              : point.color === 'yellow'
+                              ? 'rgba(251, 191, 36, 0.4)'
+                              : 'rgba(59, 130, 246, 0.4)',
+                            border: `3px solid ${point.color === 'red' 
+                              ? 'rgb(239, 68, 68)' 
+                              : point.color === 'yellow'
+                              ? 'rgb(251, 191, 36)'
+                              : 'rgb(59, 130, 246)'}`,
+                            boxShadow: point.color === 'red' 
+                              ? '0 0 20px rgba(239, 68, 68, 0.6)' 
+                              : point.color === 'yellow'
+                              ? '0 0 20px rgba(251, 191, 36, 0.6)'
+                              : '0 0 20px rgba(59, 130, 246, 0.6)',
+                          }}
+                        />
+                      ))}
+                      
                       <div className="absolute top-4 right-4 bg-purple-500 text-white px-3 py-1 rounded-full text-sm font-bold">
                         DEMO
                       </div>
