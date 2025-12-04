@@ -36,6 +36,7 @@ const CreatePage = () => {
   const [previewImage, setPreviewImage] = useState(null);
   const [generatedImage, setGeneratedImage] = useState(null);
   const [lightboxImage, setLightboxImage] = useState(null);
+  const [isGenerating, setIsGenerating] = useState(false);
 
   const {
     register,
