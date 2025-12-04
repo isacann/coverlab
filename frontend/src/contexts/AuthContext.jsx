@@ -9,7 +9,7 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // 1. Check active session with timeout
+    // 1. Check active session
     const checkUser = async () => {
       try {
         const { data: { session } } = await supabase.auth.getSession();
@@ -28,12 +28,7 @@ export const AuthProvider = ({ children }) => {
       }
     };
 
-    // Set timeout to prevent infinite loading
-    const timeout = setTimeout(() => {
-      setLoading(false);
-    }, 3000);
-
-    checkUser().then(() => clearTimeout(timeout));
+    checkUser();
 
     // 2. Listen for changes (Login/Logout)
     const { data: listener } = supabase.auth.onAuthStateChange(async (_event, session) => {
