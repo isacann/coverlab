@@ -335,7 +335,34 @@ const CreatePage = () => {
 
             {/* Right Column - Preview Canvas */}
             <div className="bg-slate-900/50 backdrop-blur-xl border border-slate-700/50 rounded-2xl p-8 shadow-2xl flex flex-col items-center justify-center min-h-[600px]">
-              {generatedImage ? (
+              {isGenerating ? (
+                <div className="text-center">
+                  <div className="relative w-24 h-24 mx-auto mb-6">
+                    <div className="absolute inset-0 border-4 border-cyan-500/30 rounded-full"></div>
+                    <div className="absolute inset-0 border-4 border-cyan-500 border-t-transparent rounded-full animate-spin"></div>
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <Wand2 size={32} className="text-cyan-400 animate-pulse" />
+                    </div>
+                  </div>
+                  <h3 
+                    className="text-2xl font-bold text-white mb-3 animate-pulse"
+                    style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}
+                  >
+                    Thumbnail Oluşturuluyor...
+                  </h3>
+                  <p 
+                    className="text-slate-400 mb-4"
+                    style={{ fontFamily: 'Geist Sans, sans-serif' }}
+                  >
+                    Yapay zeka sizin için çalışıyor
+                  </p>
+                  <div className="flex justify-center gap-1">
+                    <div className="w-2 h-2 bg-cyan-500 rounded-full animate-bounce" style={{ animationDelay: '0s' }}></div>
+                    <div className="w-2 h-2 bg-cyan-500 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                    <div className="w-2 h-2 bg-cyan-500 rounded-full animate-bounce" style={{ animationDelay: '0.4s' }}></div>
+                  </div>
+                </div>
+              ) : generatedImage ? (
                 <div className="w-full space-y-6">
                   <div className="relative">
                     <img 
