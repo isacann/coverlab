@@ -1,93 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Upload, Monitor, Smartphone, Sun, Moon, Shuffle, X } from 'lucide-react';
 import AccessGuard from '../components/AccessGuard';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
-
-// COMPETITOR MOCK DATA
-const COMPETITORS = [
-  {
-    id: 1,
-    thumbnail: 'https://picsum.photos/seed/vid1/1280/720',
-    title: 'I Spent 24 Hours in the Worlds Largest Cave',
-    channel: 'MrBeast',
-    avatar: 'MB',
-    views: '45M görüntüleme • 2 gün önce'
-  },
-  {
-    id: 2,
-    thumbnail: 'https://picsum.photos/seed/vid2/1280/720',
-    title: 'My Gaming Setup Tour 2024 - $50,000 Setup!',
-    channel: 'TechGuru',
-    avatar: 'TG',
-    views: '2.1M görüntüleme • 5 saat önce'
-  },
-  {
-    id: 3,
-    thumbnail: 'https://picsum.photos/seed/vid3/1280/720',
-    title: 'This Changed Everything... (Storytime)',
-    channel: 'Daily Vlogs',
-    avatar: 'DV',
-    views: '890K görüntüleme • 12 saat önce'
-  },
-  {
-    id: 4,
-    thumbnail: 'https://picsum.photos/seed/vid4/1280/720',
-    title: 'You Won\'t Believe What Happened Next...',
-    channel: 'Trending Now',
-    avatar: 'TN',
-    views: '5.4M görüntüleme • 1 gün önce'
-  },
-  {
-    id: 5,
-    thumbnail: 'https://picsum.photos/seed/vid5/1280/720',
-    title: 'TOP 10 Most INSANE Moments in Gaming History',
-    channel: 'GameTime',
-    avatar: 'GT',
-    views: '3.2M görüntüleme • 3 gün önce'
-  },
-  {
-    id: 6,
-    thumbnail: 'https://picsum.photos/seed/vid6/1280/720',
-    title: 'I Built the PERFECT Smart Home for $10,000',
-    channel: 'Tech Reviews',
-    avatar: 'TR',
-    views: '1.8M görüntüleme • 1 hafta önce'
-  },
-  {
-    id: 7,
-    thumbnail: 'https://picsum.photos/seed/vid7/1280/720',
-    title: 'Cooking the WORLD\'S Most Expensive Burger',
-    channel: 'Food Masters',
-    avatar: 'FM',
-    views: '4.5M görüntüleme • 2 gün önce'
-  },
-  {
-    id: 8,
-    thumbnail: 'https://picsum.photos/seed/vid8/1280/720',
-    title: 'Why Everyone is Talking About THIS...',
-    channel: 'Viral Videos',
-    avatar: 'VV',
-    views: '7.2M görüntüleme • 6 saat önce'
-  },
-  {
-    id: 9,
-    thumbnail: 'https://picsum.photos/seed/vid9/1280/720',
-    title: 'My Morning Routine That Changed My Life',
-    channel: 'Life Hacks',
-    avatar: 'LH',
-    views: '2.9M görüntüleme • 4 gün önce'
-  },
-  {
-    id: 10,
-    thumbnail: 'https://picsum.photos/seed/vid10/1280/720',
-    title: 'ULTIMATE Travel Guide to Tokyo 2024',
-    channel: 'Travel World',
-    avatar: 'TW',
-    views: '1.5M görüntüleme • 1 hafta önce'
-  }
-];
+import { competitors } from '../data/competitors';
 
 const VideoCard = ({ thumbnail, title, channel, views, avatar, isLightMode, isMobile, isUserVideo }) => {
   return (
