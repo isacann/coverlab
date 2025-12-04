@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import AccessGuard from '../components/AccessGuard';
 import { Button } from '../components/ui/button';
@@ -9,7 +10,16 @@ import { Input } from '../components/ui/input';
 import { Textarea } from '../components/ui/textarea';
 import { Label } from '../components/ui/label';
 import { Switch } from '../components/ui/switch';
-import { Upload, Download, Wand2 } from 'lucide-react';
+import { Card } from '../components/ui/card';
+import { Upload, Download, Wand2, ArrowRight, Eye } from 'lucide-react';
+
+// Mock Recent Generations
+const mockRecentGenerations = [
+  { id: 1, thumbnail: 'https://picsum.photos/seed/gen1/400/225', title: 'İstanbul Vlog Kapağı', date: '2 saat önce' },
+  { id: 2, thumbnail: 'https://picsum.photos/seed/gen2/400/225', title: 'Tech Review 2024', date: '5 saat önce' },
+  { id: 3, thumbnail: 'https://picsum.photos/seed/gen3/400/225', title: 'Gaming Montaj', date: '1 gün önce' },
+  { id: 4, thumbnail: 'https://picsum.photos/seed/gen4/400/225', title: 'Yemek Tarifi', date: '2 gün önce' },
+];
 
 const formSchema = z.object({
   videoKonusu: z.string().min(10, 'En az 10 karakter gerekli'),
