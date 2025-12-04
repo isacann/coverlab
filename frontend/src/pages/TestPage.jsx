@@ -97,6 +97,7 @@ const TestPage = () => {
   const [simulationList, setSimulationList] = useState([]); // Complete video list with user thumbnails injected
   const [isDragging, setIsDragging] = useState(false); // Drag & drop state
   const [shuffledCompetitors, setShuffledCompetitors] = useState([]); // Shuffled competitor list
+  const [userThumbnailPositions, setUserThumbnailPositions] = useState([]); // Fixed positions for user thumbnails
 
   // Initialize shuffled competitors on mount
   useEffect(() => {
