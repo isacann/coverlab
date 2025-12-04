@@ -178,9 +178,21 @@ const LabPage = () => {
     setIsSelectModeGen(false);
   };
   
-  const deleteSingleGen = (id, e) => {
-    e.stopPropagation();
-    setGenerations(prev => prev.filter(g => g.id !== id));
+  const deleteSingleGen = async (id, e) => {
+    if (e) e.stopPropagation();
+    try {
+      const { error } = await supabase
+        .from('generations')
+        .delete()
+        .eq('id', id);
+
+      if (error) throw error;
+      setGenerations(prev => prev.filter(g => g.id !== id));
+      toast.success('Silindi');
+    } catch (error) {
+      console.error('Delete error:', error);
+      toast.error('Silinemedi');
+    }
   };
   
   // Handlers for Analyses
