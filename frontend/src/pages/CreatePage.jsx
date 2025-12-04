@@ -49,6 +49,7 @@ const CreatePage = () => {
       videoKonusu: '',
       videoBasligi: '',
       thumbnailYazisi: '',
+      ekstraIstek: '',
       creatorStatus: false,
     },
   });
