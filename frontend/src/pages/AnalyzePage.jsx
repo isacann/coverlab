@@ -382,7 +382,7 @@ const AnalyzePage = () => {
                 {/* RESULTS MODE */}
                 {mode === 'results' && (
                   <div className="space-y-6">
-                    {/* Result Image with Heatmap */}
+                    {/* Result Image with Conditional Heatmap */}
                     <div className="relative rounded-2xl overflow-hidden border-4 border-green-500/50">
                       <img 
                         src={analysisResult.imageUrl} 
@@ -390,8 +390,8 @@ const AnalyzePage = () => {
                         className="w-full aspect-video object-cover"
                       />
                       
-                      {/* Heatmap Overlay */}
-                      {analysisResult.heatmap_points && analysisResult.heatmap_points.map((point, idx) => (
+                      {/* Heatmap Overlay - Only show when heatmap tab is active */}
+                      {activeTab === 'heatmap' && analysisResult.heatmap_points && analysisResult.heatmap_points.map((point, idx) => (
                         <div
                           key={idx}
                           className="absolute rounded-full animate-pulse"
