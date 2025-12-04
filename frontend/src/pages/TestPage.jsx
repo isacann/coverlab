@@ -188,7 +188,12 @@ const TestPage = () => {
       title: `Video Başlığı ${uploadedThumbnails.length + index + 1}`
     }));
 
-    setUploadedThumbnails([...uploadedThumbnails, ...newThumbnails]);
+    const newThumbnailsList = [...uploadedThumbnails, ...newThumbnails];
+    setUploadedThumbnails(newThumbnailsList);
+    
+    // Generate new positions for ALL thumbnails
+    const newPositions = generateUserThumbnailPositions(newThumbnailsList.length);
+    setUserThumbnailPositions(newPositions);
   };
 
   // Drag & Drop handlers
