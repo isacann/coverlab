@@ -209,6 +209,7 @@ metadata:
 
 test_plan:
   current_focus:
+    - "TestPage Compact Grid Layout"
     - "Lab Page Access Control"
     - "Create Page Recent History Section"
     - "Analyze Page Recent History Section"
