@@ -98,6 +98,15 @@ const TestPage = () => {
   const [theme, setTheme] = useState('dark'); // dark | light
   const [simulationList, setSimulationList] = useState([]); // Complete video list with user thumbnails injected
 
+  // Cleanup blob URLs on unmount
+  useEffect(() => {
+    return () => {
+      uploadedThumbnails.forEach(thumb => {
+        if (thumb.url) URL.revokeObjectURL(thumb.url);
+      });
+    };
+  }, []);
+
   // Initialize simulation list on mount and when thumbnails change
   useEffect(() => {
     buildSimulationList();
