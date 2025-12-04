@@ -167,23 +167,72 @@ const LabPage = () => {
 
             {/* Generations Tab */}
             <TabsContent value="generations">
+              {/* Selection Toolbar */}
+              <div className="flex justify-between items-center mb-6">
+                <Button
+                  variant={isSelectModeGen ? "default" : "outline"}
+                  onClick={toggleSelectModeGen}
+                  className={isSelectModeGen ? "bg-blue-500 hover:bg-blue-600 text-white" : "border-slate-700 text-slate-300 hover:text-white hover:bg-slate-800"}
+                  style={{ fontFamily: 'Geist Sans, sans-serif' }}
+                >
+                  {isSelectModeGen ? <CheckSquare size={16} className="mr-2" /> : <Square size={16} className="mr-2" />}
+                  {isSelectModeGen ? 'Seçimi İptal Et' : 'Seç'}
+                </Button>
+                
+                {isSelectModeGen && selectedGens.length > 0 && (
+                  <span className="text-slate-400 text-sm" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
+                    {selectedGens.length} öğe seçildi
+                  </span>
+                )}
+              </div>
+
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {mockGenerations.map((gen) => (
+                {generations.map((gen) => (
                   <Card 
                     key={gen.id} 
-                    className="bg-slate-900 border-slate-700 overflow-hidden cursor-pointer group hover:border-blue-500 transition-all"
-                    onClick={() => setLightboxImage(gen.thumbnail)}
+                    className={`bg-slate-900 border-slate-700 overflow-hidden cursor-pointer group hover:border-blue-500 transition-all relative ${
+                      selectedGens.includes(gen.id) ? 'ring-2 ring-blue-500' : ''
+                    }`}
+                    onClick={() => isSelectModeGen ? toggleGenSelection(gen.id) : setLightboxImage(gen.thumbnail)}
                   >
+                    {/* Selection Checkbox Overlay */}
+                    {isSelectModeGen && (
+                      <div className="absolute top-3 left-3 z-10">
+                        <div className={`w-6 h-6 rounded border-2 flex items-center justify-center ${
+                          selectedGens.includes(gen.id) 
+                            ? 'bg-blue-500 border-blue-500' 
+                            : 'bg-slate-800/70 border-slate-500'
+                        }`}>
+                          {selectedGens.includes(gen.id) && (
+                            <CheckSquare size={16} className="text-white" />
+                          )}
+                        </div>
+                      </div>
+                    )}
+
                     <div className="relative">
                       <img src={gen.thumbnail} alt={gen.title} className="w-full aspect-video object-cover" />
-                      <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-3">
-                        <button className="bg-blue-500 hover:bg-blue-600 text-white p-3 rounded-full">
-                          <Eye size={20} />
-                        </button>
-                        <button className="bg-slate-700 hover:bg-slate-600 text-white p-3 rounded-full">
-                          <Download size={20} />
-                        </button>
-                      </div>
+                      
+                      {/* Hover Actions (Only when NOT in select mode) */}
+                      {!isSelectModeGen && (
+                        <>
+                          <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-3">
+                            <button className="bg-blue-500 hover:bg-blue-600 text-white p-3 rounded-full transition-transform hover:scale-110">
+                              <Eye size={20} />
+                            </button>
+                            <button className="bg-slate-700 hover:bg-slate-600 text-white p-3 rounded-full transition-transform hover:scale-110">
+                              <Download size={20} />
+                            </button>
+                          </div>
+                          {/* Delete Icon on Hover (Top Right) */}
+                          <button 
+                            onClick={(e) => deleteSingleGen(gen.id, e)}
+                            className="absolute top-3 right-3 bg-red-500/90 hover:bg-red-600 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition-all hover:scale-110 z-10"
+                          >
+                            <Trash2 size={16} />
+                          </button>
+                        </>
+                      )}
                     </div>
                     <div className="p-4">
                       <h3 className="text-white font-semibold mb-1" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
@@ -196,6 +245,15 @@ const LabPage = () => {
                   </Card>
                 ))}
               </div>
+
+              {/* Empty State */}
+              {generations.length === 0 && (
+                <div className="text-center py-20">
+                  <p className="text-slate-500 text-lg" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
+                    Henüz bir üretim yok
+                  </p>
+                </div>
+              )}
             </TabsContent>
 
             {/* Analyses Tab */}
