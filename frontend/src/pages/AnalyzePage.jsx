@@ -159,6 +159,8 @@ const AnalyzePage = () => {
         method: 'POST',
         body: formData,
       });
+      
+      console.log('📡 Response received!');
 
       console.log('📡 Response status:', response.status, 'OK:', response.ok);
 
