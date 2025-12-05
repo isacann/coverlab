@@ -238,7 +238,7 @@ const PricingPage = () => {
                   ) : (
                     <>
                       <Zap size={18} className="mr-2" />
-                      Pro'ya Yükselt
+                      Pro&apos;ya Yükselt
                     </>
                   )}
                 </Button>
