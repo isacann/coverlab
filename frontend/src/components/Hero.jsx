@@ -22,21 +22,22 @@ const Hero = () => {
       <div className="relative z-10 max-w-4xl mx-auto px-6 text-center">
         {/* Headline */}
         <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-6 leading-tight">
-          Tahmin Etmeyi Bırakın. <br />Tıklanmaya Başlayın.
+          YouTube Kapaklarınızı Şansa Bırakmayın. <br />Yapay Zeka ile Garantileyin.
         </h1>
 
         {/* Subheadline */}
         <p className="text-xl md:text-2xl text-slate-200 mb-10 leading-relaxed">
-          Viral YouTube kapaklarını tek platformda Oluşturun, Test Edin ve Analiz Edin.
+          Viral YouTube kapaklarını tek platformda Oluşturun, Test Edin ve Analiz Edin. <br />
+          Profesyonel YouTuber'ların gizli silahı artık sizin de elinizde.
         </p>
 
         {/* CTA Button */}
         <Button 
-          onClick={() => navigate('/dashboard')}
+          onClick={() => navigate('/login')}
           size="lg"
-          className="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white text-lg px-8 py-6 rounded-lg shadow-2xl hover:shadow-cyan-500/50 transition-all duration-300 transform hover:scale-105"
+          className="bg-gradient-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600 text-white text-lg px-8 py-6 rounded-lg shadow-2xl hover:shadow-orange-500/50 transition-all duration-300 transform hover:scale-105"
         >
-          Tek Tıkla Oluştur
+          Ücretsiz Başla
         </Button>
       </div>
     </section>
