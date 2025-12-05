@@ -132,9 +132,15 @@ const AnalyzePage = () => {
   });
 
   const handleAnalyze = async () => {
-    if (!file || !title.trim() || !user?.id) {
-      alert('Lütfen resim, başlık ve giriş kontrolü yapın');
+    console.log('🔍 Debug - file:', !!file, 'title:', title, 'user:', user);
+    
+    if (!file || !title.trim()) {
+      alert('Lütfen resim ve başlık giriniz');
       return;
+    }
+
+    if (!user?.id) {
+      console.warn('⚠️ User ID not found, using default');
     }
 
     setIsAnalyzing(true);
@@ -145,7 +151,7 @@ const AnalyzePage = () => {
       const formData = new FormData();
       formData.append('file', compressedBlob, 'thumbnail.jpg');
       formData.append('title', title.trim());
-      formData.append('user_id', user.id);
+      formData.append('user_id', user?.id || 'anonymous');
 
       console.log('📤 Sending to n8n webhook...');
       const response = await fetch('https://n8n.getoperiqo.com/webhook/49b88d43-fdf3-43c8-bfc4-70c30528f370', {
