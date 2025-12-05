@@ -157,10 +157,13 @@ const AnalyzePage = () => {
       }
 
       // Step 6: Parse response
-      const data = await response.json();
-      console.log('✅ Analysis complete:', data);
+      const responseData = await response.json();
+      console.log('✅ Analysis complete:', responseData);
 
-      setResult(data);
+      // Extract data from n8n response structure
+      const analysisData = responseData.success ? responseData.data : responseData;
+      
+      setResult(analysisData);
       alert('Analiz tamamlandı! 🎉');
 
     } catch (error) {
