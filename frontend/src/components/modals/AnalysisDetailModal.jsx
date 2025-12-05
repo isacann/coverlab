@@ -147,30 +147,42 @@ const AnalysisDetailModal = ({ analysis, isOpen, onClose }) => {
             {/* Score */}
             <div className="mb-8 text-center">
               <div className="text-7xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-400 mb-2" style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}>
-                {analysis.score}/100
+                {score}
               </div>
               <p className="text-xl text-blue-400 font-bold" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
-                {analysis.rating}
+                {label}
               </p>
               <div className="h-6 bg-slate-800 rounded-full overflow-hidden border-2 border-slate-700 mt-4 mx-auto max-w-md">
                 <div
                   className="h-full bg-gradient-to-r from-blue-500 to-cyan-500 transition-all duration-1000 shadow-lg shadow-blue-500/50"
-                  style={{ width: `${analysis.score}%` }}
+                  style={{ width: `${score}%` }}
                 />
               </div>
             </div>
 
-            {/* Faces Data */}
-            <div className="mb-8">
-              <h4 className="text-xl font-bold text-white mb-4" style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}>
-                Yüz Analizi
+            {/* AI Feedback */}
+            <div className="mb-8 bg-slate-800/50 rounded-lg p-4 border border-slate-700">
+              <h4 className="text-lg font-bold text-cyan-400 mb-3" style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}>
+                AI Geri Bildirimi
               </h4>
-              <div className="space-y-4">
-                {analysis.faces_data?.map((face, idx) => (
-                  <ProgressBar key={idx} label={face.label} value={face.value} color="blue" />
-                ))}
-              </div>
+              <p className="text-slate-300 text-sm leading-relaxed" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
+                {feedback}
+              </p>
             </div>
+
+            {/* Faces Data */}
+            {facesData.length > 0 && (
+              <div className="mb-8">
+                <h4 className="text-xl font-bold text-white mb-4" style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}>
+                  Yüz Analizi
+                </h4>
+                <div className="space-y-4">
+                  {facesData.map((face, idx) => (
+                    <ProgressBar key={idx} label={face.label} value={face.value} color="blue" />
+                  ))}
+                </div>
+              </div>
+            )}
 
             {/* Vibe Data */}
             <div className="mb-8">
