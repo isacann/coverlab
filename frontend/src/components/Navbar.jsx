@@ -41,20 +41,52 @@ const Navbar = () => {
 
           {/* Center Menu - Visible to All Users */}
           <div className="hidden md:flex items-center gap-8 bg-slate-900/30 px-6 py-3 rounded-full border border-slate-700/30 backdrop-blur-sm">
-            <Link to="/" className="flex items-center gap-2 text-slate-300 hover:text-white transition-colors" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
+            <Link 
+              to="/" 
+              className={`flex items-center gap-2 transition-colors ${
+                isActive('/') 
+                  ? 'text-white font-semibold' 
+                  : 'text-slate-300 hover:text-white'
+              }`}
+              style={{ fontFamily: 'Geist Sans, sans-serif' }}
+            >
               <Home size={20} />
-              <span className="text-sm">Home</span>
+              <span className="text-sm">Anasayfa</span>
             </Link>
-            <Link to="/create" className="flex items-center gap-2 text-cyan-400 hover:text-cyan-300 transition-colors" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
+            <Link 
+              to="/create" 
+              className={`flex items-center gap-2 transition-colors ${
+                isActive('/create')
+                  ? 'text-cyan-300 font-semibold'
+                  : 'text-cyan-400 hover:text-cyan-300'
+              }`}
+              style={{ fontFamily: 'Geist Sans, sans-serif' }}
+            >
               <Wand2 size={20} />
-              <span className="text-sm">Create</span>
+              <span className="text-sm">Oluştur</span>
             </Link>
-            <Link to="/analyze" className="flex items-center gap-2 text-slate-300 hover:text-white transition-colors" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
+            <Link 
+              to="/analyze" 
+              className={`flex items-center gap-2 transition-colors ${
+                isActive('/analyze')
+                  ? 'text-white font-semibold'
+                  : 'text-slate-300 hover:text-white'
+              }`}
+              style={{ fontFamily: 'Geist Sans, sans-serif' }}
+            >
               <BarChart3 size={20} />
-              <span className="text-sm">Analyze</span>
+              <span className="text-sm">Analiz</span>
             </Link>
-            <Link to="/test" className="flex items-center gap-2 text-slate-300 hover:text-white transition-colors" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
-              <FlaskConical size={20} />
+            <Link 
+              to="/test" 
+              className={`flex items-center gap-2 transition-colors ${
+                isActive('/test')
+                  ? 'text-white font-semibold'
+                  : 'text-slate-300 hover:text-white'
+              }`}
+              style={{ fontFamily: 'Geist Sans, sans-serif' }}
+            >
+              <Play size={20} />
               <span className="text-sm">Test</span>
             </Link>
           </div>
