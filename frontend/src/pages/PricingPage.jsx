@@ -306,7 +306,14 @@ const PricingPage = () => {
                       disabled={!isPro}
                       onClick={() => isPro && handleCheckout('addon', pkg.stripeUrl)}
                     >
-                      {isPro ? 'Satın Al' : 'Sadece PRO Üyeler'}
+                      {isPro ? (
+                        'Satın Al'
+                      ) : (
+                        <>
+                          <Lock size={16} className="mr-2" />
+                          Sadece PRO Üyeler
+                        </>
+                      )}
                     </Button>
                   </CardFooter>
                 </Card>
