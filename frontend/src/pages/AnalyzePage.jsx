@@ -286,40 +286,56 @@ const AnalyzePage = () => {
           {/* Right: Preview & Score */}
           <div className="bg-slate-900/50 backdrop-blur-sm rounded-2xl border border-slate-700/50 p-8">
             <h2 className="text-2xl font-bold text-white mb-6" style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}>
-              Önizleme
+              {showDemo ? 'Demo Önizleme' : 'Sonuçlar'}
             </h2>
 
             {/* Thumbnail Image */}
             <div className="relative mb-6">
               <img src={displayImage} alt="Thumbnail" className="w-full h-64 object-cover rounded-xl" />
-              {isDemo && (
+              {showDemo && (
                 <div className="absolute top-2 left-2 bg-blue-500 text-white px-3 py-1 rounded-full text-xs font-semibold">
                   DEMO
                 </div>
               )}
+              {file && !result && (
+                <div className="absolute inset-0 bg-black/80 rounded-xl flex items-center justify-center">
+                  <div className="text-center">
+                    <AlertCircle className="mx-auto mb-3 text-blue-400" size={48} />
+                    <p className="text-white font-semibold mb-2" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
+                      Analiz Bekleniyor
+                    </p>
+                    <p className="text-sm text-slate-400" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
+                      "Analiz Et" butonuna basın
+                    </p>
+                  </div>
+                </div>
+              )}
             </div>
 
-            {/* Score Display */}
-            <div className="bg-gradient-to-br from-blue-500/20 to-purple-600/20 border border-blue-500/30 rounded-xl p-6 text-center">
-              <div className="text-6xl font-bold text-white mb-2" style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}>
-                {displayData.score.value}
-              </div>
-              <div className="text-2xl font-semibold text-blue-400 mb-4" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
-                {displayData.score.label}
-              </div>
-              <div className="text-sm text-slate-300" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
-                <div className="flex items-center justify-center gap-2 mb-2">
-                  <TrendingUp size={16} className="text-green-400" />
-                  <span>CTR Tahmini: {displayData.prediction.estimated_ctr_range}</span>
+            {/* Score Display - Only show when we have results or demo */}
+            {(showDemo || showResults) && (
+              <div className="bg-gradient-to-br from-blue-500/20 to-purple-600/20 border border-blue-500/30 rounded-xl p-6 text-center">
+                <div className="text-6xl font-bold text-white mb-2" style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}>
+                  {displayData.score.value}
                 </div>
-                <div className="text-xs text-slate-400">{displayData.prediction.comparison}</div>
+                <div className="text-2xl font-semibold text-blue-400 mb-4" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
+                  {displayData.score.label}
+                </div>
+                <div className="text-sm text-slate-300" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
+                  <div className="flex items-center justify-center gap-2 mb-2">
+                    <TrendingUp size={16} className="text-green-400" />
+                    <span>CTR Tahmini: {displayData.prediction.estimated_ctr_range}</span>
+                  </div>
+                  <div className="text-xs text-slate-400">{displayData.prediction.comparison}</div>
+                </div>
               </div>
-            </div>
+            )}
           </div>
         </div>
 
-        {/* Analysis Results Tabs */}
-        <div className="bg-slate-900/50 backdrop-blur-sm rounded-2xl border border-slate-700/50 p-8">
+        {/* Analysis Results Tabs - Only show when we have results or demo */}
+        {(showDemo || showResults) && (
+          <div className="bg-slate-900/50 backdrop-blur-sm rounded-2xl border border-slate-700/50 p-8">
           {/* Tabs */}
           <div className="flex gap-4 mb-8 overflow-x-auto pb-2">
             <TabButton active={activeTab === 'overview'} onClick={() => setActiveTab('overview')} icon={<Eye size={16} />}>
