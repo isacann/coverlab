@@ -98,7 +98,7 @@ const PricingPage = () => {
           </div>
 
           {/* Main Plan Grid */}
-          <div className="grid md:grid-cols-2 gap-8 mb-20">
+          <div className={`grid ${!isPro ? 'md:grid-cols-2' : ''} gap-8 mb-20 ${isPro ? 'justify-center' : ''}`}>
             {/* FREE PLAN - BAŞLANGIÇ */}
             <Card className="bg-slate-900 border-slate-700 relative">
               <CardHeader>
