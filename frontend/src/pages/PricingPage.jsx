@@ -222,11 +222,25 @@ const PricingPage = () => {
 
               <CardFooter>
                 <Button 
-                  className="w-full bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white border-0 shadow-lg shadow-blue-500/50"
+                  className={`w-full ${isPro 
+                    ? 'bg-slate-700 text-slate-400 cursor-not-allowed border-slate-600' 
+                    : 'bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white border-0 shadow-lg shadow-blue-500/50'
+                  }`}
                   style={{ fontFamily: 'Geist Sans, sans-serif' }}
+                  disabled={isPro}
+                  onClick={() => !isPro && handleCheckout('pro', proStripeUrl)}
                 >
-                  <Zap size={18} className="mr-2" />
-                  Pro'ya Yükselt
+                  {isPro ? (
+                    <>
+                      <Check size={18} className="mr-2" />
+                      Mevcut Planınız
+                    </>
+                  ) : (
+                    <>
+                      <Zap size={18} className="mr-2" />
+                      Pro'ya Yükselt
+                    </>
+                  )}
                 </Button>
               </CardFooter>
             </Card>
