@@ -185,10 +185,14 @@ const AnalyzePage = () => {
     setActiveTab('overview');
   };
 
-  // DEMO MODE: MrBeast analizi sabit
-  const displayImage = preview || MRBEAST_IMAGE;
+  // Display logic
+  // DEMO MODE: Hiçbir şey yüklenmediğinde MrBeast demo göster
+  // UPLOAD MODE: Kullanıcı dosya yüklediğinde sadece preview göster (sonuçları gizle)
+  // RESULT MODE: Analiz tamamlandığında sonuçları göster
+  const showDemo = !file && !result;
+  const showResults = !!result;
+  const displayImage = preview || (result && result.input_image_url) || MRBEAST_IMAGE;
   const displayData = result || MRBEAST_DEMO.data;
-  const isDemo = !result;
 
   return (
     <div className="min-h-screen bg-slate-950 pt-24 pb-12">
