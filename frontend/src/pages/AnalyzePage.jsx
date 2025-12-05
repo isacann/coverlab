@@ -451,7 +451,7 @@ const VibeTab = ({ data }) => (
 );
 
 // Objects Tab
-const ObjectsTab = ({ data }) => {
+const ObjectsTab = ({ data, image }) => {
   const [selectedObject, setSelectedObject] = React.useState(null);
   
   // Renk paleti - Her obje için farklı renk
@@ -472,7 +472,7 @@ const ObjectsTab = ({ data }) => {
         </h3>
         <div className="relative inline-block">
           <img 
-            src={MRBEAST_IMAGE} 
+            src={image} 
             alt="Objects Detection" 
             className="w-full max-h-96 object-contain rounded-xl" 
           />
