@@ -407,63 +407,77 @@ const LabPage = () => {
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {analyses.map((analysis) => (
-                  <Card 
-                    key={analysis.id} 
-                    className={`bg-slate-900 border-slate-700 overflow-hidden cursor-pointer group hover:border-blue-500 transition-all relative ${
-                      selectedAnas.includes(analysis.id) ? 'ring-2 ring-blue-500' : ''
-                    }`}
-                    onClick={() => isSelectModeAna ? toggleAnaSelection(analysis.id) : setSelectedAnalysis(analysis)}
-                  >
-                    {/* Selection Checkbox Overlay */}
-                    {isSelectModeAna && (
-                      <div className="absolute top-3 left-3 z-10">
-                        <div className={`w-6 h-6 rounded border-2 flex items-center justify-center ${
-                          selectedAnas.includes(analysis.id) 
-                            ? 'bg-blue-500 border-blue-500' 
-                            : 'bg-slate-800/70 border-slate-500'
-                        }`}>
-                          {selectedAnas.includes(analysis.id) && (
-                            <CheckSquare size={16} className="text-white" />
-                          )}
-                        </div>
-                      </div>
-                    )}
-
-                    <div className="relative">
-                      <img src={analysis.thumbnail} alt={analysis.title} className="w-full aspect-video object-cover" />
-                      <div className="absolute top-2 right-2 bg-blue-500 text-white px-3 py-1 rounded-full text-sm font-bold">
-                        {analysis.score}/100
-                      </div>
-                      
-                      {/* Hover Actions (Only when NOT in select mode) */}
-                      {!isSelectModeAna && (
-                        <>
-                          <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                            <button className="bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold transition-transform hover:scale-105">
-                              Detayları Gör
-                            </button>
+                {analyses.map((analysis) => {
+                  // Parse analysis_data if it's a string
+                  const analysisData = typeof analysis.analysis_data === 'string' 
+                    ? JSON.parse(analysis.analysis_data) 
+                    : analysis.analysis_data;
+                  
+                  const score = analysisData?.score?.value || 0;
+                  const label = analysisData?.score?.label || 'N/A';
+                  
+                  return (
+                    <Card 
+                      key={analysis.id} 
+                      className={`bg-slate-900 border-slate-700 overflow-hidden cursor-pointer group hover:border-blue-500 transition-all relative ${
+                        selectedAnas.includes(analysis.id) ? 'ring-2 ring-blue-500' : ''
+                      }`}
+                      onClick={() => isSelectModeAna ? toggleAnaSelection(analysis.id) : setSelectedAnalysis({...analysis, analysis_data: analysisData})}
+                    >
+                      {/* Selection Checkbox Overlay */}
+                      {isSelectModeAna && (
+                        <div className="absolute top-3 left-3 z-10">
+                          <div className={`w-6 h-6 rounded border-2 flex items-center justify-center ${
+                            selectedAnas.includes(analysis.id) 
+                              ? 'bg-blue-500 border-blue-500' 
+                              : 'bg-slate-800/70 border-slate-500'
+                          }`}>
+                            {selectedAnas.includes(analysis.id) && (
+                              <CheckSquare size={16} className="text-white" />
+                            )}
                           </div>
-                          {/* Delete Icon on Hover (Top Left, avoiding score badge) */}
-                          <button 
-                            onClick={(e) => deleteSingleAna(analysis.id, e)}
-                            className="absolute top-2 left-2 bg-red-500/90 hover:bg-red-600 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition-all hover:scale-110 z-10"
-                          >
-                            <Trash2 size={16} />
-                          </button>
-                        </>
+                        </div>
                       )}
-                    </div>
-                    <div className="p-4">
-                      <h3 className="text-white font-semibold mb-1" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
-                        {analysis.title}
-                      </h3>
-                      <p className="text-slate-500 text-sm" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
-                        {analysis.date} • {analysis.rating}
-                      </p>
-                    </div>
-                  </Card>
-                ))}
+
+                      <div className="relative">
+                        <img 
+                          src={analysis.thumbnail_url || analysisData?.input_image_url || 'https://via.placeholder.com/400x225'} 
+                          alt={analysis.title || 'Analiz'} 
+                          className="w-full aspect-video object-cover" 
+                        />
+                        <div className="absolute top-2 right-2 bg-blue-500 text-white px-3 py-1 rounded-full text-sm font-bold">
+                          {score}
+                        </div>
+                        
+                        {/* Hover Actions (Only when NOT in select mode) */}
+                        {!isSelectModeAna && (
+                          <>
+                            <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                              <button className="bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold transition-transform hover:scale-105">
+                                Detayları Gör
+                              </button>
+                            </div>
+                            {/* Delete Icon on Hover (Top Left, avoiding score badge) */}
+                            <button 
+                              onClick={(e) => deleteSingleAna(analysis.id, e)}
+                              className="absolute top-2 left-2 bg-red-500/90 hover:bg-red-600 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition-all hover:scale-110 z-10"
+                            >
+                              <Trash2 size={16} />
+                            </button>
+                          </>
+                        )}
+                      </div>
+                      <div className="p-4">
+                        <h3 className="text-white font-semibold mb-1 truncate" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
+                          {analysis.title || analysisData?.input_title || 'Untitled'}
+                        </h3>
+                        <p className="text-slate-500 text-sm" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
+                          {formatDate(analysis.created_at)} • {label}
+                        </p>
+                      </div>
+                    </Card>
+                  );
+                })}
               </div>
 
               {/* Empty State */}
