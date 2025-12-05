@@ -297,10 +297,15 @@ const PricingPage = () => {
                   <CardFooter>
                     <Button 
                       variant="outline"
-                      className="w-full border-blue-500 text-blue-400 hover:bg-blue-500/10"
+                      className={`w-full ${isPro 
+                        ? 'border-blue-500 text-blue-400 hover:bg-blue-500/10' 
+                        : 'border-slate-600 text-slate-500 cursor-not-allowed'
+                      }`}
                       style={{ fontFamily: 'Geist Sans, sans-serif' }}
+                      disabled={!isPro}
+                      onClick={() => isPro && handleCheckout('addon', pkg.stripeUrl)}
                     >
-                      Satın Al
+                      {isPro ? 'Satın Al' : 'Sadece PRO Üyeler'}
                     </Button>
                   </CardFooter>
                 </Card>
