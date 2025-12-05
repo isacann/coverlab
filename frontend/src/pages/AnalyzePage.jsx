@@ -109,20 +109,45 @@ const AnalyzePage = () => {
 
       console.log('📤 Sending to n8n webhook...');
       console.log('👤 User ID:', user.id);
+      console.log('⏳ Waiting for response... (NO TIMEOUT)');
 
-      // Step 3: API Request
+      // Step 3: API Request - NO TIMEOUT, wait indefinitely
       const response = await fetch('https://n8n.getoperiqo.com/webhook/49b88d43-fdf3-43c8-bfc4-70c30528f370', {
         method: 'POST',
         body: formData,
-        // Note: Don't set Content-Type header - browser will set it automatically with boundary
+        // NO timeout - browser will wait for response
+        // NO signal - will not abort
+        keepalive: true, // Keep connection alive
       });
 
+      console.log('📥 Response received:', response.status);
+
+      // Check if response is OK
       if (!response.ok) {
-        throw new Error(`API Error: ${response.status} ${response.statusText}`);
+        // Get error details from response
+        let errorMessage = `API Hatası: ${response.status} ${response.statusText}`;
+        
+        try {
+          const errorData = await response.text();
+          if (errorData) {
+            errorMessage += `\n\nDetay: ${errorData}`;
+          }
+        } catch (e) {
+          // Ignore if can't parse error
+        }
+        
+        throw new Error(errorMessage);
       }
 
-      const data = await response.json();
-      console.log('✅ Analysis received:', data);
+      // Parse response
+      let data;
+      try {
+        data = await response.json();
+        console.log('✅ Analysis received:', data);
+      } catch (parseError) {
+        console.error('❌ JSON parse error:', parseError);
+        throw new Error('Sunucudan geçersiz yanıt alındı. Lütfen tekrar deneyin.');
+      }
 
       // Step 4: Process Response
       // Map n8n response to our format
@@ -157,7 +182,30 @@ const AnalyzePage = () => {
 
     } catch (error) {
       console.error('❌ Analysis error:', error);
-      toast.error('Analiz sırasında bir hata oluştu. Lütfen tekrar deneyin.');
+      
+      // Detailed error message for user
+      let userMessage = 'Analiz sırasında bir hata oluştu.';
+      
+      if (error.message.includes('API Hatası')) {
+        // API error
+        userMessage = error.message;
+      } else if (error.message.includes('Failed to fetch')) {
+        // Network error
+        userMessage = 'Bağlantı hatası. İnternet bağlantınızı kontrol edin ve tekrar deneyin.';
+      } else if (error.message.includes('geçersiz yanıt')) {
+        // Parse error
+        userMessage = error.message;
+      } else {
+        // Generic error
+        userMessage = `Hata: ${error.message}`;
+      }
+      
+      toast.error(userMessage, {
+        duration: 6000, // Show error for 6 seconds
+      });
+      
+      console.log('💡 Tip: Check n8n webhook logs for details');
+      
     } finally {
       setIsAnalyzing(false);
     }
