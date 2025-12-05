@@ -52,12 +52,18 @@ const LoginPage = () => {
       console.log('✅ Setting admin user:', adminUser);
       console.log('✅ Setting admin profile:', adminProfile);
 
+      // Save to localStorage for persistence
+      localStorage.setItem('admin_user', JSON.stringify(adminUser));
+      localStorage.setItem('admin_profile', JSON.stringify(adminProfile));
+
       // Manually set user and profile in AuthContext
       setUser(adminUser);
       setProfile(adminProfile);
 
       alert('🎉 Admin girişi başarılı!');
-      navigate('/olustur');
+      
+      // Force page reload to trigger AuthContext initialization
+      window.location.href = '/olustur';
     } catch (error) {
       console.error('❌ Admin login error:', error);
       alert('Admin girişi başarısız!');
