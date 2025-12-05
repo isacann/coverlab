@@ -396,11 +396,11 @@ const AnalyzePage = () => {
                       <div className="text-center mb-8 pb-6 border-b border-slate-800">
                         <div className="inline-flex items-center justify-center w-32 h-32 rounded-full bg-gradient-to-br from-purple-500 to-pink-600 mb-4">
                           <span className="text-5xl font-bold text-white">
-                            {displayResult.score}
+                            {displayResult.score?.value || displayResult.score || 0}
                           </span>
                         </div>
                         <h3 className="text-2xl font-bold text-white mb-1">
-                          {displayResult.rating}
+                          {displayResult.score?.label || displayResult.rating || 'Analiz Ediliyor'}
                         </h3>
                         <p className="text-slate-400">CTR Tahmini</p>
                       </div>
