@@ -87,8 +87,8 @@ const AnalysisDetailModal = ({ analysis, isOpen, onClose }) => {
           {/* LEFT: Image Section (40%) */}
           <div className="w-[40%] bg-black p-6 flex flex-col">
             <div className="flex justify-between items-center mb-4">
-              <h3 className="text-white text-lg font-bold" style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}>
-                {analysis.title}
+              <h3 className="text-white text-lg font-bold truncate" style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}>
+                {title}
               </h3>
               <Button
                 variant="ghost"
@@ -103,15 +103,15 @@ const AnalysisDetailModal = ({ analysis, isOpen, onClose }) => {
             {/* Image with Heatmap */}
             <div className="relative flex-1 flex items-center justify-center bg-slate-950 rounded-lg overflow-hidden">
               <img 
-                src={analysis.thumbnail} 
-                alt={analysis.title}
+                src={thumbnail} 
+                alt={title}
                 className="max-w-full max-h-full object-contain"
               />
               
               {/* Heatmap Overlay */}
-              {showHeatmap && analysis.heatmap_data && (
+              {showHeatmap && heatmapData.length > 0 && (
                 <div className="absolute inset-0 pointer-events-none">
-                  {analysis.heatmap_data.map((point, idx) => (
+                  {heatmapData.map((point, idx) => (
                     <div
                       key={idx}
                       className="absolute"
