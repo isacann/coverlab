@@ -340,7 +340,7 @@ const AnalyzePage = () => {
             {activeTab === 'overview' && <OverviewTab data={displayData} />}
             {activeTab === 'faces' && <FacesTab data={displayData.faces} />}
             {activeTab === 'vibe' && <VibeTab data={displayData.vibe} />}
-            {activeTab === 'objects' && <ObjectsTab data={displayData.objects} />}
+            {activeTab === 'objects' && <ObjectsTab data={displayData.objects} image={displayImage} />}
             {activeTab === 'heatmap' && <HeatmapTab data={displayData.heatmap} image={displayImage} />}
           </div>
         </div>
