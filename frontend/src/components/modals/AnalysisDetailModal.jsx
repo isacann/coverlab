@@ -185,21 +185,25 @@ const AnalysisDetailModal = ({ analysis, isOpen, onClose }) => {
             )}
 
             {/* Vibe Data */}
-            <div className="mb-8">
-              <h4 className="text-xl font-bold text-white mb-4" style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}>
-                Vibe & Etki
-              </h4>
-              <div className="space-y-4">
-                {analysis.vibe_data?.map((item, idx) => (
-                  <div key={idx} className="flex justify-between items-center bg-slate-800/50 p-4 rounded-lg border border-slate-700">
-                    <span className="text-white font-medium" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
-                      {item.label}
-                    </span>
-                    {renderDots(item.value)}
+            {vibeData.length > 0 && (
+              <div className="mb-8">
+                <h4 className="text-xl font-bold text-white mb-4" style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}>
+                  Vibe & Etki
+                </h4>
+                <div className="space-y-4">
+                  {vibeData.map((item, idx) => (
+                    <ProgressBar key={idx} label={item.label} value={item.value} color="cyan" />
+                  ))}
+                </div>
+                {data.vibe?.overall_vibe && (
+                  <div className="mt-4 bg-purple-500/20 border border-purple-500/30 rounded-lg p-3 text-center">
+                    <p className="text-purple-300 text-sm font-semibold">
+                      Genel Vibe: <span className="text-white capitalize">{data.vibe.overall_vibe}</span>
+                    </p>
                   </div>
-                ))}
+                )}
               </div>
-            </div>
+            )}
 
             {/* Objects Data */}
             <div>
