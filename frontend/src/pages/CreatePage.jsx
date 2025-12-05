@@ -625,12 +625,28 @@ const CreatePage = () => {
 
                       {/* Secondary: Download */}
                       <Button
-                        onClick={() => {
-                          const link = document.createElement('a');
-                          link.href = generatedImage;
-                          link.download = 'coverlab-thumbnail.jpg';
-                          link.click();
-                          toast.success('İndirme başladı! ✅');
+                        onClick={async () => {
+                          try {
+                            // Fetch image as blob to bypass CORS
+                            const response = await fetch(generatedImage);
+                            const blob = await response.blob();
+                            const url = window.URL.createObjectURL(blob);
+                            
+                            // Create download link
+                            const link = document.createElement('a');
+                            link.href = url;
+                            link.download = 'coverlab-thumbnail.jpg';
+                            document.body.appendChild(link);
+                            link.click();
+                            document.body.removeChild(link);
+                            
+                            // Cleanup
+                            window.URL.revokeObjectURL(url);
+                            toast.success('İndirme başladı! ✅');
+                          } catch (error) {
+                            console.error('Download error:', error);
+                            toast.error('İndirme başarısız oldu');
+                          }
                         }}
                         variant="outline"
                         className="border-slate-600 text-slate-300 hover:text-white hover:bg-slate-800 py-6 text-lg font-semibold"
