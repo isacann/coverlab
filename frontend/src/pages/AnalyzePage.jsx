@@ -102,7 +102,7 @@ const MRBEAST_DEMO = {
       comparison: "Nişindeki ortalama thumbnail'lerden %85 daha iyi",
       viral_potential: "çok yüksek"
     },
-    input_image_url: "https://customer-assets.emergentagent.com/job_youclicker/artifacts/mr_beast_golden_boat.png",
+    input_image_url: "https://customer-assets.emergentagent.com/job_coverlab-studio/artifacts/ot7391mb_6vd279giuweb1.jpg",
     input_title: "1.000.000 $'lık Gemi"
   }
 };
