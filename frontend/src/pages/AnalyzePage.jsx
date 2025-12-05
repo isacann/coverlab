@@ -160,19 +160,32 @@ const AnalyzePage = () => {
         body: formData,
       });
 
+      console.log('📡 Response status:', response.status, 'OK:', response.ok);
+
       const rawJson = await response.json();
-      console.log('📦 Raw n8n response:', rawJson);
+      console.log('📦 Raw n8n response:', JSON.stringify(rawJson).substring(0, 200) + '...');
+      console.log('📦 Raw type:', typeof rawJson, 'isArray:', Array.isArray(rawJson));
 
       // n8n returns array format: [{success: true, data: {...}}]
       const json = Array.isArray(rawJson) ? rawJson[0] : rawJson;
-      console.log('📦 Parsed json:', json);
+      console.log('📦 Parsed json type:', typeof json);
+      console.log('🔍 Validation check:', {
+        hasJson: !!json,
+        success: json?.success,
+        successType: typeof json?.success,
+        successIsTrue: json?.success === true,
+        hasData: !!json?.data,
+        dataKeys: json?.data ? Object.keys(json.data).slice(0, 5) : []
+      });
 
-      if (json.success === false || !json.data) {
-        alert(`Hata: ${json.error || 'Analiz başarısız'}`);
+      // STRICT validation: success must be exactly true and data must exist
+      if (!json || json.success !== true || !json.data) {
+        console.error('❌ Validation FAILED!');
+        alert(`Hata: ${json?.error || 'Analiz başarısız - Geçersiz response formatı'}`);
         return;
       }
 
-      console.log('✅ Analysis successful:', json.data);
+      console.log('✅ Analysis successful! Data keys:', Object.keys(json.data));
       setResult(json.data);
       alert('🎉 Analiz tamamlandı!');
 
