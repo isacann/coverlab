@@ -8,7 +8,11 @@ import { Home, Wand2, BarChart3, FlaskConical, Settings, LogOut, Zap, FolderOpen
 const Navbar = () => {
   const { user, profile, credits, signOut, loading } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  
+  // Check if current path matches
+  const isActive = (path) => location.pathname === path;
   
   // Debug log
   console.log('Navbar - User:', user ? 'Logged in' : 'Guest', 'Credits:', credits);
