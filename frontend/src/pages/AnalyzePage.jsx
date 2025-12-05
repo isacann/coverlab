@@ -107,7 +107,7 @@ const MRBEAST_DEMO = {
   }
 };
 
-const MRBEAST_IMAGE = "https://customer-assets.emergentagent.com/job_youclicker/artifacts/zcpjgvha_WwftwYrqSEhXBmO_kGidh.png";
+const MRBEAST_IMAGE = "https://customer-assets.emergentagent.com/job_coverlab-studio/artifacts/ot7391mb_6vd279giuweb1.jpg";
 
 const AnalyzePage = () => {
   const { user } = useAuth();
