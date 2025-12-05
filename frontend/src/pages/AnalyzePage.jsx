@@ -53,16 +53,23 @@ const AnalyzePage = () => {
 
   // File Upload Handler
   const handleFileUpload = (file) => {
+    console.log('📤 handleFileUpload called:', file);
+    
     if (!file || !file.type.startsWith('image/')) {
+      console.log('❌ Invalid file type');
       toast.error('Lütfen geçerli bir resim dosyası seçin');
       return;
     }
 
     const imageUrl = URL.createObjectURL(file);
+    console.log('✅ Image URL created:', imageUrl);
+    
     setUploadedFile(file);
     setUploadedImageUrl(imageUrl);
     setMode('upload');
     setVideoTitle(''); // Reset title
+    
+    console.log('✅ Mode set to: upload');
   };
 
   // Drag & Drop Handlers
