@@ -409,12 +409,26 @@ const LabPage = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {analyses.map((analysis) => {
                   // Parse analysis_data if it's a string
-                  const analysisData = typeof analysis.analysis_data === 'string' 
-                    ? JSON.parse(analysis.analysis_data) 
-                    : analysis.analysis_data;
+                  let analysisData = null;
+                  try {
+                    analysisData = typeof analysis.analysis_data === 'string' 
+                      ? JSON.parse(analysis.analysis_data) 
+                      : analysis.analysis_data;
+                  } catch (e) {
+                    console.error('Failed to parse analysis_data:', e, analysis);
+                    analysisData = {};
+                  }
                   
                   const score = analysisData?.score?.value || 0;
                   const label = analysisData?.score?.label || 'N/A';
+                  
+                  console.log('Analysis card:', {
+                    id: analysis.id,
+                    thumbnail_url: analysis.thumbnail_url,
+                    input_image_url: analysisData?.input_image_url,
+                    title: analysis.title,
+                    score
+                  });
                   
                   return (
                     <Card 
