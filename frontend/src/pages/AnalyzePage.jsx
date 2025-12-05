@@ -90,13 +90,19 @@ const AnalyzePage = () => {
         body: formData,
       });
 
-      const json = await response.json();
+      const rawJson = await response.json();
+      console.log('📦 Raw response:', rawJson);
+
+      // CRITICAL FIX: n8n returns an array, extract first element
+      const json = Array.isArray(rawJson) ? rawJson[0] : rawJson;
+      console.log('📦 Extracted json:', json);
 
       if (json.success === false || !json.data) {
         alert(`Hata: ${json.error || 'Analiz başarısız'}`);
         return;
       }
 
+      console.log('✅ Analysis data:', json.data);
       setResult(json.data);
       alert('Analiz tamamlandı! 🎉');
 
