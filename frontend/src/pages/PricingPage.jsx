@@ -99,66 +99,69 @@ const PricingPage = () => {
 
           {/* Main Plan Grid */}
           <div className={`grid ${!isPro ? 'md:grid-cols-2' : ''} gap-8 mb-20 ${isPro ? 'justify-center' : ''}`}>
-            {/* FREE PLAN - BAŞLANGIÇ */}
-            <Card className="bg-slate-900 border-slate-700 relative">
-              <CardHeader>
-                <CardTitle 
-                  className="text-2xl text-white mb-2"
-                  style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}
-                >
-                  BAŞLANGIÇ
-                </CardTitle>
-                <CardDescription className="text-slate-400" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
-                  Denemek için ideal
-                </CardDescription>
-                <div className="mt-6">
-                  <div className="flex items-baseline gap-2">
-                    <span 
-                      className="text-5xl font-bold text-white"
-                      style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}
-                    >
-                      0 TL
-                    </span>
-                    <span 
-                      className="text-slate-400 text-lg"
-                      style={{ fontFamily: 'Geist Sans, sans-serif' }}
-                    >
-                      / Sonsuza Kadar
-                    </span>
-                  </div>
-                </div>
-              </CardHeader>
-              
-              <CardContent>
-                <ul className="space-y-4">
-                  {features.free.map((feature, idx) => (
-                    <li key={idx} className="flex items-start gap-3">
-                      {feature.available ? (
-                        <Check size={20} className="text-green-500 flex-shrink-0 mt-0.5" />
-                      ) : (
-                        <X size={20} className="text-slate-600 flex-shrink-0 mt-0.5" />
-                      )}
+            {/* FREE PLAN - BAŞLANGIÇ - Hide for Pro users */}
+            {!isPro && (
+              <Card className="bg-slate-900 border-slate-700 relative">
+                <CardHeader>
+                  <CardTitle 
+                    className="text-2xl text-white mb-2"
+                    style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}
+                  >
+                    BAŞLANGIÇ
+                  </CardTitle>
+                  <CardDescription className="text-slate-400" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
+                    Denemek için ideal
+                  </CardDescription>
+                  <div className="mt-6">
+                    <div className="flex items-baseline gap-2">
                       <span 
-                        className={`text-sm ${feature.available ? 'text-slate-300' : 'text-slate-600'}`}
+                        className="text-5xl font-bold text-white"
+                        style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}
+                      >
+                        0 TL
+                      </span>
+                      <span 
+                        className="text-slate-400 text-lg"
                         style={{ fontFamily: 'Geist Sans, sans-serif' }}
                       >
-                        {feature.text}
+                        / Sonsuza Kadar
                       </span>
-                    </li>
-                  ))}
-                </ul>
-              </CardContent>
+                    </div>
+                  </div>
+                </CardHeader>
+                
+                <CardContent>
+                  <ul className="space-y-4">
+                    {features.free.map((feature, idx) => (
+                      <li key={idx} className="flex items-start gap-3">
+                        {feature.available ? (
+                          <Check size={20} className="text-green-500 flex-shrink-0 mt-0.5" />
+                        ) : (
+                          <X size={20} className="text-slate-600 flex-shrink-0 mt-0.5" />
+                        )}
+                        <span 
+                          className={`text-sm ${feature.available ? 'text-slate-300' : 'text-slate-600'}`}
+                          style={{ fontFamily: 'Geist Sans, sans-serif' }}
+                        >
+                          {feature.text}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                </CardContent>
 
-              <CardFooter>
-                <Button 
-                  variant="outline" 
-                  className="w-full border-slate-600 text-white hover:bg-slate-800"
-                  style={{ fontFamily: 'Geist Sans, sans-serif' }}
-                >
-                  Ücretsiz Başla
-                </Button>
-              </CardFooter>
-            </Card>
+                <CardFooter>
+                  <Button 
+                    variant="outline" 
+                    disabled
+                    className="w-full border-slate-600 text-slate-400 cursor-not-allowed"
+                    style={{ fontFamily: 'Geist Sans, sans-serif' }}
+                  >
+                    Mevcut Planınız
+                  </Button>
+                </CardFooter>
+              </Card>
+            )}
 
             {/* PRO PLAN - HERO */}
             <Card className="bg-slate-900 border-2 border-blue-500 relative scale-105 shadow-2xl shadow-blue-500/20">
