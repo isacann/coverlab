@@ -18,14 +18,14 @@ const PricingPage = () => {
       { text: 'Sınırsız AI Analiz & Skorlama', available: true, highlight: true },
       { text: 'Sınırsız YouTube Önizleme Testi', available: true, highlight: true },
       { text: 'Ekstra Kredi Satın Alma Hakkı', available: true },
-      { text: 'Öncelikli Destek', available: true }
+      { text: 'AI Başlık ve Açıklama Önerileri', available: true }
     ]
   };
 
   const addonPackages = [
-    { credits: 50, price: 300, badge: null },
-    { credits: 100, price: 500, badge: 'Fırsat' },
-    { credits: 200, price: 900, badge: 'En İyi Fiyat' }
+    { credits: 50, price: 299, badge: null },
+    { credits: 100, price: 499, badge: 'Fırsat' },
+    { credits: 200, price: 899, badge: 'En İyi Fiyat' }
   ];
 
   return (
