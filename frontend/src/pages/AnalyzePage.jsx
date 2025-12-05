@@ -364,6 +364,7 @@ const AnalyzePage = () => {
             {activeTab === 'heatmap' && <HeatmapTab data={displayData.heatmap} image={displayImage} />}
           </div>
         </div>
+        )}
       </div>
     </div>
   );
