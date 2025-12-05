@@ -140,7 +140,8 @@ const AnalyzePage = () => {
     }
 
     if (!user?.id) {
-      console.warn('⚠️ User ID not found, using default');
+      alert('Lütfen önce giriş yapın. Sayfanın üst kısmındaki "Login" butonuna tıklayın veya "Admin Giriş" kullanın.');
+      return;
     }
 
     setIsAnalyzing(true);
@@ -151,7 +152,7 @@ const AnalyzePage = () => {
       const formData = new FormData();
       formData.append('file', compressedBlob, 'thumbnail.jpg');
       formData.append('title', title.trim());
-      formData.append('user_id', user?.id || 'anonymous');
+      formData.append('user_id', user.id);
 
       console.log('📤 Sending to n8n webhook...');
       const response = await fetch('https://n8n.getoperiqo.com/webhook/49b88d43-fdf3-43c8-bfc4-70c30528f370', {
