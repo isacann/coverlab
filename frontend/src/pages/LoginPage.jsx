@@ -57,7 +57,7 @@ const LoginPage = () => {
       setProfile(adminProfile);
 
       alert('🎉 Admin girişi başarılı!');
-      navigate('/create');
+      navigate('/olustur');
     } catch (error) {
       console.error('❌ Admin login error:', error);
       alert('Admin girişi başarısız!');
