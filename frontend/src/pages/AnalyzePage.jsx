@@ -451,48 +451,124 @@ const VibeTab = ({ data }) => (
 );
 
 // Objects Tab
-const ObjectsTab = ({ data }) => (
-  <div className="space-y-6">
-    <div className="flex items-center gap-4 mb-4">
-      <div className="text-sm text-slate-400">
-        Tespit Edilen Obje: <span className="text-white font-bold">{data.object_count}</span>
-      </div>
-      <div className="text-sm text-slate-400">
-        Metin Overlay: {data.has_text_overlay ? '✅ Var' : '❌ Yok'}
-      </div>
-    </div>
+const ObjectsTab = ({ data }) => {
+  const [selectedObject, setSelectedObject] = React.useState(null);
+  
+  // Renk paleti - Her obje için farklı renk
+  const colors = [
+    'rgb(59, 130, 246)',  // blue
+    'rgb(168, 85, 247)',  // purple
+    'rgb(236, 72, 153)',  // pink
+    'rgb(34, 197, 94)',   // green
+    'rgb(251, 146, 60)',  // orange
+  ];
 
-    {data.objects.map((obj, idx) => (
-      <div key={idx} className="bg-slate-800/50 rounded-xl p-6">
-        <div className="flex items-center justify-between mb-4">
-          <h3 className="text-lg font-bold text-blue-400">{obj.name}</h3>
-          <span className="text-sm text-slate-400">Güven: {obj.confidence}%</span>
-        </div>
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <p className="text-sm text-slate-400">Dikkat Skoru</p>
-            <p className="text-2xl font-bold text-white">{obj.attention_score}/5</p>
-          </div>
-          <div>
-            <p className="text-sm text-slate-400">Renk Dominantlığı</p>
-            <p className="text-lg font-bold text-white">{obj.is_color_dominant ? '✅' : '❌'}</p>
-          </div>
-        </div>
-      </div>
-    ))}
-
-    {data.detected_text.length > 0 && (
+  return (
+    <div className="space-y-6">
+      {/* Thumbnail with Bounding Boxes */}
       <div className="bg-slate-800/50 rounded-xl p-6">
-        <h3 className="text-lg font-bold text-purple-400 mb-3">Tespit Edilen Metinler</h3>
-        <ul className="space-y-2">
-          {data.detected_text.map((text, idx) => (
-            <li key={idx} className="text-slate-300">• {text}</li>
-          ))}
-        </ul>
+        <h3 className="text-xl font-bold text-blue-400 mb-4" style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}>
+          Tespit Edilen Objeler
+        </h3>
+        <div className="relative inline-block">
+          <img 
+            src={MRBEAST_IMAGE} 
+            alt="Objects Detection" 
+            className="w-full max-h-96 object-contain rounded-xl" 
+          />
+          {/* Bounding Boxes */}
+          {data.objects.map((obj, idx) => {
+            const isSelected = selectedObject === idx;
+            const color = colors[idx % colors.length];
+            
+            return (
+              <div
+                key={idx}
+                className="absolute border-4 cursor-pointer transition-all"
+                style={{
+                  left: `${obj.position.x}%`,
+                  top: `${obj.position.y}%`,
+                  width: `${obj.position.width}%`,
+                  height: `${obj.position.height}%`,
+                  borderColor: color,
+                  backgroundColor: isSelected ? `${color.replace('rgb', 'rgba').replace(')', ', 0.2)')}` : 'transparent',
+                  boxShadow: isSelected ? `0 0 20px ${color}` : 'none',
+                }}
+                onClick={() => setSelectedObject(isSelected ? null : idx)}
+                onMouseEnter={() => setSelectedObject(idx)}
+                onMouseLeave={() => setSelectedObject(null)}
+              >
+                {/* Label */}
+                <div 
+                  className="absolute -top-8 left-0 px-3 py-1 rounded text-xs font-bold text-white whitespace-nowrap"
+                  style={{ 
+                    backgroundColor: color,
+                    fontFamily: 'Geist Sans, sans-serif'
+                  }}
+                >
+                  {obj.name}
+                </div>
+              </div>
+            );
+          })}
+        </div>
       </div>
-    )}
-  </div>
-);
+
+      {/* Stats */}
+      <div className="flex items-center gap-4">
+        <div className="text-sm text-slate-400">
+          Tespit Edilen Obje: <span className="text-white font-bold">{data.object_count}</span>
+        </div>
+        <div className="text-sm text-slate-400">
+          Metin Overlay: {data.has_text_overlay ? '✅ Var' : '❌ Yok'}
+        </div>
+      </div>
+
+      {/* Object Details */}
+      {data.objects.map((obj, idx) => {
+        const color = colors[idx % colors.length];
+        
+        return (
+          <div 
+            key={idx} 
+            className="bg-slate-800/50 rounded-xl p-6 border-l-4 transition-all hover:bg-slate-800/70"
+            style={{ borderColor: color }}
+          >
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-bold text-blue-400">{obj.name}</h3>
+              <span className="text-sm text-slate-400">Güven: {obj.confidence}%</span>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <p className="text-sm text-slate-400">Dikkat Skoru</p>
+                <p className="text-2xl font-bold text-white">{obj.attention_score}/5</p>
+              </div>
+              <div>
+                <p className="text-sm text-slate-400">Renk Dominantlığı</p>
+                <p className="text-lg font-bold text-white">{obj.is_color_dominant ? '✅' : '❌'}</p>
+              </div>
+            </div>
+            <div className="mt-3 text-xs text-slate-500">
+              Pozisyon: x:{obj.position.x}%, y:{obj.position.y}%, w:{obj.position.width}%, h:{obj.position.height}%
+            </div>
+          </div>
+        );
+      })}
+
+      {/* Detected Text */}
+      {data.detected_text.length > 0 && (
+        <div className="bg-slate-800/50 rounded-xl p-6">
+          <h3 className="text-lg font-bold text-purple-400 mb-3">Tespit Edilen Metinler</h3>
+          <ul className="space-y-2">
+            {data.detected_text.map((text, idx) => (
+              <li key={idx} className="text-slate-300">• {text}</li>
+            ))}
+          </ul>
+        </div>
+      )}
+    </div>
+  );
+};
 
 // Heatmap Tab
 const HeatmapTab = ({ data, image }) => (
