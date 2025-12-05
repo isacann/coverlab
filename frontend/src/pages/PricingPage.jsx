@@ -3,8 +3,31 @@ import { Check, X, Lock, Zap, Crown } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '../components/ui/card';
 import { Badge } from '../components/ui/badge';
+import { useAuth } from '../contexts/AuthContext';
+import { useNavigate } from 'react-router-dom';
+import toast, { Toaster } from 'react-hot-toast';
 
 const PricingPage = () => {
+  const { user, profile } = useAuth();
+  const navigate = useNavigate();
+
+  const isPro = profile?.subscription_plan === 'pro';
+
+  const handleCheckout = (planType, stripeUrl) => {
+    // Check if user is logged in
+    if (!user?.id) {
+      toast.error('Lütfen önce giriş yapın');
+      navigate('/login');
+      return;
+    }
+
+    // Add user ID to Stripe URL
+    const checkoutUrl = `${stripeUrl}?client_reference_id=${user.id}`;
+    
+    // Redirect to Stripe
+    window.location.href = checkoutUrl;
+  };
+
   const features = {
     free: [
       { text: '5 Kredi (Tek Seferlik Tanımlanır)', available: true },
