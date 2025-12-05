@@ -149,7 +149,7 @@ const PricingPage = () => {
                       className="text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-400"
                       style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}
                     >
-                      200 TL
+                      199 TL
                     </span>
                     <span 
                       className="text-slate-400 text-lg"
