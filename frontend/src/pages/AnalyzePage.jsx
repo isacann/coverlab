@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import { Upload, Sparkles, Loader2, ArrowRight, Eye, Smile, Box, Flame } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { Upload, Sparkles, Loader2, Eye, Smile, Box, Flame } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import AccessGuard from '../components/AccessGuard';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
@@ -9,14 +8,11 @@ import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { compressImageToBlob } from '../utils/imageHelpers';
-import toast from 'react-hot-toast';
 
-// DEMO DATA - MrBeast Example
-const DEMO_DATA = {
-  imageUrl: "https://customer-assets.emergentagent.com/job_youclicker/artifacts/los4urqh_6vd279giuweb1.jpg",
+// Demo data for initial view
+const DEMO_RESULT = {
   score: 92,
   rating: "Mükemmel",
-  isDemo: true,
   faces: [
     { label: "Mutluluk", value: 95 },
     { label: "Şaşkınlık", value: 78 },
@@ -38,247 +34,164 @@ const DEMO_DATA = {
   ]
 };
 
+const DEMO_IMAGE = "https://customer-assets.emergentagent.com/job_youclicker/artifacts/los4urqh_6vd279giuweb1.jpg";
+
 const AnalyzePage = () => {
-  const navigate = useNavigate();
-  const { user } = useAuth(); // Get user from AuthContext
+  const { user } = useAuth();
   
-  // State Management
-  const [mode, setMode] = useState('demo'); // 'demo' | 'upload' | 'results'
-  const [uploadedFile, setUploadedFile] = useState(null);
-  const [uploadedImageUrl, setUploadedImageUrl] = useState(null);
-  const [videoTitle, setVideoTitle] = useState('');
+  // Simple state
+  const [file, setFile] = useState(null);
+  const [preview, setPreview] = useState(null);
+  const [title, setTitle] = useState('');
   const [isAnalyzing, setIsAnalyzing] = useState(false);
-  const [analysisResult, setAnalysisResult] = useState(DEMO_DATA);
-  const [activeTab, setActiveTab] = useState('faces'); // Track active tab for heatmap visibility
+  const [result, setResult] = useState(null);
+  const [activeTab, setActiveTab] = useState('faces');
 
-  // File Upload Handler
-  const handleFileUpload = (file) => {
-    console.log('📤 handleFileUpload called:', file);
+  // File upload handler
+  const handleFileSelect = (selectedFile) => {
+    console.log('📤 File selected:', selectedFile);
     
-    if (!file || !file.type.startsWith('image/')) {
-      console.log('❌ Invalid file type');
-      toast.error('Lütfen geçerli bir resim dosyası seçin');
+    if (!selectedFile || !selectedFile.type.startsWith('image/')) {
+      alert('Lütfen geçerli bir resim dosyası seçin');
       return;
     }
 
-    const imageUrl = URL.createObjectURL(file);
-    console.log('✅ Image URL created:', imageUrl);
+    const previewUrl = URL.createObjectURL(selectedFile);
+    setFile(selectedFile);
+    setPreview(previewUrl);
+    setTitle('');
+    setResult(null);
     
-    setUploadedFile(file);
-    setUploadedImageUrl(imageUrl);
-    setMode('upload');
-    setVideoTitle(''); // Reset title
-    
-    console.log('✅ Mode set to: upload');
+    console.log('✅ Preview created:', previewUrl);
   };
 
-  // Drag & Drop Handlers
-  const handleDrop = (e) => {
-    e.preventDefault();
-    const file = e.dataTransfer.files[0];
-    handleFileUpload(file);
-  };
-
-  const handleDragOver = (e) => {
-    e.preventDefault();
-  };
-
-  // Analyze Button Handler
+  // Analyze button handler
   const handleAnalyze = async () => {
-    console.log('🔘 Analyze button clicked!');
-    console.log('📊 State:', { mode, uploadedFile: !!uploadedFile, videoTitle, userId: user?.id });
-    
-    // Validation
-    if (!videoTitle.trim()) {
-      console.log('❌ Video title missing');
-      toast.error('Lütfen video başlığını girin');
+    console.log('🔘 Analyze clicked. File:', file, 'Title:', title, 'User:', user?.id);
+
+    // Step 1: Validation
+    if (!file) {
+      alert('Lütfen bir resim yükleyin');
+      console.log('❌ No file');
       return;
     }
 
-    if (!uploadedFile) {
-      console.log('❌ Uploaded file missing');
-      toast.error('Lütfen bir resim yükleyin');
+    if (!title.trim()) {
+      alert('Lütfen video başlığını girin');
+      console.log('❌ No title');
       return;
     }
 
     if (!user?.id) {
-      console.log('❌ User ID missing');
-      toast.error('Lütfen giriş yapın');
+      alert('Lütfen giriş yapın');
+      console.log('❌ No user ID');
       return;
     }
 
-    console.log('✅ All validations passed, starting analysis...');
+    // Step 2: Loading
     setIsAnalyzing(true);
+    console.log('✅ Starting analysis...');
 
     try {
-      // Step 1: Compress image to Blob
+      // Step 3: Compression
       console.log('🗜️ Compressing image...');
-      const compressedBlob = await compressImageToBlob(uploadedFile);
-      
-      // Step 2: Create FormData
+      const compressedBlob = await compressImageToBlob(file);
+      console.log('✅ Image compressed:', compressedBlob.size, 'bytes');
+
+      // Step 4: FormData
       const formData = new FormData();
       formData.append('file', compressedBlob, 'thumbnail.jpg');
-      formData.append('title', videoTitle.trim());
-      formData.append('user_id', user.id); // Add user_id to request
+      formData.append('title', title.trim());
+      formData.append('user_id', user.id);
+      
+      console.log('📦 FormData prepared');
+      console.log('   - file:', compressedBlob.size, 'bytes');
+      console.log('   - title:', title.trim());
+      console.log('   - user_id:', user.id);
 
+      // Step 5: API Call
       console.log('📤 Sending to n8n webhook...');
-      console.log('👤 User ID:', user.id);
-      console.log('⏳ Waiting for response... (NO TIMEOUT)');
-
-      // Step 3: API Request - NO TIMEOUT, wait indefinitely
       const response = await fetch('https://n8n.getoperiqo.com/webhook/49b88d43-fdf3-43c8-bfc4-70c30528f370', {
         method: 'POST',
         body: formData,
-        // NO timeout - browser will wait for response
-        // NO signal - will not abort
-        keepalive: true, // Keep connection alive
+        // DON'T set Content-Type - browser sets it with boundary
       });
 
-      console.log('📥 Response received:', response.status);
+      console.log('📥 Response received:', response.status, response.statusText);
 
-      // Check if response is OK
       if (!response.ok) {
-        // Get error details from response
-        let errorMessage = `API Hatası: ${response.status} ${response.statusText}`;
-        
-        try {
-          const errorData = await response.text();
-          if (errorData) {
-            errorMessage += `\n\nDetay: ${errorData}`;
-          }
-        } catch (e) {
-          // Ignore if can't parse error
-        }
-        
-        throw new Error(errorMessage);
+        throw new Error(`API Error: ${response.status} ${response.statusText}`);
       }
 
-      // Parse response
-      let data;
-      try {
-        data = await response.json();
-        console.log('✅ Analysis received:', data);
-      } catch (parseError) {
-        console.error('❌ JSON parse error:', parseError);
-        throw new Error('Sunucudan geçersiz yanıt alındı. Lütfen tekrar deneyin.');
-      }
+      // Step 6: Parse response
+      const data = await response.json();
+      console.log('✅ Analysis complete:', data);
 
-      // Step 4: Process Response
-      // Map n8n response to our format
-      const processedResult = {
-        imageUrl: uploadedImageUrl,
-        score: data.score || 85,
-        rating: data.rating || "Çok İyi",
-        isDemo: false,
-        faces: data.faces || [
-          { label: "Mutluluk", value: 70 },
-          { label: "Şaşkınlık", value: 50 },
-          { label: "Öfke", value: 10 }
-        ],
-        vibe: data.vibe || [
-          { label: "Merak Uyandırma", value: 4 },
-          { label: "Kışkırtıcılık", value: 3 },
-          { label: "Gizem", value: 2 }
-        ],
-        objects: data.objects || [
-          { label: "İnsan", value: 90 },
-          { label: "Nesne", value: 75 }
-        ],
-        heatmap_points: data.heatmap_points || [
-          { x: 40, y: 45, color: "red" },
-          { x: 60, y: 55, color: "yellow" }
-        ]
-      };
-
-      setAnalysisResult(processedResult);
-      setMode('results');
-      toast.success('Analiz tamamlandı! 🎉');
+      setResult(data);
+      alert('Analiz tamamlandı! 🎉');
 
     } catch (error) {
-      console.error('❌ Analysis error:', error);
-      
-      // Detailed error message for user
-      let userMessage = 'Analiz sırasında bir hata oluştu.';
-      
-      if (error.message.includes('API Hatası')) {
-        // API error
-        userMessage = error.message;
-      } else if (error.message.includes('Failed to fetch')) {
-        // Network error
-        userMessage = 'Bağlantı hatası. İnternet bağlantınızı kontrol edin ve tekrar deneyin.';
-      } else if (error.message.includes('geçersiz yanıt')) {
-        // Parse error
-        userMessage = error.message;
-      } else {
-        // Generic error
-        userMessage = `Hata: ${error.message}`;
-      }
-      
-      toast.error(userMessage, {
-        duration: 6000, // Show error for 6 seconds
-      });
-      
-      console.log('💡 Tip: Check n8n webhook logs for details');
-      
+      console.error('❌ Error:', error);
+      alert(`Hata: ${error.message}`);
     } finally {
       setIsAnalyzing(false);
+      console.log('✅ Analysis process finished');
     }
   };
 
-  // Reset to Demo
-  const resetToDemo = () => {
-    setMode('demo');
-    setUploadedFile(null);
-    setUploadedImageUrl(null);
-    setVideoTitle('');
-    setAnalysisResult(DEMO_DATA);
+  // Reset to demo
+  const resetDemo = () => {
+    setFile(null);
+    setPreview(null);
+    setTitle('');
+    setResult(null);
+    setActiveTab('faces');
   };
 
-  // Progress Bar Component
-  const ProgressBar = ({ value, label, color = "blue" }) => {
-    const colorClasses = {
-      blue: "bg-blue-500",
-      green: "bg-green-500",
-      cyan: "bg-cyan-500"
-    };
+  // Current display data
+  const displayImage = preview || DEMO_IMAGE;
+  const displayResult = result || DEMO_RESULT;
+  const showDemo = !file && !result;
 
-    return (
-      <div className="space-y-2">
-        <div className="flex justify-between items-center">
-          <span className="text-white font-medium" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
-            {label}
-          </span>
-          <span className={`font-bold text-lg ${color === 'blue' ? 'text-blue-400' : color === 'green' ? 'text-green-400' : 'text-cyan-400'}`}>
-            {value}%
-          </span>
-        </div>
-        <div className="h-3 bg-slate-800 rounded-full overflow-hidden border border-slate-700">
-          <div
-            className={`h-full ${colorClasses[color]} transition-all duration-700 ease-out`}
-            style={{ width: `${value}%` }}
-          />
-        </div>
+  // Progress bar component
+  const ProgressBar = ({ label, value, color = "blue" }) => (
+    <div className="space-y-2">
+      <div className="flex justify-between items-center">
+        <span className="text-white font-medium">{label}</span>
+        <span className={`font-bold text-lg ${
+          color === 'blue' ? 'text-blue-400' : 
+          color === 'green' ? 'text-green-400' : 
+          'text-cyan-400'
+        }`}>
+          {value}%
+        </span>
       </div>
-    );
-  };
-
-  // Render Dots (for vibe score)
-  const renderDots = (count) => {
-    return (
-      <div className="flex gap-2">
-        {[1, 2, 3, 4, 5].map((dot) => (
-          <div
-            key={dot}
-            className={`w-4 h-4 rounded-full transition-all ${
-              dot <= count
-                ? 'bg-blue-500 shadow-lg shadow-blue-500/50'
-                : 'bg-slate-700'
-            }`}
-          />
-        ))}
+      <div className="h-3 bg-slate-800 rounded-full overflow-hidden border border-slate-700">
+        <div
+          className={`h-full transition-all duration-700 ${
+            color === 'blue' ? 'bg-blue-500' : 
+            color === 'green' ? 'bg-green-500' : 
+            'bg-cyan-500'
+          }`}
+          style={{ width: `${value}%` }}
+        />
       </div>
-    );
-  };
+    </div>
+  );
+
+  // Dots renderer
+  const renderDots = (count) => (
+    <div className="flex gap-2">
+      {[1, 2, 3, 4, 5].map((dot) => (
+        <div
+          key={dot}
+          className={`w-4 h-4 rounded-full transition-all ${
+            dot <= count ? 'bg-blue-500 shadow-lg shadow-blue-500/50' : 'bg-slate-700'
+          }`}
+        />
+      ))}
+    </div>
+  );
 
   return (
     <AccessGuard requirePro={true}>
@@ -294,129 +207,107 @@ const AnalyzePage = () => {
         {/* Content */}
         <div className="relative z-10 pt-24 px-6 pb-12">
           <div className="max-w-7xl mx-auto">
-            {/* Page Title */}
+            {/* Title */}
             <div className="text-center mb-12">
-              <h1 
-                className="text-5xl font-bold text-white mb-3"
-                style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}
-              >
+              <h1 className="text-5xl font-bold text-white mb-3">
                 <Sparkles className="inline mr-3 text-purple-500" size={48} />
                 Thumbnail Analizi
               </h1>
-              <p className="text-slate-400 text-lg" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
+              <p className="text-slate-400 text-lg">
                 AI destekli CTR tahmini, yüz analizi ve heatmap
               </p>
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-              {/* LEFT SIDE - Upload or Results */}
+              {/* LEFT SIDE */}
               <div>
-                {/* DEMO MODE */}
-                {mode === 'demo' && (
-                  <div
-                    onDrop={handleDrop}
-                    onDragOver={handleDragOver}
-                    className="relative group"
-                  >
-                    {/* Demo Image with Conditional Heatmap */}
-                    <div className="relative rounded-2xl overflow-hidden border-4 border-purple-500/30">
-                      <img 
-                        src={DEMO_DATA.imageUrl} 
-                        alt="Demo Thumbnail"
-                        className="w-full aspect-video object-cover"
-                      />
-                      
-                      {/* Heatmap Overlay - Only show when heatmap tab is active */}
-                      {activeTab === 'heatmap' && DEMO_DATA.heatmap_points && DEMO_DATA.heatmap_points.map((point, idx) => (
-                        <div
-                          key={idx}
-                          className="absolute rounded-full animate-pulse"
-                          style={{
-                            left: `${point.x}%`,
-                            top: `${point.y}%`,
-                            width: '80px',
-                            height: '80px',
-                            transform: 'translate(-50%, -50%)',
-                            backgroundColor: point.color === 'red' 
-                              ? 'rgba(239, 68, 68, 0.4)' 
-                              : point.color === 'yellow'
-                              ? 'rgba(251, 191, 36, 0.4)'
-                              : 'rgba(59, 130, 246, 0.4)',
-                            border: `3px solid ${point.color === 'red' 
-                              ? 'rgb(239, 68, 68)' 
-                              : point.color === 'yellow'
-                              ? 'rgb(251, 191, 36)'
-                              : 'rgb(59, 130, 246)'}`,
-                            boxShadow: point.color === 'red' 
-                              ? '0 0 20px rgba(239, 68, 68, 0.6)' 
-                              : point.color === 'yellow'
-                              ? '0 0 20px rgba(251, 191, 36, 0.6)'
-                              : '0 0 20px rgba(59, 130, 246, 0.6)',
-                          }}
-                        />
-                      ))}
-                      
-                      <div className="absolute top-4 right-4 bg-purple-500 text-white px-3 py-1 rounded-full text-sm font-bold">
-                        DEMO
-                      </div>
-                    </div>
+                {/* Image Display */}
+                <div className="relative rounded-2xl overflow-hidden border-4 border-purple-500/30 mb-6">
+                  <img 
+                    src={displayImage} 
+                    alt="Thumbnail"
+                    className="w-full aspect-video object-cover"
+                  />
+                  
+                  {/* Heatmap overlay when tab is active */}
+                  {activeTab === 'heatmap' && displayResult.heatmap_points && displayResult.heatmap_points.map((point, idx) => (
+                    <div
+                      key={idx}
+                      className="absolute rounded-full animate-pulse"
+                      style={{
+                        left: `${point.x}%`,
+                        top: `${point.y}%`,
+                        width: '80px',
+                        height: '80px',
+                        transform: 'translate(-50%, -50%)',
+                        backgroundColor: point.color === 'red' 
+                          ? 'rgba(239, 68, 68, 0.4)' 
+                          : point.color === 'yellow'
+                          ? 'rgba(251, 191, 36, 0.4)'
+                          : 'rgba(59, 130, 246, 0.4)',
+                        border: `3px solid ${point.color === 'red' 
+                          ? 'rgb(239, 68, 68)' 
+                          : point.color === 'yellow'
+                          ? 'rgb(251, 191, 36)'
+                          : 'rgb(59, 130, 246)'}`,
+                        boxShadow: point.color === 'red' 
+                          ? '0 0 20px rgba(239, 68, 68, 0.6)' 
+                          : point.color === 'yellow'
+                          ? '0 0 20px rgba(251, 191, 36, 0.6)'
+                          : '0 0 20px rgba(59, 130, 246, 0.6)',
+                      }}
+                    />
+                  ))}
+                  
+                  {/* Badge */}
+                  <div className="absolute top-4 right-4 bg-purple-500 text-white px-3 py-1 rounded-full text-sm font-bold">
+                    {showDemo ? 'DEMO' : result ? 'SONUÇ' : 'UPLOAD'}
+                  </div>
+                </div>
 
-                    {/* Upload Overlay */}
-                    <div className="mt-6 border-2 border-dashed border-slate-700 rounded-2xl p-8 text-center hover:border-purple-500 transition-all cursor-pointer bg-slate-900/50"
-                      onClick={() => document.getElementById('analyzeFileInput').click()}
-                    >
-                      <Upload size={48} className="mx-auto mb-4 text-slate-400" />
-                      <p className="text-white font-semibold mb-2" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
-                        Kendi Thumbnail'ınızı Yükleyin
-                      </p>
-                      <p className="text-slate-400 text-sm" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
-                        Tıklayın veya sürükleyip bırakın
-                      </p>
-                      <input
-                        id="analyzeFileInput"
-                        type="file"
-                        accept="image/*"
-                        onChange={(e) => handleFileUpload(e.target.files[0])}
-                        className="hidden"
-                      />
-                    </div>
+                {/* Upload controls OR Results actions */}
+                {!file && !result && (
+                  <div
+                    className="border-2 border-dashed border-slate-700 rounded-2xl p-8 text-center hover:border-purple-500 transition-all cursor-pointer bg-slate-900/50"
+                    onClick={() => document.getElementById('fileInput').click()}
+                  >
+                    <input
+                      id="fileInput"
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => handleFileSelect(e.target.files[0])}
+                      className="hidden"
+                    />
+                    <Upload size={48} className="mx-auto mb-4 text-slate-400" />
+                    <p className="text-white font-semibold mb-2">
+                      Kendi Thumbnail'ınızı Yükleyin
+                    </p>
+                    <p className="text-slate-400 text-sm">
+                      Tıklayın veya sürükleyip bırakın
+                    </p>
                   </div>
                 )}
 
-                {/* UPLOAD MODE */}
-                {mode === 'upload' && (
-                  <div className="space-y-6">
-                    {/* Uploaded Image Preview */}
-                    <div className="relative rounded-2xl overflow-hidden border-4 border-blue-500/50">
-                      <img 
-                        src={uploadedImageUrl} 
-                        alt="Uploaded Thumbnail"
-                        className="w-full aspect-video object-cover"
-                      />
-                    </div>
-
-                    {/* Video Title Input */}
+                {file && !result && (
+                  <div className="space-y-4">
                     <div>
-                      <Label className="text-white font-semibold mb-2 block" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
+                      <Label className="text-white font-semibold mb-2 block">
                         Video Başlığı *
                       </Label>
                       <Input
                         type="text"
                         placeholder="Örn: MrBeast'in En İlginç Videosu!"
-                        value={videoTitle}
-                        onChange={(e) => setVideoTitle(e.target.value)}
+                        value={title}
+                        onChange={(e) => setTitle(e.target.value)}
                         className="bg-slate-900 border-slate-700 text-white h-12"
-                        style={{ fontFamily: 'Geist Sans, sans-serif' }}
                       />
                     </div>
 
-                    {/* Action Buttons */}
                     <div className="flex gap-3">
                       <Button
                         onClick={handleAnalyze}
-                        disabled={isAnalyzing || !videoTitle.trim()}
+                        disabled={isAnalyzing || !title.trim()}
                         className="flex-1 h-12 bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 text-white font-bold"
-                        style={{ fontFamily: 'Geist Sans, sans-serif' }}
                       >
                         {isAnalyzing ? (
                           <>
@@ -431,7 +322,7 @@ const AnalyzePage = () => {
                         )}
                       </Button>
                       <Button
-                        onClick={resetToDemo}
+                        onClick={resetDemo}
                         variant="outline"
                         className="h-12 border-slate-700 text-slate-300 hover:bg-slate-800"
                       >
@@ -441,171 +332,87 @@ const AnalyzePage = () => {
                   </div>
                 )}
 
-                {/* RESULTS MODE */}
-                {mode === 'results' && (
-                  <div className="space-y-6">
-                    {/* Result Image with Conditional Heatmap */}
-                    <div className="relative rounded-2xl overflow-hidden border-4 border-green-500/50">
-                      <img 
-                        src={analysisResult.imageUrl} 
-                        alt="Analysis Result"
-                        className="w-full aspect-video object-cover"
-                      />
-                      
-                      {/* Heatmap Overlay - Only show when heatmap tab is active */}
-                      {activeTab === 'heatmap' && analysisResult.heatmap_points && analysisResult.heatmap_points.map((point, idx) => (
-                        <div
-                          key={idx}
-                          className="absolute rounded-full animate-pulse"
-                          style={{
-                            left: `${point.x}%`,
-                            top: `${point.y}%`,
-                            width: '80px',
-                            height: '80px',
-                            transform: 'translate(-50%, -50%)',
-                            backgroundColor: point.color === 'red' 
-                              ? 'rgba(239, 68, 68, 0.4)' 
-                              : point.color === 'yellow'
-                              ? 'rgba(251, 191, 36, 0.4)'
-                              : 'rgba(59, 130, 246, 0.4)',
-                            border: `3px solid ${point.color === 'red' 
-                              ? 'rgb(239, 68, 68)' 
-                              : point.color === 'yellow'
-                              ? 'rgb(251, 191, 36)'
-                              : 'rgb(59, 130, 246)'}`,
-                            boxShadow: point.color === 'red' 
-                              ? '0 0 20px rgba(239, 68, 68, 0.6)' 
-                              : point.color === 'yellow'
-                              ? '0 0 20px rgba(251, 191, 36, 0.6)'
-                              : '0 0 20px rgba(59, 130, 246, 0.6)',
-                          }}
-                        />
-                      ))}
-                      
-                      <div className="absolute top-4 right-4 bg-green-500 text-white px-3 py-1 rounded-full text-sm font-bold">
-                        SONUÇ
-                      </div>
-                    </div>
-
-                    {/* New Analysis Button */}
-                    <Button
-                      onClick={resetToDemo}
-                      className="w-full h-12 bg-slate-800 hover:bg-slate-700 text-white"
-                      style={{ fontFamily: 'Geist Sans, sans-serif' }}
-                    >
-                      <ArrowRight className="mr-2" size={20} />
-                      Yeni Analiz
-                    </Button>
-                  </div>
+                {result && (
+                  <Button
+                    onClick={resetDemo}
+                    className="w-full h-12 bg-slate-800 hover:bg-slate-700 text-white"
+                  >
+                    Yeni Analiz
+                  </Button>
                 )}
               </div>
 
-              {/* RIGHT SIDE - Analysis Results */}
+              {/* RIGHT SIDE - Results */}
               <div>
                 <Card className="bg-slate-900/80 backdrop-blur-xl border-slate-800 p-6">
-                  {/* DEMO MODE or RESULTS MODE - Show Analysis */}
-                  {(mode === 'demo' || mode === 'results') && !isAnalyzing && (
+                  {!isAnalyzing ? (
                     <>
-                      {/* Score Card */}
+                      {/* Score */}
                       <div className="text-center mb-8 pb-6 border-b border-slate-800">
                         <div className="inline-flex items-center justify-center w-32 h-32 rounded-full bg-gradient-to-br from-purple-500 to-pink-600 mb-4">
-                          <span className="text-5xl font-bold text-white" style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}>
-                            {analysisResult.score}
+                          <span className="text-5xl font-bold text-white">
+                            {displayResult.score}
                           </span>
                         </div>
-                        <h3 className="text-2xl font-bold text-white mb-1" style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}>
-                          {analysisResult.rating}
+                        <h3 className="text-2xl font-bold text-white mb-1">
+                          {displayResult.rating}
                         </h3>
-                        <p className="text-slate-400" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
-                          CTR Tahmini
-                        </p>
+                        <p className="text-slate-400">CTR Tahmini</p>
                       </div>
 
-                      {/* Tabs with Heatmap */}
+                      {/* Tabs */}
                       <Tabs 
-                        defaultValue="faces" 
+                        value={activeTab}
+                        onValueChange={setActiveTab}
                         className="w-full"
-                        onValueChange={(value) => setActiveTab(value)}
                       >
                         <TabsList className="grid w-full grid-cols-4 bg-slate-800 p-1 rounded-lg mb-6">
-                          <TabsTrigger 
-                            value="faces"
-                            className="data-[state=active]:bg-purple-500 data-[state=active]:text-white text-slate-400 text-xs"
-                          >
+                          <TabsTrigger value="faces" className="data-[state=active]:bg-purple-500 data-[state=active]:text-white text-slate-400 text-xs">
                             <Smile size={14} className="mr-1" />
                             Yüzler
                           </TabsTrigger>
-                          <TabsTrigger 
-                            value="vibe"
-                            className="data-[state=active]:bg-purple-500 data-[state=active]:text-white text-slate-400 text-xs"
-                          >
+                          <TabsTrigger value="vibe" className="data-[state=active]:bg-purple-500 data-[state=active]:text-white text-slate-400 text-xs">
                             <Flame size={14} className="mr-1" />
                             Vibe
                           </TabsTrigger>
-                          <TabsTrigger 
-                            value="objects"
-                            className="data-[state=active]:bg-purple-500 data-[state=active]:text-white text-slate-400 text-xs"
-                          >
+                          <TabsTrigger value="objects" className="data-[state=active]:bg-purple-500 data-[state=active]:text-white text-slate-400 text-xs">
                             <Box size={14} className="mr-1" />
                             Nesneler
                           </TabsTrigger>
-                          <TabsTrigger 
-                            value="heatmap"
-                            className="data-[state=active]:bg-purple-500 data-[state=active]:text-white text-slate-400 text-xs"
-                          >
+                          <TabsTrigger value="heatmap" className="data-[state=active]:bg-purple-500 data-[state=active]:text-white text-slate-400 text-xs">
                             <Eye size={14} className="mr-1" />
                             Isı
                           </TabsTrigger>
                         </TabsList>
 
-                        {/* Faces Tab */}
                         <TabsContent value="faces" className="space-y-4">
-                          {analysisResult.faces.map((item, idx) => (
-                            <ProgressBar 
-                              key={idx}
-                              label={item.label}
-                              value={item.value}
-                              color="blue"
-                            />
+                          {displayResult.faces.map((item, idx) => (
+                            <ProgressBar key={idx} label={item.label} value={item.value} color="blue" />
                           ))}
                         </TabsContent>
 
-                        {/* Vibe Tab */}
                         <TabsContent value="vibe" className="space-y-4">
-                          {analysisResult.vibe.map((item, idx) => (
+                          {displayResult.vibe.map((item, idx) => (
                             <div key={idx} className="flex justify-between items-center py-2">
-                              <span className="text-white font-medium" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
-                                {item.label}
-                              </span>
+                              <span className="text-white font-medium">{item.label}</span>
                               {renderDots(item.value)}
                             </div>
                           ))}
                         </TabsContent>
 
-                        {/* Objects Tab */}
                         <TabsContent value="objects" className="space-y-4">
-                          {analysisResult.objects.map((item, idx) => (
-                            <ProgressBar 
-                              key={idx}
-                              label={item.label}
-                              value={item.value}
-                              color="cyan"
-                            />
+                          {displayResult.objects.map((item, idx) => (
+                            <ProgressBar key={idx} label={item.label} value={item.value} color="cyan" />
                           ))}
                         </TabsContent>
 
-                        {/* Heatmap Tab */}
                         <TabsContent value="heatmap" className="space-y-4">
                           <div className="text-center py-8">
                             <Eye size={48} className="mx-auto mb-4 text-purple-400" />
-                            <h4 className="text-xl font-bold text-white mb-3" style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}>
-                              Isı Haritası
-                            </h4>
-                            <p className="text-slate-400 text-sm mb-6" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
+                            <h4 className="text-xl font-bold text-white mb-3">Isı Haritası</h4>
+                            <p className="text-slate-400 text-sm mb-6">
                               Sol taraftaki thumbnail üzerinde dikkat çekme bölgelerini görebilirsiniz
                             </p>
-                            
-                            {/* Legend */}
                             <div className="space-y-3 max-w-xs mx-auto text-left">
                               <div className="flex items-center gap-3">
                                 <div className="w-6 h-6 rounded-full bg-red-500/40 border-2 border-red-500"></div>
@@ -624,36 +431,18 @@ const AnalyzePage = () => {
                         </TabsContent>
                       </Tabs>
                     </>
-                  )}
-
-                  {/* UPLOAD MODE - Ready to Analyze */}
-                  {mode === 'upload' && !isAnalyzing && (
-                    <div className="text-center py-20">
-                      <div className="inline-flex items-center justify-center w-24 h-24 rounded-full bg-slate-800 mb-6">
-                        <Sparkles size={40} className="text-purple-400" />
-                      </div>
-                      <h3 className="text-2xl font-bold text-white mb-3" style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}>
-                        Analiz için Hazır
-                      </h3>
-                      <p className="text-slate-400 max-w-sm mx-auto" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
-                        Video başlığınızı girin ve "Analiz Et" butonuna basın
-                      </p>
-                    </div>
-                  )}
-
-                  {/* ANALYZING STATE - AI Processing */}
-                  {isAnalyzing && (
+                  ) : (
+                    // Analyzing state
                     <div className="text-center py-20">
                       <div className="inline-flex items-center justify-center w-24 h-24 rounded-full bg-gradient-to-br from-purple-500 to-pink-600 mb-6 animate-pulse">
                         <Loader2 size={40} className="text-white animate-spin" />
                       </div>
-                      <h3 className="text-2xl font-bold text-white mb-3" style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}>
+                      <h3 className="text-2xl font-bold text-white mb-3">
                         Yapay Zeka ile Analiz Ediliyor...
                       </h3>
-                      <p className="text-slate-400 max-w-sm mx-auto mb-6" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
+                      <p className="text-slate-400 max-w-sm mx-auto mb-6">
                         Thumbnail'ınız detaylı olarak inceleniyor
                       </p>
-                      {/* Progress Steps */}
                       <div className="space-y-3 text-left max-w-md mx-auto">
                         <div className="flex items-center gap-3 text-slate-300">
                           <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
