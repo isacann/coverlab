@@ -168,8 +168,19 @@ const AnalyzePage = () => {
       console.log('📦 Raw n8n response:', JSON.stringify(rawJson).substring(0, 200) + '...');
       console.log('📦 Raw type:', typeof rawJson, 'isArray:', Array.isArray(rawJson));
 
-      // n8n returns array format: [{success: true, data: {...}}]
-      const json = Array.isArray(rawJson) ? rawJson[0] : rawJson;
+      // n8n returns: {"sonuc": [{success: true, data: {...}}]}
+      let json;
+      if (rawJson.sonuc && Array.isArray(rawJson.sonuc)) {
+        console.log('✅ Found "sonuc" array, extracting first element');
+        json = rawJson.sonuc[0];
+      } else if (Array.isArray(rawJson)) {
+        console.log('✅ Direct array format, extracting first element');
+        json = rawJson[0];
+      } else {
+        console.log('✅ Direct object format');
+        json = rawJson;
+      }
+      
       console.log('📦 Parsed json type:', typeof json);
       console.log('🔍 Validation check:', {
         hasJson: !!json,
