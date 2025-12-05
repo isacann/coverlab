@@ -43,9 +43,16 @@ export const AuthProvider = ({ children }) => {
 
     checkUser();
 
-    // 2. Listen for auth state changes
+    // 2. Listen for auth state changes (but not for admin backdoor)
     const { data: listener } = supabase.auth.onAuthStateChange(async (event, session) => {
       console.log('Auth state changed:', event, session?.user ? 'User logged in' : 'No user');
+      
+      // Don't override admin backdoor session
+      const adminUser = localStorage.getItem('admin_user');
+      if (adminUser) {
+        console.log('⚠️ Admin session active, ignoring Supabase auth change');
+        return;
+      }
       
       if (session?.user) {
         setUser(session.user);
