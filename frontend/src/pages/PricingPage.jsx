@@ -46,10 +46,27 @@ const PricingPage = () => {
   };
 
   const addonPackages = [
-    { credits: 50, price: 299, badge: null },
-    { credits: 100, price: 499, badge: 'Fırsat' },
-    { credits: 200, price: 899, badge: 'En İyi Fiyat' }
+    { 
+      credits: 50, 
+      price: 299, 
+      badge: null,
+      stripeUrl: 'https://buy.stripe.com/bJe14f2Zg6Up9cF1tE'
+    },
+    { 
+      credits: 100, 
+      price: 499, 
+      badge: 'Fırsat',
+      stripeUrl: 'https://buy.stripe.com/4gM8wH6bsbaF1Kdfku'
+    },
+    { 
+      credits: 200, 
+      price: 899, 
+      badge: 'En İyi Fiyat',
+      stripeUrl: 'https://buy.stripe.com/3cI6oz57o0w10G92xI'
+    }
   ];
+
+  const proStripeUrl = 'https://buy.stripe.com/aFabIT1Vc0w1gF71tE';
 
   return (
     <div className="min-h-screen bg-[#0a0a0a]">
