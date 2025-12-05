@@ -9,29 +9,62 @@ import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { compressImageToBlob } from '../utils/imageHelpers';
 
+// Label mappings for Turkish
+const OBJECT_LABELS = {
+  "insan": "İnsan",
+  "yazi_paneli": "Yazı Paneli",
+  "dijital_ekran_arayuzu": "Dijital Ekran",
+  "isaret_parmagi": "İşaret Parmağı",
+  "kitaplik": "Kitaplık",
+  "metin_grafigi": "Metin Grafiği"
+};
+
+const EMOTION_LABELS = {
+  "mutluluk": "Mutluluk",
+  "saskinlik": "Şaşkınlık",
+  "ofke": "Öfke",
+  "korku": "Korku",
+  "uzuntu": "Üzüntü"
+};
+
+const VIBE_LABELS = {
+  "merak_uyandirma": "Merak Uyandırma",
+  "kiskiricilik": "Kışkırtıcılık",
+  "gizem": "Gizem",
+  "aciliyet": "Aciliyet",
+  "guvenilirlik": "Güvenilirlik",
+  "duygusal_etki": "Duygusal Etki"
+};
+
 // Demo data for initial view
 const DEMO_RESULT = {
-  score: 92,
-  rating: "Mükemmel",
-  faces: [
-    { label: "Mutluluk", value: 95 },
-    { label: "Şaşkınlık", value: 78 },
-    { label: "Öfke", value: 5 }
-  ],
-  vibe: [
-    { label: "Merak Uyandırma", value: 5 },
-    { label: "Kışkırtıcılık", value: 4 },
-    { label: "Gizem", value: 3 }
-  ],
-  objects: [
-    { label: "İnsan", value: 99 },
-    { label: "Lüks Yat", value: 95 },
-    { label: "Deniz", value: 88 }
-  ],
-  heatmap_points: [
-    { x: 30, y: 40, color: "red" },
-    { x: 70, y: 50, color: "yellow" }
-  ]
+  score: { value: 92, label: "Mükemmel" },
+  faces: {
+    face_count: 1,
+    summary: {
+      avg_mutluluk: 95,
+      avg_saskinlik: 78,
+      avg_ofke: 5
+    }
+  },
+  vibe: {
+    merak_uyandirma: 5,
+    kiskiricilik: 4,
+    gizem: 3
+  },
+  objects: {
+    objects: [
+      { name: "insan", confidence: 99 },
+      { name: "yazi_paneli", confidence: 95 },
+      { name: "dijital_ekran_arayuzu", confidence: 88 }
+    ]
+  },
+  heatmap: {
+    focus_points: [
+      { x: 38, y: 32, intensity: 1.0, radius: 50, reason: "yüz ve göz teması" },
+      { x: 75, y: 20, intensity: 0.9, radius: 60, reason: "büyük renkli metin" }
+    ]
+  }
 };
 
 const DEMO_IMAGE = "https://customer-assets.emergentagent.com/job_youclicker/artifacts/los4urqh_6vd279giuweb1.jpg";
