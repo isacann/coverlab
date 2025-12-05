@@ -633,11 +633,29 @@ const CreatePage = () => {
                           toast.success('İndirme başladı! ✅');
                         }}
                         variant="outline"
-                        className="col-span-2 border-slate-600 text-slate-300 hover:text-white hover:bg-slate-800 py-6 text-lg font-semibold"
+                        className="border-slate-600 text-slate-300 hover:text-white hover:bg-slate-800 py-6 text-lg font-semibold"
                         style={{ fontFamily: 'Geist Sans, sans-serif' }}
                       >
                         <Download className="mr-2" size={20} />
                         {isTemporary ? 'Hemen İndir ⚠️' : 'İndir'}
+                      </Button>
+
+                      {/* New: Analyze Button */}
+                      <Button
+                        onClick={() => {
+                          // Save image URL to localStorage for analyze page
+                          localStorage.setItem('pendingAnalysis', JSON.stringify({
+                            imageUrl: generatedImage,
+                            title: title || topic || 'Oluşturulan Thumbnail'
+                          }));
+                          navigate('/analiz');
+                          toast.success('Analiz sayfasına yönlendiriliyorsunuz...');
+                        }}
+                        className="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white py-6 text-lg font-semibold"
+                        style={{ fontFamily: 'Geist Sans, sans-serif' }}
+                      >
+                        <Wand2 className="mr-2" size={20} />
+                        Analiz Et
                       </Button>
                     </div>
 
