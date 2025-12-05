@@ -504,9 +504,23 @@ const AnalyzePage = () => {
                         </TabsContent>
 
                         <TabsContent value="objects" className="space-y-4">
-                          {displayResult.objects.map((item, idx) => (
-                            <ProgressBar key={idx} label={item.label} value={item.value} color="cyan" />
-                          ))}
+                          {displayResult.objects?.objects && displayResult.objects.objects.length > 0 ? (
+                            displayResult.objects.objects.slice(0, 3).map((obj, idx) => {
+                              const label = OBJECT_LABELS[obj.name] || capitalizeTurkish(obj.name.replace(/_/g, ' '));
+                              return (
+                                <ProgressBar 
+                                  key={idx} 
+                                  label={label} 
+                                  value={obj.confidence || 0} 
+                                  color="cyan" 
+                                />
+                              );
+                            })
+                          ) : (
+                            <div className="text-center py-8">
+                              <p className="text-slate-400">Nesne tespit edilmedi</p>
+                            </div>
+                          )}
                         </TabsContent>
 
                         <TabsContent value="heatmap" className="space-y-4">
