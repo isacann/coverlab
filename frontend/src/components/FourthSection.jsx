@@ -1,5 +1,6 @@
 import React from 'react';
 import { Button } from './ui/button';
+import { Link } from 'react-router-dom';
 
 const FourthSection = () => {
   return (
@@ -28,7 +29,7 @@ const FourthSection = () => {
             textShadow: '0 4px 20px rgba(0, 0, 0, 0.8), 0 2px 10px rgba(0, 0, 0, 0.9)'
           }}
         >
-          Vivamus Suscipit Tortor
+          Vitrinde Nasıl Görünüyorsunuz? Canlı Simülatör
         </h2>
 
         {/* Subheadline */}
@@ -39,20 +40,22 @@ const FourthSection = () => {
             textShadow: '0 3px 15px rgba(0, 0, 0, 0.8), 0 1px 8px rgba(0, 0, 0, 0.9)'
           }}
         >
-          Eget nulla facilisi etiam dignissim diam quis enim lobortis scelerisque fermentum. Mauris augue neque gravida in fermentum.
+          Thumbnail'iniz MrBeast'in yanında sönük mü kalıyor yoksa parlıyor mu? YouTube anasayfasını simüle edin, rakiplerinizle yan yana test edin ve yayına girmeden kazananı belirleyin.
         </p>
 
         {/* CTA Button */}
-        <Button 
-          size="lg"
-          className="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white text-lg px-8 py-6 rounded-lg transition-all duration-300 transform hover:scale-105"
-          style={{ 
-            fontFamily: 'Geist Sans, sans-serif',
-            boxShadow: '0 8px 30px rgba(0, 0, 0, 0.6), 0 0 40px rgba(6, 182, 212, 0.3)'
-          }}
-        >
-          Hemen Başla
-        </Button>
+        <Link to="/test">
+          <Button 
+            size="lg"
+            className="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white text-lg px-8 py-6 rounded-lg transition-all duration-300 transform hover:scale-105"
+            style={{ 
+              fontFamily: 'Geist Sans, sans-serif',
+              boxShadow: '0 8px 30px rgba(0, 0, 0, 0.6), 0 0 40px rgba(6, 182, 212, 0.3)'
+            }}
+          >
+            Test Et
+          </Button>
+        </Link>
       </div>
     </section>
   );

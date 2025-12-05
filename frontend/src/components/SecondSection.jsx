@@ -1,5 +1,6 @@
 import React from 'react';
 import { Button } from './ui/button';
+import { Link } from 'react-router-dom';
 
 const SecondSection = () => {
   return (
@@ -25,7 +26,7 @@ const SecondSection = () => {
             textShadow: '0 4px 20px rgba(0, 0, 0, 0.8), 0 2px 10px rgba(0, 0, 0, 0.9)'
           }}
         >
-          Lorem Ipsum Dolor Sit Amet
+          Hayal Gücünüzden Gerçeğe: AI Thumbnail Oluşturucu
         </h2>
 
         {/* Subheadline */}
@@ -36,20 +37,22 @@ const SecondSection = () => {
             textShadow: '0 3px 15px rgba(0, 0, 0, 0.8), 0 1px 8px rgba(0, 0, 0, 0.9)'
           }}
         >
-          Consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam.
+          Tasarım bilmenize gerek yok. Sadece konuyu yazın, yapay zeka sizin için en yüksek tıklanma potansiyeline sahip Thumbnail'i saniyeler içinde yaratsın.
         </p>
 
         {/* CTA Button */}
-        <Button 
-          size="lg"
-          className="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white text-lg px-8 py-6 rounded-lg transition-all duration-300 transform hover:scale-105"
-          style={{ 
-            fontFamily: 'Geist Sans, sans-serif',
-            boxShadow: '0 8px 30px rgba(0, 0, 0, 0.6), 0 0 40px rgba(6, 182, 212, 0.3)'
-          }}
-        >
-          Hemen Başla
-        </Button>
+        <Link to="/olustur">
+          <Button 
+            size="lg"
+            className="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white text-lg px-8 py-6 rounded-lg transition-all duration-300 transform hover:scale-105"
+            style={{ 
+              fontFamily: 'Geist Sans, sans-serif',
+              boxShadow: '0 8px 30px rgba(0, 0, 0, 0.6), 0 0 40px rgba(6, 182, 212, 0.3)'
+            }}
+          >
+            Şimdi Oluştur
+          </Button>
+        </Link>
       </div>
     </section>
   );

@@ -1,5 +1,6 @@
 import React from 'react';
 import { Button } from './ui/button';
+import { Link } from 'react-router-dom';
 
 const ThirdSection = () => {
   return (
@@ -28,7 +29,7 @@ const ThirdSection = () => {
             textShadow: '0 4px 20px rgba(0, 0, 0, 0.8), 0 2px 10px rgba(0, 0, 0, 0.9)'
           }}
         >
-          Consectetur Adipiscing Elit
+          Veri Odaklı Kararlar Verin: AI Analiz ve Skorlama
         </h2>
 
         {/* Subheadline */}
@@ -39,20 +40,22 @@ const ThirdSection = () => {
             textShadow: '0 3px 15px rgba(0, 0, 0, 0.8), 0 1px 8px rgba(0, 0, 0, 0.9)'
           }}
         >
-          Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Quis ipsum suspendisse ultrices gravida risus commodo.
+          Hissiyatla değil, veriyle hareket edin. Gelişmiş yapay zeka; yüz ifadelerini, renk uyumunu ve odak noktalarını (Heatmap) analiz ederek size net bir başarı puanı verir.
         </p>
 
         {/* CTA Button */}
-        <Button 
-          size="lg"
-          className="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white text-lg px-8 py-6 rounded-lg transition-all duration-300 transform hover:scale-105"
-          style={{ 
-            fontFamily: 'Geist Sans, sans-serif',
-            boxShadow: '0 8px 30px rgba(0, 0, 0, 0.6), 0 0 40px rgba(6, 182, 212, 0.3)'
-          }}
-        >
-          Keşfet
-        </Button>
+        <Link to="/analiz">
+          <Button 
+            size="lg"
+            className="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white text-lg px-8 py-6 rounded-lg transition-all duration-300 transform hover:scale-105"
+            style={{ 
+              fontFamily: 'Geist Sans, sans-serif',
+              boxShadow: '0 8px 30px rgba(0, 0, 0, 0.6), 0 0 40px rgba(6, 182, 212, 0.3)'
+            }}
+          >
+            Analiz Et
+          </Button>
+        </Link>
       </div>
     </section>
   );

@@ -57,9 +57,9 @@ function App() {
             <Route path="/login" element={<LoginPage />} />
             <Route path="/auth/callback" element={<AuthCallback />} />
             
-            {/* Tool Pages - Open to all, restrictions handled inside */}
-            <Route path="/create" element={<><Navbar /><CreatePage /></>} />
-            <Route path="/analyze" element={<><Navbar /><AnalyzePage /></>} />
+            {/* Tool Pages - Turkish URLs */}
+            <Route path="/olustur" element={<><Navbar /><CreatePage /></>} />
+            <Route path="/analiz" element={<><Navbar /><AnalyzePage /></>} />
             <Route path="/test" element={<><Navbar /><TestPage /></>} />
             <Route path="/lab" element={<><Navbar /><LabPage /></>} />
             

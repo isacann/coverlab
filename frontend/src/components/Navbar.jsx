@@ -54,9 +54,9 @@ const Navbar = () => {
               <span className="text-sm">Anasayfa</span>
             </Link>
             <Link 
-              to="/create" 
+              to="/olustur" 
               className={`flex items-center gap-2 transition-colors ${
-                isActive('/create')
+                isActive('/olustur')
                   ? 'text-cyan-300 font-semibold'
                   : 'text-cyan-400 hover:text-cyan-300'
               }`}
@@ -66,9 +66,9 @@ const Navbar = () => {
               <span className="text-sm">Oluştur</span>
             </Link>
             <Link 
-              to="/analyze" 
+              to="/analiz" 
               className={`flex items-center gap-2 transition-colors ${
-                isActive('/analyze')
+                isActive('/analiz')
                   ? 'text-white font-semibold'
                   : 'text-slate-300 hover:text-white'
               }`}
