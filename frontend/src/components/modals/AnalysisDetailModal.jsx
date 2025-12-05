@@ -119,11 +119,9 @@ const AnalysisDetailModal = ({ analysis, isOpen, onClose }) => {
                         left: `${point.x}%`,
                         top: `${point.y}%`,
                         transform: 'translate(-50%, -50%)',
-                        width: '150px',
-                        height: '150px',
-                        background: point.color === 'red' 
-                          ? 'radial-gradient(circle, rgba(255,0,0,0.6) 0%, rgba(255,0,0,0) 70%)'
-                          : 'radial-gradient(circle, rgba(255,255,0,0.6) 0%, rgba(255,255,0,0) 70%)',
+                        width: `${point.radius || 100}px`,
+                        height: `${point.radius || 100}px`,
+                        background: `radial-gradient(circle, rgba(255,0,0,${point.intensity || 0.6}) 0%, rgba(255,0,0,0) 70%)`,
                         filter: 'blur(40px)',
                         mixBlendMode: 'screen'
                       }}
