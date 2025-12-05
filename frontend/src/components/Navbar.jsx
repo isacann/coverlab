@@ -143,7 +143,7 @@ const Navbar = () => {
                     className="text-slate-300 hover:text-white hover:bg-slate-800 cursor-pointer" 
                     style={{ fontFamily: 'Geist Sans, sans-serif' }}
                   >
-                    <Archive size={16} className="mr-2" />
+                    <FolderOpen size={16} className="mr-2" />
                     Laboratuvarım
                   </DropdownMenuItem>
                   
