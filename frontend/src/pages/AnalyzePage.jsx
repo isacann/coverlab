@@ -118,6 +118,38 @@ const AnalyzePage = () => {
   const [result, setResult] = useState(null);
   const [activeTab, setActiveTab] = useState('overview');
 
+  // Check for pending analysis from Create page
+  React.useEffect(() => {
+    const pendingData = localStorage.getItem('pendingAnalysis');
+    if (pendingData) {
+      try {
+        const { imageUrl, title: pendingTitle } = JSON.parse(pendingData);
+        
+        // Set preview from URL
+        setPreview(imageUrl);
+        setTitle(pendingTitle || '');
+        
+        // Convert URL to File object
+        fetch(imageUrl)
+          .then(res => res.blob())
+          .then(blob => {
+            const file = new File([blob], 'thumbnail.jpg', { type: 'image/jpeg' });
+            setFile(file);
+            console.log('✅ Loaded pending analysis from Create page');
+          })
+          .catch(err => {
+            console.error('Failed to load image:', err);
+          });
+        
+        // Clear localStorage
+        localStorage.removeItem('pendingAnalysis');
+      } catch (e) {
+        console.error('Failed to parse pending analysis:', e);
+        localStorage.removeItem('pendingAnalysis');
+      }
+    }
+  }, []);
+
   const onDrop = (acceptedFiles) => {
     const uploadedFile = acceptedFiles[0];
     setFile(uploadedFile);
