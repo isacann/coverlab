@@ -85,22 +85,29 @@ const AnalyzePage = () => {
 
   // Analyze Button Handler
   const handleAnalyze = async () => {
+    console.log('🔘 Analyze button clicked!');
+    console.log('📊 State:', { mode, uploadedFile: !!uploadedFile, videoTitle, userId: user?.id });
+    
     // Validation
     if (!videoTitle.trim()) {
+      console.log('❌ Video title missing');
       toast.error('Lütfen video başlığını girin');
       return;
     }
 
     if (!uploadedFile) {
+      console.log('❌ Uploaded file missing');
       toast.error('Lütfen bir resim yükleyin');
       return;
     }
 
     if (!user?.id) {
+      console.log('❌ User ID missing');
       toast.error('Lütfen giriş yapın');
       return;
     }
 
+    console.log('✅ All validations passed, starting analysis...');
     setIsAnalyzing(true);
 
     try {
