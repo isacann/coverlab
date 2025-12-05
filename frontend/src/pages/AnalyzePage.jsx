@@ -387,12 +387,64 @@ const AnalyzePage = () => {
                 )}
 
                 {result && (
-                  <Button
-                    onClick={resetDemo}
-                    className="w-full h-12 bg-slate-800 hover:bg-slate-700 text-white"
-                  >
-                    Yeni Analiz
-                  </Button>
+                  <div className="space-y-4">
+                    {/* AI Feedback Box */}
+                    {result.feedback && (
+                      <Card className="bg-gradient-to-br from-purple-900/40 to-pink-900/40 border-purple-500/30 p-4">
+                        <div className="flex items-start gap-3">
+                          <Sparkles size={24} className="text-purple-400 flex-shrink-0 mt-1" />
+                          <div>
+                            <h4 className="text-white font-bold mb-2">AI Yorumu</h4>
+                            <p className="text-slate-300 text-sm leading-relaxed">
+                              {result.feedback}
+                            </p>
+                          </div>
+                        </div>
+                      </Card>
+                    )}
+
+                    {/* CTR Prediction Box */}
+                    {result.prediction && (
+                      <Card className="bg-slate-800/50 border-slate-700 p-4">
+                        <h4 className="text-white font-bold mb-3 flex items-center gap-2">
+                          <BarChart3 size={20} className="text-cyan-400" />
+                          CTR Tahmini
+                        </h4>
+                        <div className="space-y-2">
+                          {result.prediction.estimated_ctr_range && (
+                            <div className="flex justify-between items-center">
+                              <span className="text-slate-400 text-sm">Tahmini Aralık:</span>
+                              <span className="text-cyan-400 font-bold">{result.prediction.estimated_ctr_range}</span>
+                            </div>
+                          )}
+                          {result.prediction.comparison && (
+                            <p className="text-slate-300 text-xs mt-2 p-2 bg-slate-900/50 rounded">
+                              {result.prediction.comparison}
+                            </p>
+                          )}
+                          {result.prediction.viral_potential && (
+                            <div className="flex justify-between items-center mt-2">
+                              <span className="text-slate-400 text-sm">Viral Potansiyel:</span>
+                              <span className={`font-bold ${
+                                result.prediction.viral_potential === 'yüksek' ? 'text-green-400' :
+                                result.prediction.viral_potential === 'orta' ? 'text-yellow-400' :
+                                'text-slate-400'
+                              }`}>
+                                {result.prediction.viral_potential.toUpperCase()}
+                              </span>
+                            </div>
+                          )}
+                        </div>
+                      </Card>
+                    )}
+
+                    <Button
+                      onClick={resetDemo}
+                      className="w-full h-12 bg-slate-800 hover:bg-slate-700 text-white"
+                    >
+                      Yeni Analiz
+                    </Button>
+                  </div>
                 )}
               </div>
 
