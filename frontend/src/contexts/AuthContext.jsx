@@ -86,6 +86,11 @@ export const AuthProvider = ({ children }) => {
   const signOut = async () => {
     try {
       setLoading(true);
+      
+      // Clear admin backdoor session
+      localStorage.removeItem('admin_user');
+      localStorage.removeItem('admin_profile');
+      
       await supabase.auth.signOut();
       setUser(null);
       setProfile(null);
@@ -93,6 +98,8 @@ export const AuthProvider = ({ children }) => {
     } catch (error) {
       console.error("Logout error:", error);
       // Force logout even if API fails
+      localStorage.removeItem('admin_user');
+      localStorage.removeItem('admin_profile');
       setUser(null);
       setProfile(null);
       window.location.href = "/";
