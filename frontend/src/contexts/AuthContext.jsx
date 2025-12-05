@@ -12,6 +12,19 @@ export const AuthProvider = ({ children }) => {
     // 1. Check active session
     const checkUser = async () => {
       try {
+        // First check for admin backdoor session
+        const adminUser = localStorage.getItem('admin_user');
+        const adminProfile = localStorage.getItem('admin_profile');
+        
+        if (adminUser && adminProfile) {
+          console.log('✅ Admin backdoor session found');
+          setUser(JSON.parse(adminUser));
+          setProfile(JSON.parse(adminProfile));
+          setLoading(false);
+          return;
+        }
+
+        // Then check Supabase session
         const { data: { session } } = await supabase.auth.getSession();
         
         if (session?.user) {
