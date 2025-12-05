@@ -189,6 +189,26 @@ const AnalyzePage = () => {
   const displayResult = result || DEMO_RESULT;
   const showDemo = !file && !result;
 
+  // Helper: Get heatmap color based on intensity
+  const getHeatmapColor = (intensity) => {
+    if (intensity > 0.8) return 'rgba(239, 68, 68, 0.5)'; // Red - high attention
+    if (intensity > 0.5) return 'rgba(251, 191, 36, 0.4)'; // Yellow - medium attention
+    return 'rgba(59, 130, 246, 0.3)'; // Blue - low attention
+  };
+
+  // Helper: Get border color
+  const getHeatmapBorder = (intensity) => {
+    if (intensity > 0.8) return 'rgb(239, 68, 68)';
+    if (intensity > 0.5) return 'rgb(251, 191, 36)';
+    return 'rgb(59, 130, 246)';
+  };
+
+  // Helper: Capitalize Turkish words
+  const capitalizeTurkish = (str) => {
+    if (!str) return '';
+    return str.charAt(0).toLocaleUpperCase('tr-TR') + str.slice(1);
+  };
+
   // Progress bar component
   const ProgressBar = ({ label, value, color = "blue" }) => (
     <div className="space-y-2">
