@@ -787,4 +787,107 @@ const VibeCard = ({ label, value }) => (
   </div>
 );
 
+// Recent Analyses Section Component
+const RecentAnalysesSection = ({ userId }) => {
+  const [recentAnalyses, setRecentAnalyses] = React.useState([]);
+  const [loading, setLoading] = React.useState(true);
+
+  React.useEffect(() => {
+    const fetchRecent = async () => {
+      try {
+        const supabase = (await import('../utils/supabase')).default;
+        const { data, error } = await supabase
+          .from('analyses')
+          .select('*')
+          .eq('user_id', userId)
+          .order('created_at', { ascending: false })
+          .limit(1);
+
+        if (error) throw error;
+        setRecentAnalyses(data || []);
+      } catch (error) {
+        console.error('Failed to fetch recent analyses:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (userId) {
+      fetchRecent();
+    }
+  }, [userId]);
+
+  if (loading || recentAnalyses.length === 0) {
+    return null;
+  }
+
+  const analysis = recentAnalyses[0];
+  const analysisData = typeof analysis.analysis_data === 'string' 
+    ? JSON.parse(analysis.analysis_data) 
+    : analysis.analysis_data;
+  const score = analysisData?.score?.value || 0;
+  const label = analysisData?.score?.label || 'N/A';
+
+  return (
+    <div className="mb-12">
+      <div className="flex items-center justify-between mb-6">
+        <h2 className="text-3xl font-bold text-white" style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}>
+          Son Analizleriniz
+        </h2>
+        <a 
+          href="/lab"
+          className="text-blue-400 hover:text-blue-300 font-semibold flex items-center gap-2 transition-colors"
+          style={{ fontFamily: 'Geist Sans, sans-serif' }}
+        >
+          Daha fazlasını gör
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+          </svg>
+        </a>
+      </div>
+
+      <div className="bg-slate-900/50 backdrop-blur-sm rounded-2xl border border-slate-700/50 p-6 hover:border-blue-500/50 transition-all cursor-pointer group">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {/* Thumbnail */}
+          <div className="relative">
+            <img 
+              src={analysis.thumbnail_url || analysisData?.input_image_url} 
+              alt={analysis.title || 'Analiz'} 
+              className="w-full aspect-video object-cover rounded-lg"
+            />
+            <div className="absolute top-2 right-2 bg-blue-500 text-white px-3 py-1 rounded-full text-sm font-bold">
+              {score}
+            </div>
+          </div>
+
+          {/* Info */}
+          <div className="md:col-span-2 flex flex-col justify-between">
+            <div>
+              <h3 className="text-white text-xl font-bold mb-2" style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}>
+                {analysis.title || analysisData?.input_title || 'Untitled'}
+              </h3>
+              <p className="text-slate-400 text-sm mb-3" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
+                {label} • {new Date(analysis.created_at).toLocaleDateString('tr-TR')}
+              </p>
+              <p className="text-slate-300 text-sm line-clamp-2" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
+                {analysisData?.feedback?.substring(0, 150)}...
+              </p>
+            </div>
+
+            <div className="flex gap-3 mt-4">
+              <button 
+                onClick={() => window.location.href = '/lab'}
+                className="text-blue-400 hover:text-blue-300 text-sm font-semibold flex items-center gap-1 transition-colors"
+                style={{ fontFamily: 'Geist Sans, sans-serif' }}
+              >
+                Detayları Gör →
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 export default AnalyzePage;
