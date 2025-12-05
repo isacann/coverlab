@@ -157,11 +157,20 @@ const AnalyzePage = () => {
       }
 
       // Step 6: Parse response
-      const responseData = await response.json();
-      console.log('✅ Analysis complete:', responseData);
+      const json = await response.json();
+      console.log('📦 Raw response:', json);
 
-      // Extract data from n8n response structure
-      const analysisData = responseData.success ? responseData.data : responseData;
+      // CRITICAL: Check success flag
+      if (json.success === false || !json.data) {
+        const errorMsg = json.error || 'Analiz başarısız oldu';
+        console.error('❌ API returned error:', errorMsg);
+        alert(`Hata: ${errorMsg}`);
+        return;
+      }
+
+      // Extract the actual data from nested structure
+      const analysisData = json.data;
+      console.log('✅ Analysis data extracted:', analysisData);
       
       setResult(analysisData);
       alert('Analiz tamamlandı! 🎉');
