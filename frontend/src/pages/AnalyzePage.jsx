@@ -162,44 +162,44 @@ const AnalyzePage = () => {
       
       console.log('📡 Response received!');
 
-      console.log('📡 Response status:', response.status, 'OK:', response.ok);
-
       const rawJson = await response.json();
-      console.log('📦 Raw n8n response:', JSON.stringify(rawJson).substring(0, 200) + '...');
-      console.log('📦 Raw type:', typeof rawJson, 'isArray:', Array.isArray(rawJson));
+      console.log('📦 RAW RESPONSE:', JSON.stringify(rawJson, null, 2));
 
-      // n8n returns: {"sonuc": [{success: true, data: {...}}]}
-      let json;
-      if (rawJson.sonuc && Array.isArray(rawJson.sonuc)) {
-        console.log('✅ Found "sonuc" array, extracting first element');
-        json = rawJson.sonuc[0];
-      } else if (Array.isArray(rawJson)) {
-        console.log('✅ Direct array format, extracting first element');
-        json = rawJson[0];
-      } else {
-        console.log('✅ Direct object format');
-        json = rawJson;
-      }
+      // EXTRACT DATA - TRY ALL POSSIBLE FORMATS
+      let data = null;
       
-      console.log('📦 Parsed json type:', typeof json);
-      console.log('🔍 Validation check:', {
-        hasJson: !!json,
-        success: json?.success,
-        successType: typeof json?.success,
-        successIsTrue: json?.success === true,
-        hasData: !!json?.data,
-        dataKeys: json?.data ? Object.keys(json.data).slice(0, 5) : []
-      });
+      // Format 1: {"sonuc": [{success: true, data: {...}}]}
+      if (rawJson.sonuc && Array.isArray(rawJson.sonuc) && rawJson.sonuc[0]?.data) {
+        console.log('✅ Format 1: sonuc array with data');
+        data = rawJson.sonuc[0].data;
+      }
+      // Format 2: [{success: true, data: {...}}]
+      else if (Array.isArray(rawJson) && rawJson[0]?.data) {
+        console.log('✅ Format 2: direct array with data');
+        data = rawJson[0].data;
+      }
+      // Format 3: {success: true, data: {...}}
+      else if (rawJson.data) {
+        console.log('✅ Format 3: direct object with data');
+        data = rawJson.data;
+      }
+      // Format 4: Direct data object (no wrapper)
+      else if (rawJson.score && rawJson.feedback) {
+        console.log('✅ Format 4: direct data object');
+        data = rawJson;
+      }
 
-      // STRICT validation: success must be exactly true and data must exist
-      if (!json || json.success !== true || !json.data) {
-        console.error('❌ Validation FAILED!');
-        alert(`Hata: ${json?.error || 'Analiz başarısız - Geçersiz response formatı'}`);
+      console.log('📦 EXTRACTED DATA:', data ? 'YES ✅' : 'NO ❌');
+
+      if (!data) {
+        console.error('❌ NO DATA FOUND IN ANY FORMAT!');
+        console.error('Raw response keys:', Object.keys(rawJson));
+        alert('Hata: Response içinde data bulunamadı. Console\'u kontrol edin.');
         return;
       }
 
-      console.log('✅ Analysis successful! Data keys:', Object.keys(json.data));
-      setResult(json.data);
+      console.log('✅ SUCCESS! Setting result...');
+      setResult(data);
       alert('🎉 Analiz tamamlandı!');
 
     } catch (error) {
