@@ -457,12 +457,50 @@ const AnalyzePage = () => {
                         </TabsContent>
 
                         <TabsContent value="vibe" className="space-y-4">
-                          {displayResult.vibe.map((item, idx) => (
-                            <div key={idx} className="flex justify-between items-center py-2">
-                              <span className="text-white font-medium">{item.label}</span>
-                              {renderDots(item.value)}
+                          {displayResult.vibe && Object.keys(displayResult.vibe).length > 0 ? (
+                            <>
+                              {displayResult.vibe.merak_uyandirma !== undefined && (
+                                <div className="flex justify-between items-center py-2">
+                                  <span className="text-white font-medium">{VIBE_LABELS.merak_uyandirma}</span>
+                                  {renderDots(displayResult.vibe.merak_uyandirma)}
+                                </div>
+                              )}
+                              {displayResult.vibe.kiskiricilik !== undefined && (
+                                <div className="flex justify-between items-center py-2">
+                                  <span className="text-white font-medium">{VIBE_LABELS.kiskiricilik}</span>
+                                  {renderDots(displayResult.vibe.kiskiricilik)}
+                                </div>
+                              )}
+                              {displayResult.vibe.gizem !== undefined && (
+                                <div className="flex justify-between items-center py-2">
+                                  <span className="text-white font-medium">{VIBE_LABELS.gizem}</span>
+                                  {renderDots(displayResult.vibe.gizem)}
+                                </div>
+                              )}
+                              {displayResult.vibe.aciliyet !== undefined && (
+                                <div className="flex justify-between items-center py-2">
+                                  <span className="text-white font-medium">{VIBE_LABELS.aciliyet}</span>
+                                  {renderDots(displayResult.vibe.aciliyet)}
+                                </div>
+                              )}
+                              {displayResult.vibe.guvenilirlik !== undefined && (
+                                <div className="flex justify-between items-center py-2">
+                                  <span className="text-white font-medium">{VIBE_LABELS.guvenilirlik}</span>
+                                  {renderDots(displayResult.vibe.guvenilirlik)}
+                                </div>
+                              )}
+                              {displayResult.vibe.duygusal_etki !== undefined && (
+                                <div className="flex justify-between items-center py-2">
+                                  <span className="text-white font-medium">{VIBE_LABELS.duygusal_etki}</span>
+                                  {renderDots(displayResult.vibe.duygusal_etki)}
+                                </div>
+                              )}
+                            </>
+                          ) : (
+                            <div className="text-center py-8">
+                              <p className="text-slate-400">Vibe verileri mevcut değil</p>
                             </div>
-                          ))}
+                          )}
                         </TabsContent>
 
                         <TabsContent value="objects" className="space-y-4">
