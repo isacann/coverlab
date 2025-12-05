@@ -9,6 +9,33 @@ const AnalysisDetailModal = ({ analysis, isOpen, onClose }) => {
 
   if (!analysis) return null;
 
+  // Parse analysis_data (real Supabase format)
+  const data = analysis.analysis_data || {};
+  const thumbnail = analysis.thumbnail_url || data.input_image_url || 'https://via.placeholder.com/400x225';
+  const title = analysis.title || data.input_title || 'Untitled';
+  const score = data.score?.value || 0;
+  const label = data.score?.label || 'N/A';
+  const feedback = data.feedback || 'Analiz verisi bulunamadı.';
+  
+  // Convert faces data to array format
+  const facesData = data.faces?.summary ? [
+    { label: 'Mutluluk', value: data.faces.summary.avg_mutluluk || 0 },
+    { label: 'Şaşkınlık', value: data.faces.summary.avg_saskinlik || 0 },
+    { label: 'Öfke', value: data.faces.summary.avg_ofke || 0 }
+  ] : [];
+  
+  // Convert vibe data
+  const vibeData = data.vibe ? [
+    { label: 'Merak', value: (data.vibe.merak_uyandirma || 0) * 20 },
+    { label: 'Kışkırtıcılık', value: (data.vibe.kiskiricilik || 0) * 20 },
+    { label: 'Gizem', value: (data.vibe.gizem || 0) * 20 },
+    { label: 'Aciliyet', value: (data.vibe.aciliyet || 0) * 20 },
+    { label: 'Güvenilirlik', value: (data.vibe.guvenilirlik || 0) * 20 }
+  ] : [];
+  
+  // Heatmap data
+  const heatmapData = data.heatmap?.focus_points || [];
+
   const renderDots = (count) => {
     return (
       <div className="flex gap-2">
