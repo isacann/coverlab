@@ -492,26 +492,41 @@ const AnalyzePage = () => {
                         </TabsList>
 
                         <TabsContent value="faces" className="space-y-4">
-                          {displayResult.faces?.face_count > 0 ? (
+                          {displayResult.faces?.face_count > 0 && displayResult.faces?.summary ? (
                             <>
                               <ProgressBar 
                                 label={EMOTION_LABELS.mutluluk} 
-                                value={displayResult.faces.summary?.avg_mutluluk || 0} 
+                                value={displayResult.faces.summary.avg_mutluluk || 0} 
                                 color="blue" 
                               />
                               <ProgressBar 
                                 label={EMOTION_LABELS.saskinlik} 
-                                value={displayResult.faces.summary?.avg_saskinlik || 0} 
+                                value={displayResult.faces.summary.avg_saskinlik || 0} 
                                 color="blue" 
                               />
                               <ProgressBar 
                                 label={EMOTION_LABELS.ofke} 
-                                value={displayResult.faces.summary?.avg_ofke || 0} 
+                                value={displayResult.faces.summary.avg_ofke || 0} 
                                 color="blue" 
                               />
+                              {displayResult.faces.summary.avg_korku !== undefined && displayResult.faces.summary.avg_korku > 0 && (
+                                <ProgressBar 
+                                  label={EMOTION_LABELS.korku} 
+                                  value={displayResult.faces.summary.avg_korku} 
+                                  color="blue" 
+                                />
+                              )}
+                              {displayResult.faces.summary.avg_uzuntu !== undefined && displayResult.faces.summary.avg_uzuntu > 0 && (
+                                <ProgressBar 
+                                  label={EMOTION_LABELS.uzuntu} 
+                                  value={displayResult.faces.summary.avg_uzuntu} 
+                                  color="blue" 
+                                />
+                              )}
                             </>
                           ) : (
                             <div className="text-center py-8">
+                              <Smile size={48} className="mx-auto mb-3 text-slate-600" />
                               <p className="text-slate-400">Yüz tespit edilmedi</p>
                             </div>
                           )}
