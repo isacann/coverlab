@@ -168,24 +168,40 @@ const AnalyzePage = () => {
       // EXTRACT DATA - TRY ALL POSSIBLE FORMATS
       let data = null;
       
-      // Format 1: {"sonuc": [{success: true, data: {...}}]}
-      if (rawJson.sonuc && Array.isArray(rawJson.sonuc) && rawJson.sonuc[0]?.data) {
-        console.log('✅ Format 1: sonuc array with data');
+      // Format 1: {"sonuc": "[{...}]"} - STRING format (n8n template hatası)
+      if (rawJson.sonuc && typeof rawJson.sonuc === 'string') {
+        console.log('⚠️ WARNING: sonuc is STRING, trying to parse...');
+        try {
+          const parsed = JSON.parse(rawJson.sonuc);
+          if (Array.isArray(parsed) && parsed[0]?.data) {
+            console.log('✅ Format 1a: Parsed sonuc string -> array with data');
+            data = parsed[0].data;
+          } else if (parsed.data) {
+            console.log('✅ Format 1b: Parsed sonuc string -> object with data');
+            data = parsed.data;
+          }
+        } catch (e) {
+          console.error('❌ Failed to parse sonuc string:', e);
+        }
+      }
+      // Format 2: {"sonuc": [{success: true, data: {...}}]}
+      else if (rawJson.sonuc && Array.isArray(rawJson.sonuc) && rawJson.sonuc[0]?.data) {
+        console.log('✅ Format 2: sonuc array with data');
         data = rawJson.sonuc[0].data;
       }
-      // Format 2: [{success: true, data: {...}}]
+      // Format 3: [{success: true, data: {...}}]
       else if (Array.isArray(rawJson) && rawJson[0]?.data) {
-        console.log('✅ Format 2: direct array with data');
+        console.log('✅ Format 3: direct array with data');
         data = rawJson[0].data;
       }
-      // Format 3: {success: true, data: {...}}
+      // Format 4: {success: true, data: {...}}
       else if (rawJson.data) {
-        console.log('✅ Format 3: direct object with data');
+        console.log('✅ Format 4: direct object with data');
         data = rawJson.data;
       }
-      // Format 4: Direct data object (no wrapper)
+      // Format 5: Direct data object (no wrapper)
       else if (rawJson.score && rawJson.feedback) {
-        console.log('✅ Format 4: direct data object');
+        console.log('✅ Format 5: direct data object');
         data = rawJson;
       }
 
@@ -194,7 +210,8 @@ const AnalyzePage = () => {
       if (!data) {
         console.error('❌ NO DATA FOUND IN ANY FORMAT!');
         console.error('Raw response keys:', Object.keys(rawJson));
-        alert('Hata: Response içinde data bulunamadı. Console\'u kontrol edin.');
+        console.error('Raw response type:', typeof rawJson);
+        alert('Hata: Response içinde data bulunamadı. Console log\'larını kontrol edin.');
         return;
       }
 
