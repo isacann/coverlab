@@ -70,6 +70,7 @@ const PricingPage = () => {
 
   return (
     <div className="min-h-screen bg-[#0a0a0a]">
+      <Toaster position="top-center" />
       {/* Background */}
       <div 
         className="fixed inset-0 bg-cover bg-center bg-no-repeat opacity-10"
