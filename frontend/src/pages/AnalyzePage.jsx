@@ -416,6 +416,11 @@ const AnalyzePage = () => {
           </div>
         </div>
 
+        {/* Recent Analyses Section */}
+        {user?.id && (
+          <RecentAnalysesSection userId={user.id} />
+        )}
+
         {/* Analysis Results Tabs - Only show when we have results or demo */}
         {(showDemo || showResults) && (
           <div className="bg-slate-900/50 backdrop-blur-sm rounded-2xl border border-slate-700/50 p-8">
