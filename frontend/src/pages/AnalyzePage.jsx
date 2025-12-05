@@ -431,9 +431,29 @@ const AnalyzePage = () => {
                         </TabsList>
 
                         <TabsContent value="faces" className="space-y-4">
-                          {displayResult.faces.map((item, idx) => (
-                            <ProgressBar key={idx} label={item.label} value={item.value} color="blue" />
-                          ))}
+                          {displayResult.faces?.face_count > 0 ? (
+                            <>
+                              <ProgressBar 
+                                label={EMOTION_LABELS.mutluluk} 
+                                value={displayResult.faces.summary?.avg_mutluluk || 0} 
+                                color="blue" 
+                              />
+                              <ProgressBar 
+                                label={EMOTION_LABELS.saskinlik} 
+                                value={displayResult.faces.summary?.avg_saskinlik || 0} 
+                                color="blue" 
+                              />
+                              <ProgressBar 
+                                label={EMOTION_LABELS.ofke} 
+                                value={displayResult.faces.summary?.avg_ofke || 0} 
+                                color="blue" 
+                              />
+                            </>
+                          ) : (
+                            <div className="text-center py-8">
+                              <p className="text-slate-400">Yüz tespit edilmedi</p>
+                            </div>
+                          )}
                         </TabsContent>
 
                         <TabsContent value="vibe" className="space-y-4">
