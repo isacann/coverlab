@@ -6,7 +6,7 @@ const Footer = () => {
   return (
     <footer className="relative bg-slate-950 border-t border-slate-800/50">
       <div className="max-w-7xl mx-auto px-6 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Brand Section */}
           <div className="col-span-1">
             <Link to="/" className="inline-flex items-center gap-2 mb-4 w-fit">
@@ -46,6 +46,23 @@ const Footer = () => {
                 <Link to="/pricing" className="inline-block text-slate-400 hover:text-white transition-colors text-sm w-fit" style={{ fontFamily: 'Geist Sans, sans-serif' }}>Fiyatlandırma</Link>
               </li>
             </ul>
+          </div>
+
+          {/* By Operiqo - Orta */}
+          <div className="flex flex-col items-center justify-start">
+            <a 
+              href="https://www.operiqo.com/" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="inline-flex flex-col items-center gap-2 hover:opacity-80 transition-opacity"
+            >
+              <span className="text-slate-500 text-sm" style={{ fontFamily: 'Geist Sans, sans-serif' }}>By</span>
+              <img 
+                src="https://customer-assets.emergentagent.com/job_coverlab-studio/artifacts/x6npr0ux_Ads%C4%B1z%20tasar%C4%B1m%20%286%29.png" 
+                alt="Operiqo" 
+                className="h-12"
+              />
+            </a>
           </div>
 
           {/* Legal Links */}
