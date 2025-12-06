@@ -48,19 +48,21 @@ const Footer = () => {
             </ul>
           </div>
 
-          {/* By Operiqo - Orta */}
-          <div className="flex flex-col items-center justify-start">
+          {/* Powered by Operiqo - Tam Orta */}
+          <div className="flex flex-col items-center justify-center">
             <a 
               href="https://www.operiqo.com/" 
               target="_blank" 
               rel="noopener noreferrer"
-              className="inline-flex flex-col items-center gap-3 hover:opacity-80 transition-opacity"
+              className="flex flex-col items-center gap-4 hover:opacity-80 transition-opacity"
             >
-              <span className="text-slate-500 text-lg font-medium" style={{ fontFamily: 'Geist Sans, sans-serif' }}>By</span>
+              <span className="text-slate-400 text-base font-medium" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
+                Powered by Operiqo
+              </span>
               <img 
                 src="https://customer-assets.emergentagent.com/job_coverlab-studio/artifacts/x6npr0ux_Ads%C4%B1z%20tasar%C4%B1m%20%286%29.png" 
                 alt="Operiqo" 
-                className="h-20"
+                className="h-16"
               />
             </a>
           </div>
