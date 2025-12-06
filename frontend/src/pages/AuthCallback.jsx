@@ -10,7 +10,7 @@ const AuthCallback = () => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session) {
         // Redirect to Create page (main generator tool) after successful login
-        navigate('/create', { replace: true });
+        navigate('/olustur', { replace: true });
       } else {
         // Redirect to login if no session
         navigate('/login', { replace: true });
