@@ -27,6 +27,44 @@ const Navbar = () => {
     }
   };
 
+  const handleSubscription = async () => {
+    try {
+      setIsDropdownOpen(false);
+      
+      if (!user?.id) {
+        console.error('User ID not found');
+        return;
+      }
+
+      console.log('🔄 Fetching subscription portal...');
+      
+      // Send request to n8n webhook
+      const response = await fetch('https://n8n.getoperiqo.com/webhook/068ca5b1-99a3-4a3e-ba4e-3246f7a1226a', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          user_id: user.id
+        })
+      });
+
+      const data = await response.json();
+      console.log('✅ Subscription portal response:', data);
+
+      // Redirect to the URL from response
+      if (data.redirect_url || data.url) {
+        const redirectUrl = data.redirect_url || data.url;
+        console.log('🔗 Redirecting to:', redirectUrl);
+        window.location.href = redirectUrl;
+      } else {
+        console.error('No redirect URL in response:', data);
+      }
+    } catch (error) {
+      console.error('Subscription portal error:', error);
+    }
+  };
+
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-slate-950/40 backdrop-blur-lg border-b border-slate-800/30">
       <div className="max-w-7xl mx-auto px-6 py-4">
