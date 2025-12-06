@@ -457,6 +457,7 @@ const AnalyzePage = () => {
         )}
       </div>
     </div>
+    </AccessGuard>
   );
 };
 
