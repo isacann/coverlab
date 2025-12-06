@@ -25,25 +25,25 @@ const Footer = () => {
             <h3 className="text-white font-semibold mb-4" style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}>Ürün</h3>
             <ul className="space-y-2">
               <li>
-                <Link to="/olustur" className="text-slate-400 hover:text-white transition-colors text-sm flex items-center gap-2" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
+                <Link to="/olustur" className="inline-flex items-center gap-2 text-slate-400 hover:text-white transition-colors text-sm w-fit" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
                   <Wand2 size={16} />
                   Oluştur
                 </Link>
               </li>
               <li>
-                <Link to="/analiz" className="text-slate-400 hover:text-white transition-colors text-sm flex items-center gap-2" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
+                <Link to="/analiz" className="inline-flex items-center gap-2 text-slate-400 hover:text-white transition-colors text-sm w-fit" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
                   <BarChart3 size={16} />
                   Analiz Et
                 </Link>
               </li>
               <li>
-                <Link to="/test" className="text-slate-400 hover:text-white transition-colors text-sm flex items-center gap-2" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
+                <Link to="/test" className="inline-flex items-center gap-2 text-slate-400 hover:text-white transition-colors text-sm w-fit" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
                   <FlaskConical size={16} />
                   Test Et
                 </Link>
               </li>
               <li>
-                <Link to="/pricing" className="text-slate-400 hover:text-white transition-colors text-sm" style={{ fontFamily: 'Geist Sans, sans-serif' }}>Fiyatlandırma</Link>
+                <Link to="/pricing" className="inline-block text-slate-400 hover:text-white transition-colors text-sm w-fit" style={{ fontFamily: 'Geist Sans, sans-serif' }}>Fiyatlandırma</Link>
               </li>
             </ul>
           </div>
