@@ -564,7 +564,7 @@ const VibeTab = ({ data }) => (
 
 // Objects Tab
 const ObjectsTab = ({ data, image }) => {
-  const [selectedObject, setSelectedObject] = React.useState(null);
+  const [selectedObject, setSelectedObject] = useState(null);
   
   // Renk paleti - Her obje için farklı renk
   const colors = [
