@@ -48,8 +48,8 @@ const Footer = () => {
             </ul>
           </div>
 
-          {/* Powered by Operiqo - Ürün ve Yasal Arası */}
-          <div className="flex flex-col items-center justify-center text-center">
+          {/* Powered by Operiqo - Ortalanmış */}
+          <div className="flex flex-col items-center justify-center text-center mx-auto">
             <a 
               href="https://www.operiqo.com/" 
               target="_blank" 
@@ -62,7 +62,7 @@ const Footer = () => {
               <img 
                 src="https://customer-assets.emergentagent.com/job_192d84b8-79c7-4677-9b1c-9906ebc7a8f9/artifacts/f7uvoqdh_Ads%C4%B1z%20tasar%C4%B1m%20%288%29.png" 
                 alt="Operiqo" 
-                className="h-16 w-auto"
+                className="h-16 w-auto mx-auto"
               />
             </a>
           </div>
