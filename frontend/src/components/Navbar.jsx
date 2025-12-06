@@ -150,21 +150,25 @@ const Navbar = () => {
                 <DropdownMenuTrigger asChild>
                   <button className={`flex items-center gap-3 px-4 py-2 rounded-full transition-all ${
                     profile?.subscription_plan === 'pro'
-                      ? 'bg-gradient-to-r from-orange-500/20 to-pink-500/20 hover:from-orange-500/30 hover:to-pink-500/30 border-2 border-orange-500/50'
+                      ? 'bg-slate-800/50 hover:bg-slate-800 border border-orange-500/30 hover:border-orange-500/50'
                       : 'bg-slate-800/50 hover:bg-slate-800 border border-slate-700/30'
                   }`}>
                     {/* User Avatar */}
                     <img 
                       src={user?.user_metadata?.avatar_url || 'https://ui-avatars.com/api/?name=' + (user?.email || 'User')}
                       alt="User Avatar"
-                      className={`w-8 h-8 rounded-full ${profile?.subscription_plan === 'pro' ? 'ring-2 ring-orange-500/50' : ''}`}
+                      className={`w-8 h-8 rounded-full ${profile?.subscription_plan === 'pro' ? 'ring-1 ring-orange-400/40' : ''}`}
                     />
                     {/* User Name */}
-                    <span className={`text-sm font-medium hidden sm:block ${
-                      profile?.subscription_plan === 'pro' ? 'text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-pink-400' : 'text-white'
-                    }`} style={{ fontFamily: 'Geist Sans, sans-serif' }}>
+                    <span className="text-white text-sm font-medium hidden sm:block" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
                       {user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'User'}
                     </span>
+                    {/* Pro Badge */}
+                    {profile?.subscription_plan === 'pro' && (
+                      <span className="text-xs font-bold text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-pink-400">
+                        PRO
+                      </span>
+                    )}
                   </button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-56 bg-slate-900 border-slate-700">
