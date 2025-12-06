@@ -120,7 +120,7 @@ const AnalyzePage = () => {
   const [activeTab, setActiveTab] = useState('overview');
 
   // Check for pending analysis from Create page
-  React.useEffect(() => {
+  useEffect(() => {
     const pendingData = localStorage.getItem('pendingAnalysis');
     if (pendingData) {
       try {
@@ -792,10 +792,10 @@ const VibeCard = ({ label, value }) => (
 
 // Recent Analyses Section Component
 const RecentAnalysesSection = ({ userId }) => {
-  const [recentAnalyses, setRecentAnalyses] = React.useState([]);
-  const [loading, setLoading] = React.useState(true);
+  const [recentAnalyses, setRecentAnalyses] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const fetchRecent = async () => {
       try {
         const supabase = (await import('../utils/supabase')).default;
