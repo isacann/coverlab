@@ -29,32 +29,70 @@ const Navbar = () => {
     }
   };
 
-  const handleSubscription = () => {
+  const handleSubscription = async () => {
+    // Close dropdown
     setIsDropdownOpen(false);
     
+    // Check user ID
     if (!user?.id) {
-      console.error('❌ User ID not found');
-      alert('Kullanıcı bilgisi bulunamadı. Lütfen tekrar giriş yapın.');
+      toast.error('Kullanıcı bilgisi bulunamadı. Lütfen tekrar giriş yapın.');
       return;
     }
 
-    console.log('🔗 Redirecting to subscription portal for user:', user.id);
-    
-    // Create form and submit to webhook (bypasses CORS)
-    const form = document.createElement('form');
-    form.method = 'POST';
-    form.action = 'https://n8n.getoperiqo.com/webhook/068ca5b1-99a3-4a3e-ba4e-3246f7a1226a';
-    
-    const input = document.createElement('input');
-    input.type = 'hidden';
-    input.name = 'user_id';
-    input.value = user.id;
-    
-    form.appendChild(input);
-    document.body.appendChild(form);
-    
-    // Submit form - this will trigger navigation/redirect
-    form.submit();
+    try {
+      // 1. Disable button and show loading toast
+      setIsRedirecting(true);
+      toast.loading('Stripe paneline yönlendiriliyorsunuz, lütfen bekleyin...', {
+        id: 'subscription-redirect',
+        duration: Infinity
+      });
+
+      console.log('🔗 Fetching subscription portal for user:', user.id);
+
+      // 2. Make API request to n8n webhook
+      const response = await fetch('https://n8n.getoperiqo.com/webhook/068ca5b1-99a3-4a3e-ba4e-3246f7a1226a', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          user_id: user.id
+        }),
+        redirect: 'manual' // Prevent automatic redirect
+      });
+
+      // Parse response
+      const data = await response.json();
+      console.log('📦 Webhook response:', data);
+
+      // 3. Check if we got a URL
+      if (data.url) {
+        console.log('✅ Got redirect URL:', data.url);
+        
+        // Dismiss loading toast
+        toast.dismiss('subscription-redirect');
+        
+        // Show success and redirect
+        toast.success('Yönlendiriliyor...');
+        
+        // Redirect to Stripe portal
+        setTimeout(() => {
+          window.location.href = data.url;
+        }, 500);
+      } else {
+        throw new Error('Response does not contain "url" field');
+      }
+
+    } catch (error) {
+      console.error('❌ Subscription error:', error);
+      
+      // Dismiss loading toast
+      toast.dismiss('subscription-redirect');
+      
+      // Show error and re-enable button
+      toast.error('Yönlendirme hatası, lütfen tekrar deneyin');
+      setIsRedirecting(false);
+    }
   };
 
   return (
