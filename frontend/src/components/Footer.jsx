@@ -6,9 +6,9 @@ const Footer = () => {
   return (
     <footer className="relative bg-slate-950 border-t border-slate-800/50">
       <div className="max-w-7xl mx-auto px-6 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 items-start justify-items-center">
           {/* Brand Section */}
-          <div className="col-span-1">
+          <div className="w-full">
             <Link to="/" className="inline-flex items-center gap-2 mb-4 w-fit">
               <span className="text-2xl font-bold text-white tracking-tight">
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 font-extrabold italic" style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}>C</span>
@@ -21,7 +21,7 @@ const Footer = () => {
           </div>
 
           {/* Product Links */}
-          <div>
+          <div className="w-full">
             <h3 className="text-white font-semibold mb-4" style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}>Ürün</h3>
             <ul className="space-y-2">
               <li>
@@ -48,8 +48,8 @@ const Footer = () => {
             </ul>
           </div>
 
-          {/* Powered by Operiqo - Ortalanmış */}
-          <div className="flex flex-col items-center justify-center text-center mx-auto">
+          {/* Powered by Operiqo - TAM ORTA */}
+          <div className="w-full flex flex-col items-center justify-center text-center">
             <a 
               href="https://www.operiqo.com/" 
               target="_blank" 
@@ -62,13 +62,13 @@ const Footer = () => {
               <img 
                 src="https://customer-assets.emergentagent.com/job_192d84b8-79c7-4677-9b1c-9906ebc7a8f9/artifacts/f7uvoqdh_Ads%C4%B1z%20tasar%C4%B1m%20%288%29.png" 
                 alt="Operiqo" 
-                className="h-16 w-auto mx-auto"
+                className="h-16 w-auto"
               />
             </a>
           </div>
 
           {/* Legal Links */}
-          <div>
+          <div className="w-full">
             <h3 className="text-white font-semibold mb-4" style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}>Yasal</h3>
             <ul className="space-y-2">
               <li>
