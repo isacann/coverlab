@@ -93,8 +93,18 @@ const Navbar = () => {
     } catch (error) {
       console.error('Subscription redirect error:', error);
       
+      let errorMessage = 'Bilinmeyen hata oluştu';
+      
+      if (error.name === 'AbortError') {
+        errorMessage = 'İstek zaman aşımına uğradı. Lütfen tekrar deneyin';
+      } else if (error.message.includes('NetworkError') || error.message.includes('fetch')) {
+        errorMessage = 'Bağlantı hatası. İnternet bağlantınızı kontrol edin';
+      } else {
+        errorMessage = error.message;
+      }
+      
       // Show error toast
-      toast.error(`Abonelik paneli yüklenemedi: ${error.message}`, {
+      toast.error(`Abonelik paneli yüklenemedi: ${errorMessage}`, {
         id: 'subscription-redirect',
         duration: 5000
       });
