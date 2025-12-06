@@ -212,16 +212,18 @@ const AnalysisDetailModal = ({ analysis, isOpen, onClose }) => {
             )}
 
             {/* Objects Data */}
-            <div>
-              <h4 className="text-xl font-bold text-white mb-4" style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}>
-                Algılanan Nesneler
-              </h4>
-              <div className="space-y-4">
-                {analysis.objects_data?.map((obj, idx) => (
-                  <ProgressBar key={idx} label={obj.label} value={obj.value} color="green" />
-                ))}
+            {objectsData.length > 0 && (
+              <div className="mb-8">
+                <h4 className="text-xl font-bold text-white mb-4" style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}>
+                  Algılanan Nesneler
+                </h4>
+                <div className="space-y-4">
+                  {objectsData.map((obj, idx) => (
+                    <ProgressBar key={idx} label={obj.label} value={obj.value} color="green" />
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
           </div>
         </div>
       </DialogContent>
