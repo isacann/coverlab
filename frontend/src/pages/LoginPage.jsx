@@ -79,20 +79,6 @@ const LoginPage = () => {
             {loading ? 'Yönlendiriliyor...' : 'Google ile devam et'}
           </Button>
 
-          {/* Admin Backdoor Button */}
-          <Button
-            onClick={handleAdminLogin}
-            disabled={loading}
-            className="w-full mt-3 bg-gradient-to-r from-red-500 to-orange-600 hover:from-red-600 hover:to-orange-700 text-white font-medium py-6 rounded-lg flex items-center justify-center gap-3 shadow-lg transition-all duration-200 hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
-            style={{ fontFamily: 'Geist Sans, sans-serif' }}
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
-              <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-            </svg>
-            {loading ? 'Yönlendiriliyor...' : 'Admin Giriş'}
-          </Button>
-
           {/* Terms Text */}
           <p 
             className="text-slate-500 text-xs text-center mt-6 leading-relaxed"
