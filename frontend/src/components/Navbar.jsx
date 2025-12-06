@@ -30,7 +30,7 @@ const Navbar = () => {
     }
   };
 
-  const handleSubscription = async () => {
+  const handleSubscription = () => {
     // Close dropdown
     setIsDropdownOpen(false);
     
@@ -40,79 +40,40 @@ const Navbar = () => {
       return;
     }
 
-    try {
-      // 1. Disable button and show loading toast
-      setIsRedirecting(true);
-      toast.loading('Stripe paneline yönlendiriliyorsunuz, lütfen bekleyin...', {
-        id: 'subscription-redirect',
-        duration: 30000 // 30 saniye timeout
-      });
+    // 1. Disable button and show loading toast
+    setIsRedirecting(true);
+    toast.loading('Stripe paneline yönlendiriliyorsunuz, lütfen bekleyin...', {
+      id: 'subscription-redirect',
+      duration: 10000
+    });
 
-      console.log('🔗 Redirecting to subscription portal for user:', user.id);
+    console.log('🔗 Redirecting to subscription portal for user:', user.id);
 
-      // 2. First check if N8N endpoint is reachable
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout for health check
+    // 2. Wait for toast to be visible, then submit form (ORIGINAL METHOD)
+    setTimeout(() => {
+      const form = document.createElement('form');
+      form.method = 'POST';
+      form.action = 'https://n8n.getoperiqo.com/webhook/068ca5b1-99a3-4a3e-ba4e-3246f7a1226a';
       
-      const healthCheck = await fetch('https://n8n.getoperiqo.com/webhook/068ca5b1-99a3-4a3e-ba4e-3246f7a1226a', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          user_id: user.id
-        }),
-        signal: controller.signal
-      });
+      const input = document.createElement('input');
+      input.type = 'hidden';
+      input.name = 'user_id';
+      input.value = user.id;
+      
+      form.appendChild(input);
+      document.body.appendChild(form);
+      form.submit();
+    }, 1500);
 
-      clearTimeout(timeoutId);
-
-      // Check if N8N responds (even if it's redirect HTML)
-      if (!healthCheck.ok) {
-        throw new Error(`N8N hizmet hatası: ${healthCheck.status} - ${healthCheck.statusText}`);
+    // 3. Simple timeout fallback - if no redirect happens after 15 seconds
+    setTimeout(() => {
+      if (isRedirecting) {
+        toast.error('Yönlendirme çok uzun sürdü. Lütfen tekrar deneyin.', {
+          id: 'subscription-redirect'
+        });
+        setIsRedirecting(false);
       }
-
-      // If N8N is responsive, use the original form submit method
-      toast.success('Stripe paneline yönlendiriliyorsunuz...', { id: 'subscription-redirect' });
-      
-      // Wait a moment then submit form (original working method)
-      setTimeout(() => {
-        const form = document.createElement('form');
-        form.method = 'POST';
-        form.action = 'https://n8n.getoperiqo.com/webhook/068ca5b1-99a3-4a3e-ba4e-3246f7a1226a';
-        
-        const input = document.createElement('input');
-        input.type = 'hidden';
-        input.name = 'user_id';
-        input.value = user.id;
-        
-        form.appendChild(input);
-        document.body.appendChild(form);
-        form.submit();
-      }, 1000);
-
-    } catch (error) {
-      console.error('Subscription redirect error:', error);
-      
-      let errorMessage = 'Bilinmeyen hata oluştu';
-      
-      if (error.name === 'AbortError') {
-        errorMessage = 'İstek zaman aşımına uğradı. Lütfen tekrar deneyin';
-      } else if (error.message.includes('NetworkError') || error.message.includes('fetch')) {
-        errorMessage = 'Bağlantı hatası. İnternet bağlantınızı kontrol edin';
-      } else {
-        errorMessage = error.message;
-      }
-      
-      // Show error toast
-      toast.error(`Abonelik paneli yüklenemedi: ${errorMessage}`, {
-        id: 'subscription-redirect',
-        duration: 5000
-      });
-      
-      // Re-enable button
-      setIsRedirecting(false);
-    }
+    }, 15000);
   };
 
   return (
