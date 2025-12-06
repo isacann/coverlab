@@ -53,13 +53,13 @@ const Footer = () => {
             <h3 className="text-white font-semibold mb-4" style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}>Yasal</h3>
             <ul className="space-y-2">
               <li>
-                <Link to="/privacy" className="text-slate-400 hover:text-white transition-colors text-sm" style={{ fontFamily: 'Geist Sans, sans-serif' }}>Gizlilik Politikası</Link>
+                <Link to="/privacy" className="inline-block text-slate-400 hover:text-white transition-colors text-sm w-fit" style={{ fontFamily: 'Geist Sans, sans-serif' }}>Gizlilik Politikası</Link>
               </li>
               <li>
-                <Link to="/terms" className="text-slate-400 hover:text-white transition-colors text-sm" style={{ fontFamily: 'Geist Sans, sans-serif' }}>Kullanım Koşulları</Link>
+                <Link to="/terms" className="inline-block text-slate-400 hover:text-white transition-colors text-sm w-fit" style={{ fontFamily: 'Geist Sans, sans-serif' }}>Kullanım Koşulları</Link>
               </li>
               <li>
-                <Link to="/cookies" className="text-slate-400 hover:text-white transition-colors text-sm" style={{ fontFamily: 'Geist Sans, sans-serif' }}>Çerez Politikası</Link>
+                <Link to="/cookies" className="inline-block text-slate-400 hover:text-white transition-colors text-sm w-fit" style={{ fontFamily: 'Geist Sans, sans-serif' }}>Çerez Politikası</Link>
               </li>
             </ul>
           </div>
