@@ -36,6 +36,12 @@ const AnalysisDetailModal = ({ analysis, isOpen, onClose }) => {
   // Heatmap data
   const heatmapData = data.heatmap?.focus_points || [];
 
+  // Convert objects data
+  const objectsData = data.objects?.objects ? data.objects.objects.map(obj => ({
+    label: obj.name,
+    value: obj.confidence
+  })) : [];
+
   const renderDots = (count) => {
     return (
       <div className="flex gap-2">
