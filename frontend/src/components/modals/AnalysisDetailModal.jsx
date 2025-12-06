@@ -86,33 +86,6 @@ const AnalysisDetailModal = ({ analysis, isOpen, onClose }) => {
     );
   };
 
-  const ProgressBar = ({ label, value, color = 'blue' }) => {
-    const colorClasses = {
-      blue: 'bg-blue-500',
-      green: 'bg-green-500',
-      cyan: 'bg-cyan-500'
-    };
-
-    return (
-      <div className="space-y-2">
-        <div className="flex justify-between items-center">
-          <span className="text-white font-medium" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
-            {label}
-          </span>
-          <span className={`font-bold text-lg ${color === 'blue' ? 'text-blue-400' : color === 'green' ? 'text-green-400' : 'text-cyan-400'}`}>
-            {value}%
-          </span>
-        </div>
-        <div className="h-3 bg-slate-800 rounded-full overflow-hidden border border-slate-700">
-          <div
-            className={`h-full ${colorClasses[color]} transition-all duration-700 ease-out shadow-lg`}
-            style={{ width: `${value}%` }}
-          />
-        </div>
-      </div>
-    );
-  };
-
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-6xl w-full h-[90vh] bg-slate-900 border-slate-700 p-0 overflow-hidden">
