@@ -132,7 +132,7 @@ const Navbar = () => {
           </div>
 
           {/* Right Side - Conditional Rendering */}
-          <div className="flex items-center gap-6">
+          <div className="flex items-center gap-6 flex-shrink-0">
             <Link to="/pricing" className="text-slate-300 hover:text-white transition-colors text-sm font-medium" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
               Fiyatlandırma
             </Link>
