@@ -683,31 +683,81 @@ const ObjectsTab = ({ data, image }) => {
 };
 
 // Heatmap Tab
-const HeatmapTab = ({ data, image }) => (
-  <div className="space-y-6">
-    <div className="relative">
-      <img src={image} alt="Heatmap" className="w-full h-96 object-contain rounded-xl bg-slate-800" />
-      {data.focus_points.map((point, idx) => (
-        <div
-          key={idx}
-          className="absolute rounded-full border-2 border-red-500 pointer-events-none"
-          style={{
-            left: `${point.x}%`,
-            top: `${point.y}%`,
-            width: `${point.radius}px`,
-            height: `${point.radius}px`,
-            transform: 'translate(-50%, -50%)',
-            backgroundColor: `rgba(255, 0, 0, ${point.intensity * 0.3})`,
-          }}
-        />
-      ))}
-    </div>
+const HeatmapTab = ({ data, image }) => {
+  // Safety checks
+  if (!data) {
+    return (
+      <div className="space-y-6">
+        <div className="bg-slate-800/50 rounded-xl p-6 text-center">
+          <p className="text-slate-400">Heatmap verisi bulunamadı</p>
+        </div>
+      </div>
+    );
+  }
 
-    <div className="bg-slate-800/50 rounded-xl p-6">
-      <h3 className="text-lg font-bold text-red-400 mb-4">Odak Noktaları</h3>
-      <div className="space-y-3">
-        {data.focus_points.map((point, idx) => (
-          <div key={idx} className="flex items-center justify-between">
+  const focusPoints = data.focus_points || [];
+  const attentionFlow = data.attention_flow || [];
+  
+  return (
+    <div className="space-y-6">
+      <div className="relative">
+        <img src={image} alt="Heatmap" className="w-full h-96 object-contain rounded-xl bg-slate-800" />
+        {focusPoints.map((point, idx) => (
+          <div
+            key={idx}
+            className="absolute rounded-full border-2 border-red-500 pointer-events-none"
+            style={{
+              left: `${point.x}%`,
+              top: `${point.y}%`,
+              width: `${point.radius}px`,
+              height: `${point.radius}px`,
+              transform: 'translate(-50%, -50%)',
+              backgroundColor: `rgba(255, 0, 0, ${point.intensity * 0.3})`,
+            }}
+          />
+        ))}
+      </div>
+
+      <div className="bg-slate-800/50 rounded-xl p-6">
+        <h3 className="text-lg font-bold text-red-400 mb-4">Odak Noktaları</h3>
+        <div className="space-y-3">
+          {focusPoints.length > 0 ? (
+            focusPoints.map((point, idx) => (
+              <div key={idx} className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div 
+                    className="w-4 h-4 rounded-full border-2 border-red-500"
+                    style={{ backgroundColor: `rgba(255, 0, 0, ${point.intensity * 0.3})` }}
+                  />
+                  <span className="text-white font-medium">{point.reason || 'Belirsiz'}</span>
+                </div>
+                <span className="text-slate-400 text-sm">%{Math.round((point.intensity || 0) * 100)} yoğunluk</span>
+              </div>
+            ))
+          ) : (
+            <p className="text-slate-400">Odak noktası bulunamadı</p>
+          )}
+        </div>
+      </div>
+
+      {attentionFlow.length > 0 && (
+        <div className="bg-slate-800/50 rounded-xl p-6">
+          <h3 className="text-lg font-bold text-blue-400 mb-4">Dikkat Akışı</h3>
+          <div className="flex flex-wrap gap-2">
+            {attentionFlow.map((item, idx) => (
+              <span 
+                key={idx} 
+                className="bg-blue-500/20 border border-blue-500/30 rounded-lg px-3 py-1 text-blue-300 text-sm"
+              >
+                {item}
+              </span>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
             <span className="text-slate-300">{point.reason}</span>
             <span className="text-white font-bold">{Math.round(point.intensity * 100)}%</span>
           </div>
