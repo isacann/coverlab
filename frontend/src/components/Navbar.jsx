@@ -210,7 +210,7 @@ const Navbar = () => {
                     {isRedirecting ? (
                       <Loader2 size={16} className="mr-2 animate-spin" />
                     ) : (
-                      <Wallet size={16} className="mr-2" />
+                      <Receipt size={16} className="mr-2" />
                     )}
                     Aboneliğim
                   </DropdownMenuItem>
