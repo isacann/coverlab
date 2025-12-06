@@ -185,10 +185,14 @@ const Navbar = () => {
                     Laboratuvarım
                   </DropdownMenuItem>
                   
-                  {/* Settings */}
-                  <DropdownMenuItem className="text-slate-300 hover:text-white hover:bg-slate-800 cursor-pointer" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
-                    <Settings size={16} className="mr-2" />
-                    Ayarlar
+                  {/* Subscription */}
+                  <DropdownMenuItem 
+                    onClick={handleSubscription}
+                    className="text-slate-300 hover:text-white hover:bg-slate-800 cursor-pointer" 
+                    style={{ fontFamily: 'Geist Sans, sans-serif' }}
+                  >
+                    <CreditCard size={16} className="mr-2" />
+                    Aboneliğim
                   </DropdownMenuItem>
                   
                   {/* Logout */}
