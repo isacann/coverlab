@@ -227,8 +227,72 @@ const Navbar = () => {
                 </DropdownMenuContent>
               </DropdownMenu>
             )}
+
+            {/* Mobile Menu Button */}
+            <button
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="md:hidden text-white p-2 hover:bg-slate-800 rounded-lg transition-colors"
+            >
+              {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+            </button>
           </div>
         </div>
+
+        {/* Mobile Menu */}
+        {isMobileMenuOpen && (
+          <div className="md:hidden mt-4 pb-4 border-t border-slate-800">
+            <div className="flex flex-col gap-2 pt-4">
+              <Link 
+                to="/" 
+                className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
+                  isActive('/') ? 'bg-slate-800 text-white font-semibold' : 'text-slate-300 hover:bg-slate-800/50'
+                }`}
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                <Home size={20} />
+                <span>Anasayfa</span>
+              </Link>
+              <Link 
+                to="/olustur" 
+                className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
+                  isActive('/olustur') ? 'bg-slate-800 text-cyan-300 font-semibold' : 'text-cyan-400 hover:bg-slate-800/50'
+                }`}
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                <Wand2 size={20} />
+                <span>Oluştur</span>
+              </Link>
+              <Link 
+                to="/analiz" 
+                className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
+                  isActive('/analiz') ? 'bg-slate-800 text-white font-semibold' : 'text-slate-300 hover:bg-slate-800/50'
+                }`}
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                <BarChart3 size={20} />
+                <span>Analiz</span>
+              </Link>
+              <Link 
+                to="/test" 
+                className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
+                  isActive('/test') ? 'bg-slate-800 text-white font-semibold' : 'text-slate-300 hover:bg-slate-800/50'
+                }`}
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                <Play size={20} />
+                <span>Test</span>
+              </Link>
+              <Link 
+                to="/pricing" 
+                className="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-300 hover:bg-slate-800/50 transition-colors"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                <Zap size={20} />
+                <span>Fiyatlandırma</span>
+              </Link>
+            </div>
+          </div>
+        )}
       </div>
     </nav>
     </>
