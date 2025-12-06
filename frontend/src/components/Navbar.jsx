@@ -32,13 +32,14 @@ const Navbar = () => {
       setIsDropdownOpen(false);
       
       if (!user?.id) {
-        console.error('User ID not found');
+        console.error('❌ User ID not found');
+        alert('Kullanıcı bilgisi bulunamadı. Lütfen tekrar giriş yapın.');
         return;
       }
 
-      console.log('🔄 Fetching subscription portal...');
+      console.log('🔄 Fetching Stripe portal for user:', user.id);
       
-      // Send request to n8n webhook
+      // Make API call to n8n webhook
       const response = await fetch('https://n8n.getoperiqo.com/webhook/068ca5b1-99a3-4a3e-ba4e-3246f7a1226a', {
         method: 'POST',
         headers: {
@@ -49,19 +50,25 @@ const Navbar = () => {
         })
       });
 
-      const data = await response.json();
-      console.log('✅ Subscription portal response:', data);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
 
-      // Redirect to the URL from response
-      if (data.redirect_url || data.url) {
-        const redirectUrl = data.redirect_url || data.url;
-        console.log('🔗 Redirecting to:', redirectUrl);
-        window.location.href = redirectUrl;
+      const data = await response.json();
+      console.log('📦 Webhook response:', data);
+
+      // Parse and redirect to the URL
+      if (data.url) {
+        console.log('🔗 Redirecting to Stripe portal:', data.url);
+        // Physically redirect the browser to Stripe portal
+        window.location.href = data.url;
       } else {
-        console.error('No redirect URL in response:', data);
+        console.error('❌ No "url" field in response:', data);
+        alert('Abonelik portalı yüklenemedi. Lütfen tekrar deneyin.');
       }
     } catch (error) {
-      console.error('Subscription portal error:', error);
+      console.error('❌ Subscription portal error:', error);
+      alert('Bir hata oluştu. Lütfen tekrar deneyin.');
     }
   };
 
