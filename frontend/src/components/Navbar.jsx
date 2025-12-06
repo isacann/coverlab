@@ -218,10 +218,15 @@ const Navbar = () => {
                   {/* Subscription */}
                   <DropdownMenuItem 
                     onClick={handleSubscription}
-                    className="text-slate-300 hover:text-white hover:bg-slate-800 cursor-pointer" 
+                    disabled={isRedirecting}
+                    className={`text-slate-300 hover:text-white hover:bg-slate-800 ${isRedirecting ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
                     style={{ fontFamily: 'Geist Sans, sans-serif' }}
                   >
-                    <CreditCard size={16} className="mr-2" />
+                    {isRedirecting ? (
+                      <Loader2 size={16} className="mr-2 animate-spin" />
+                    ) : (
+                      <Wallet size={16} className="mr-2" />
+                    )}
                     Aboneliğim
                   </DropdownMenuItem>
                   
