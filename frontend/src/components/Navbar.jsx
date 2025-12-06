@@ -29,7 +29,7 @@ const Navbar = () => {
     }
   };
 
-  const handleSubscription = async () => {
+  const handleSubscription = () => {
     // Close dropdown
     setIsDropdownOpen(false);
     
@@ -39,69 +39,32 @@ const Navbar = () => {
       return;
     }
 
-    try {
-      // 1. Disable button and show loading toast
-      setIsRedirecting(true);
-      toast.loading('Stripe paneline yönlendiriliyorsunuz, lütfen bekleyin...', {
-        id: 'subscription-redirect',
-        duration: Infinity
-      });
+    // 1. Disable button and show loading toast
+    setIsRedirecting(true);
+    toast.loading('Stripe paneline yönlendiriliyorsunuz, lütfen bekleyin...', {
+      id: 'subscription-redirect',
+      duration: 10000
+    });
 
-      console.log('🔗 Fetching subscription portal for user:', user.id);
+    console.log('🔗 Redirecting to subscription portal for user:', user.id);
 
-      // 2. Make API request to n8n webhook
-      const response = await fetch('https://n8n.getoperiqo.com/webhook/068ca5b1-99a3-4a3e-ba4e-3246f7a1226a', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          user_id: user.id
-        })
-      });
-
-      console.log('📡 Response status:', response.status, response.statusText);
-
-      if (!response.ok) {
-        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-      }
-
-      // Get response text first to debug
-      const responseText = await response.text();
-      console.log('📦 Raw response:', responseText);
-
-      // Parse JSON
-      const data = JSON.parse(responseText);
-      console.log('✅ Parsed data:', data);
-
-      // 3. Check if we got a URL
-      if (data.url) {
-        console.log('✅ Got redirect URL:', data.url);
-        
-        // Dismiss loading toast
-        toast.dismiss('subscription-redirect');
-        
-        // Show success and redirect
-        toast.success('Yönlendiriliyor...');
-        
-        // Redirect to Stripe portal
-        setTimeout(() => {
-          window.location.href = data.url;
-        }, 500);
-      } else {
-        throw new Error('Response does not contain "url" field');
-      }
-
-    } catch (error) {
-      console.error('❌ Subscription error:', error);
+    // 2. Create and submit form (bypasses CORS)
+    setTimeout(() => {
+      const form = document.createElement('form');
+      form.method = 'POST';
+      form.action = 'https://n8n.getoperiqo.com/webhook/068ca5b1-99a3-4a3e-ba4e-3246f7a1226a';
       
-      // Dismiss loading toast
-      toast.dismiss('subscription-redirect');
+      const input = document.createElement('input');
+      input.type = 'hidden';
+      input.name = 'user_id';
+      input.value = user.id;
       
-      // Show error and re-enable button
-      toast.error('Yönlendirme hatası, lütfen tekrar deneyin');
-      setIsRedirecting(false);
-    }
+      form.appendChild(input);
+      document.body.appendChild(form);
+      
+      console.log('📤 Submitting form to webhook...');
+      form.submit();
+    }, 500);
   };
 
   return (
