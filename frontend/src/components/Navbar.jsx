@@ -72,23 +72,56 @@ const Navbar = () => {
         throw new Error(`N8N yanıt hatası: ${response.status} - ${response.statusText}`);
       }
 
-      const result = await response.json();
-      console.log('N8N response:', result);
-
-      // Check if we got a redirect URL
-      if (result.redirect_url || result.url) {
-        const redirectUrl = result.redirect_url || result.url;
-        toast.success('Stripe paneline yönlendiriliyorsunuz...', { id: 'subscription-redirect' });
+      // Try to parse response as JSON, but handle non-JSON responses
+      let result;
+      const contentType = response.headers.get('content-type');
+      
+      if (contentType && contentType.includes('application/json')) {
+        result = await response.json();
+        console.log('N8N JSON response:', result);
         
-        // Wait a moment then redirect
-        setTimeout(() => {
-          window.location.href = redirectUrl;
-        }, 1000);
-        
+        // Check if we got a redirect URL in JSON
+        if (result.redirect_url || result.url) {
+          const redirectUrl = result.redirect_url || result.url;
+          toast.success('Stripe paneline yönlendiriliyorsunuz...', { id: 'subscription-redirect' });
+          
+          // Wait a moment then redirect
+          setTimeout(() => {
+            window.location.href = redirectUrl;
+          }, 1000);
+          return;
+        }
       } else {
-        // No redirect URL in response
-        throw new Error('N8N yanıtında yönlendirme URL\'si bulunamadı');
+        // Non-JSON response - might be HTML redirect or plain text URL
+        const responseText = await response.text();
+        console.log('N8N text response:', responseText);
+        
+        // Check if response text looks like a URL
+        if (responseText.startsWith('http')) {
+          toast.success('Stripe paneline yönlendiriliyorsunuz...', { id: 'subscription-redirect' });
+          
+          // Wait a moment then redirect
+          setTimeout(() => {
+            window.location.href = responseText.trim();
+          }, 1000);
+          return;
+        } else if (responseText.includes('http')) {
+          // Extract URL from HTML or other format
+          const urlMatch = responseText.match(/(https?:\/\/[^\s<>"]+)/);
+          if (urlMatch) {
+            const redirectUrl = urlMatch[1];
+            toast.success('Stripe paneline yönlendiriliyorsunuz...', { id: 'subscription-redirect' });
+            
+            setTimeout(() => {
+              window.location.href = redirectUrl;
+            }, 1000);
+            return;
+          }
+        }
       }
+      
+      // If we reach here, we couldn't find a redirect URL
+      throw new Error('N8N yanıtında yönlendirme URL\'si bulunamadı');
 
     } catch (error) {
       console.error('Subscription redirect error:', error);
