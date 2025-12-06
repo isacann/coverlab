@@ -48,21 +48,21 @@ const Footer = () => {
             </ul>
           </div>
 
-          {/* Powered by Operiqo - Tam Orta */}
+          {/* Powered by Operiqo - Ürün ve Yasal Arası */}
           <div className="flex flex-col items-center justify-center text-center">
             <a 
               href="https://www.operiqo.com/" 
               target="_blank" 
               rel="noopener noreferrer"
-              className="flex flex-col items-center gap-6 hover:opacity-80 transition-opacity"
+              className="flex flex-col items-center gap-4 hover:opacity-80 transition-opacity"
             >
-              <span className="text-slate-400 text-lg font-medium" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
+              <span className="text-slate-400 text-base font-medium" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
                 Powered by Operiqo
               </span>
               <img 
-                src="https://customer-assets.emergentagent.com/job_coverlab-studio/artifacts/x6npr0ux_Ads%C4%B1z%20tasar%C4%B1m%20%286%29.png" 
+                src="https://customer-assets.emergentagent.com/job_192d84b8-79c7-4677-9b1c-9906ebc7a8f9/artifacts/f7uvoqdh_Ads%C4%B1z%20tasar%C4%B1m%20%288%29.png" 
                 alt="Operiqo" 
-                className="h-24 w-auto"
+                className="h-16 w-auto"
               />
             </a>
           </div>
