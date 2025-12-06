@@ -50,7 +50,10 @@ const Navbar = () => {
 
       console.log('🔗 Redirecting to subscription portal for user:', user.id);
 
-      // 2. Make API call to n8n webhook
+      // 2. Make API call to n8n webhook with timeout
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 20000); // 20 second timeout
+      
       const response = await fetch('https://n8n.getoperiqo.com/webhook/068ca5b1-99a3-4a3e-ba4e-3246f7a1226a', {
         method: 'POST',
         headers: {
@@ -59,8 +62,10 @@ const Navbar = () => {
         body: JSON.stringify({
           user_id: user.id
         }),
-        // 20 second timeout for the request
+        signal: controller.signal
       });
+
+      clearTimeout(timeoutId);
 
       // Check if response is ok
       if (!response.ok) {
