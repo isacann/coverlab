@@ -758,33 +758,6 @@ const HeatmapTab = ({ data, image }) => {
     </div>
   );
 };
-            <span className="text-slate-300">{point.reason}</span>
-            <span className="text-white font-bold">{Math.round(point.intensity * 100)}%</span>
-          </div>
-        ))}
-      </div>
-    </div>
-
-    <div className="bg-slate-800/50 rounded-xl p-6">
-      <h3 className="text-lg font-bold text-blue-400 mb-4">Dikkat Akışı</h3>
-      <div className="flex items-center gap-3">
-        {data.attention_flow.map((flow, idx) => (
-          <React.Fragment key={idx}>
-            <span className="text-slate-300 bg-slate-700 px-4 py-2 rounded-lg">{flow}</span>
-            {idx < data.attention_flow.length - 1 && <span className="text-blue-400">→</span>}
-          </React.Fragment>
-        ))}
-      </div>
-    </div>
-
-    {data.dead_zones.length > 0 && (
-      <div className="bg-slate-800/50 rounded-xl p-6">
-        <h3 className="text-lg font-bold text-yellow-400 mb-3">Ölü Bölgeler</h3>
-        <p className="text-sm text-slate-400">{data.dead_zones.length} ölü bölge tespit edildi</p>
-      </div>
-    )}
-  </div>
-);
 
 // Helper Components
 const ScoreBar = ({ label, value }) => (
