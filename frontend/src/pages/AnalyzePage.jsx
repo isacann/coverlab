@@ -4,6 +4,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { Button } from '../components/ui/button';
 import { Upload, X, AlertCircle, TrendingUp, Users, Sparkles, Target, Eye } from 'lucide-react';
 import { compressImageToBlob } from '../utils/imageHelpers';
+import AccessGuard from '../components/AccessGuard';
 
 // MRBEAST DEMO DATA - SABIT KALACAK
 const MRBEAST_DEMO = {
