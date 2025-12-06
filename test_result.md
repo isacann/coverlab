@@ -102,7 +102,7 @@
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
 
-user_problem_statement: "Test the admin backdoor removal changes in CoverLab application: 1) Removed admin backdoor login functionality from LoginPage, 2) Removed admin backdoor session handling from AuthContext, 3) Simplified logout function to only use Supabase auth"
+user_problem_statement: "Test the Google login flow fix in CoverLab application: AuthCallback was redirecting to `/create` but the app uses `/olustur` route. Changed redirect from `/create` to `/olustur`."
 
 frontend:
   - task: "Admin Backdoor Removal from LoginPage"
@@ -149,6 +149,18 @@ frontend:
         - working: true
           agent: "testing"
           comment: "✅ VERIFIED: Logout function simplified to use only supabase.auth.signOut(). Code review shows clean implementation: setLoading(true) → supabase.auth.signOut() → setUser(null) → setProfile(null) → redirect to '/'. No admin session handling remnants. Also fixed minor admin reference in AnalyzePage.jsx alert message."
+
+  - task: "Google Login Flow Routing Fix"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/pages/AuthCallback.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+          agent: "main"
+          comment: "Fixed AuthCallback redirect from `/create` to `/olustur` to match Turkish route structure. Need to verify: 1) Login page loads with Google button, 2) Auth callback redirects properly, 3) `/olustur` route loads CreatePage correctly, 4) No routing errors in console."
 
 metadata:
   created_by: "testing_agent"
