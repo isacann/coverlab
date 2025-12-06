@@ -278,7 +278,8 @@ const AnalyzePage = () => {
   const displayData = result || MRBEAST_DEMO.data;
 
   return (
-    <div className="min-h-screen bg-slate-950 pt-24 pb-12">
+    <AccessGuard requiredPlan="pro">
+      <div className="min-h-screen bg-slate-950 pt-24 pb-12">
       <div className="max-w-7xl mx-auto px-6">
         {/* Header */}
         <div className="text-center mb-12">
