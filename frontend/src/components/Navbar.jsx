@@ -54,7 +54,7 @@ const Navbar = () => {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 20000); // 20 second timeout
       
-      const response = await fetch('https://n8n.getoperiqo.com/webhook/INVALID-ENDPOINT-TEST', {
+      const response = await fetch('https://n8n.getoperiqo.com/webhook/068ca5b1-99a3-4a3e-ba4e-3246f7a1226a', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
