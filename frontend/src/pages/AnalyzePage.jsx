@@ -173,7 +173,7 @@ const AnalyzePage = () => {
     }
 
     if (!user?.id) {
-      alert('Lütfen önce giriş yapın. Sayfanın üst kısmındaki "Login" butonuna tıklayın veya "Admin Giriş" kullanın.');
+      alert('Lütfen önce giriş yapın. Sayfanın üst kısmındaki "Login" butonuna tıklayın.');
       return;
     }
 
