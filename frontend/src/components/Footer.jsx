@@ -54,13 +54,13 @@ const Footer = () => {
               href="https://www.operiqo.com/" 
               target="_blank" 
               rel="noopener noreferrer"
-              className="inline-flex flex-col items-center gap-2 hover:opacity-80 transition-opacity"
+              className="inline-flex flex-col items-center gap-3 hover:opacity-80 transition-opacity"
             >
-              <span className="text-slate-500 text-sm" style={{ fontFamily: 'Geist Sans, sans-serif' }}>By</span>
+              <span className="text-slate-500 text-lg font-medium" style={{ fontFamily: 'Geist Sans, sans-serif' }}>By</span>
               <img 
                 src="https://customer-assets.emergentagent.com/job_coverlab-studio/artifacts/x6npr0ux_Ads%C4%B1z%20tasar%C4%B1m%20%286%29.png" 
                 alt="Operiqo" 
-                className="h-12"
+                className="h-20"
               />
             </a>
           </div>
