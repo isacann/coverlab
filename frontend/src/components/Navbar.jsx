@@ -10,6 +10,7 @@ const Navbar = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isRedirecting, setIsRedirecting] = useState(false);
   
   // Check if current path matches
   const isActive = (path) => location.pathname === path;
