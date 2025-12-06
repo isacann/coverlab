@@ -30,7 +30,7 @@ const Navbar = () => {
     }
   };
 
-  const handleSubscription = () => {
+  const handleSubscription = async () => {
     // Close dropdown
     setIsDropdownOpen(false);
     
@@ -40,30 +40,63 @@ const Navbar = () => {
       return;
     }
 
-    // 1. Disable button and show loading toast
-    setIsRedirecting(true);
-    toast.loading('Stripe paneline yönlendiriliyorsunuz, lütfen bekleyin...', {
-      id: 'subscription-redirect',
-      duration: 10000
-    });
+    try {
+      // 1. Disable button and show loading toast
+      setIsRedirecting(true);
+      toast.loading('Stripe paneline yönlendiriliyorsunuz, lütfen bekleyin...', {
+        id: 'subscription-redirect',
+        duration: 30000 // 30 saniye timeout
+      });
 
-    console.log('🔗 Redirecting to subscription portal for user:', user.id);
+      console.log('🔗 Redirecting to subscription portal for user:', user.id);
 
-    // 2. Wait for toast to be visible, then submit form
-    setTimeout(() => {
-      const form = document.createElement('form');
-      form.method = 'POST';
-      form.action = 'https://n8n.getoperiqo.com/webhook/068ca5b1-99a3-4a3e-ba4e-3246f7a1226a';
+      // 2. Make API call to n8n webhook
+      const response = await fetch('https://n8n.getoperiqo.com/webhook/068ca5b1-99a3-4a3e-ba4e-3246f7a1226a', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          user_id: user.id
+        }),
+        // 20 second timeout for the request
+      });
+
+      // Check if response is ok
+      if (!response.ok) {
+        throw new Error(`N8N yanıt hatası: ${response.status} - ${response.statusText}`);
+      }
+
+      const result = await response.json();
+      console.log('N8N response:', result);
+
+      // Check if we got a redirect URL
+      if (result.redirect_url || result.url) {
+        const redirectUrl = result.redirect_url || result.url;
+        toast.success('Stripe paneline yönlendiriliyorsunuz...', { id: 'subscription-redirect' });
+        
+        // Wait a moment then redirect
+        setTimeout(() => {
+          window.location.href = redirectUrl;
+        }, 1000);
+        
+      } else {
+        // No redirect URL in response
+        throw new Error('N8N yanıtında yönlendirme URL\'si bulunamadı');
+      }
+
+    } catch (error) {
+      console.error('Subscription redirect error:', error);
       
-      const input = document.createElement('input');
-      input.type = 'hidden';
-      input.name = 'user_id';
-      input.value = user.id;
+      // Show error toast
+      toast.error(`Abonelik paneli yüklenemedi: ${error.message}`, {
+        id: 'subscription-redirect',
+        duration: 5000
+      });
       
-      form.appendChild(input);
-      document.body.appendChild(form);
-      form.submit();
-    }, 1500);
+      // Re-enable button
+      setIsRedirecting(false);
+    }
   };
 
   return (
