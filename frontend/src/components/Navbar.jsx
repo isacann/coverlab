@@ -50,11 +50,11 @@ const Navbar = () => {
 
       console.log('🔗 Redirecting to subscription portal for user:', user.id);
 
-      // 2. Make API call to n8n webhook with timeout
+      // 2. First check if N8N endpoint is reachable
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 20000); // 20 second timeout
+      const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout for health check
       
-      const response = await fetch('https://n8n.getoperiqo.com/webhook/068ca5b1-99a3-4a3e-ba4e-3246f7a1226a', {
+      const healthCheck = await fetch('https://n8n.getoperiqo.com/webhook/068ca5b1-99a3-4a3e-ba4e-3246f7a1226a', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -67,61 +67,29 @@ const Navbar = () => {
 
       clearTimeout(timeoutId);
 
-      // Check if response is ok
-      if (!response.ok) {
-        throw new Error(`N8N yanıt hatası: ${response.status} - ${response.statusText}`);
+      // Check if N8N responds (even if it's redirect HTML)
+      if (!healthCheck.ok) {
+        throw new Error(`N8N hizmet hatası: ${healthCheck.status} - ${healthCheck.statusText}`);
       }
 
-      // Try to parse response as JSON, but handle non-JSON responses
-      let result;
-      const contentType = response.headers.get('content-type');
+      // If N8N is responsive, use the original form submit method
+      toast.success('Stripe paneline yönlendiriliyorsunuz...', { id: 'subscription-redirect' });
       
-      if (contentType && contentType.includes('application/json')) {
-        result = await response.json();
-        console.log('N8N JSON response:', result);
+      // Wait a moment then submit form (original working method)
+      setTimeout(() => {
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = 'https://n8n.getoperiqo.com/webhook/068ca5b1-99a3-4a3e-ba4e-3246f7a1226a';
         
-        // Check if we got a redirect URL in JSON
-        if (result.redirect_url || result.url) {
-          const redirectUrl = result.redirect_url || result.url;
-          toast.success('Stripe paneline yönlendiriliyorsunuz...', { id: 'subscription-redirect' });
-          
-          // Wait a moment then redirect
-          setTimeout(() => {
-            window.location.href = redirectUrl;
-          }, 1000);
-          return;
-        }
-      } else {
-        // Non-JSON response - might be HTML redirect or plain text URL
-        const responseText = await response.text();
-        console.log('N8N text response:', responseText);
+        const input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = 'user_id';
+        input.value = user.id;
         
-        // Check if response text looks like a URL
-        if (responseText.startsWith('http')) {
-          toast.success('Stripe paneline yönlendiriliyorsunuz...', { id: 'subscription-redirect' });
-          
-          // Wait a moment then redirect
-          setTimeout(() => {
-            window.location.href = responseText.trim();
-          }, 1000);
-          return;
-        } else if (responseText.includes('http')) {
-          // Extract URL from HTML or other format
-          const urlMatch = responseText.match(/(https?:\/\/[^\s<>"]+)/);
-          if (urlMatch) {
-            const redirectUrl = urlMatch[1];
-            toast.success('Stripe paneline yönlendiriliyorsunuz...', { id: 'subscription-redirect' });
-            
-            setTimeout(() => {
-              window.location.href = redirectUrl;
-            }, 1000);
-            return;
-          }
-        }
-      }
-      
-      // If we reach here, we couldn't find a redirect URL
-      throw new Error('N8N yanıtında yönlendirme URL\'si bulunamadı');
+        form.appendChild(input);
+        document.body.appendChild(form);
+        form.submit();
+      }, 1000);
 
     } catch (error) {
       console.error('Subscription redirect error:', error);
