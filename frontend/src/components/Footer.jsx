@@ -67,13 +67,13 @@ const Footer = () => {
 
         {/* Bottom Bar */}
         <div className="border-t border-slate-800/50 mt-12 pt-8">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-            {/* By Operiqo */}
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+            {/* By Operiqo - Sol Alt Köşe */}
             <a 
               href="https://www.operiqo.com/" 
               target="_blank" 
               rel="noopener noreferrer"
-              className="flex items-center gap-2 hover:opacity-80 transition-opacity"
+              className="inline-flex items-center gap-2 hover:opacity-80 transition-opacity"
             >
               <span className="text-slate-500 text-sm" style={{ fontFamily: 'Geist Sans, sans-serif' }}>By</span>
               <img 
@@ -83,12 +83,12 @@ const Footer = () => {
               />
             </a>
 
-            {/* Copyright & Email */}
-            <div className="flex flex-col md:flex-row items-center gap-4">
+            {/* Copyright & Email - Sağ Alt */}
+            <div className="flex flex-col md:flex-row items-start md:items-center gap-4">
               <p className="text-slate-500 text-sm" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
                 © 2025 CoverLab. Tüm hakları saklıdır.
               </p>
-              <div className="flex items-center gap-2">
+              <div className="inline-flex items-center gap-2">
                 <Mail size={16} className="text-slate-500" />
                 <a href="mailto:team@operiqo.com" className="text-slate-400 hover:text-white transition-colors text-sm" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
                   team@operiqo.com
