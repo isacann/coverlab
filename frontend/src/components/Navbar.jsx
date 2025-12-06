@@ -27,49 +27,32 @@ const Navbar = () => {
     }
   };
 
-  const handleSubscription = async () => {
-    try {
-      setIsDropdownOpen(false);
-      
-      if (!user?.id) {
-        console.error('❌ User ID not found');
-        alert('Kullanıcı bilgisi bulunamadı. Lütfen tekrar giriş yapın.');
-        return;
-      }
-
-      console.log('🔄 Fetching Stripe portal for user:', user.id);
-      
-      // Make API call to n8n webhook
-      const response = await fetch('https://n8n.getoperiqo.com/webhook/068ca5b1-99a3-4a3e-ba4e-3246f7a1226a', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          user_id: user.id
-        })
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const data = await response.json();
-      console.log('📦 Webhook response:', data);
-
-      // Parse and redirect to the URL
-      if (data.url) {
-        console.log('🔗 Redirecting to Stripe portal:', data.url);
-        // Physically redirect the browser to Stripe portal
-        window.location.href = data.url;
-      } else {
-        console.error('❌ No "url" field in response:', data);
-        alert('Abonelik portalı yüklenemedi. Lütfen tekrar deneyin.');
-      }
-    } catch (error) {
-      console.error('❌ Subscription portal error:', error);
-      alert('Bir hata oluştu. Lütfen tekrar deneyin.');
+  const handleSubscription = () => {
+    setIsDropdownOpen(false);
+    
+    if (!user?.id) {
+      console.error('❌ User ID not found');
+      alert('Kullanıcı bilgisi bulunamadı. Lütfen tekrar giriş yapın.');
+      return;
     }
+
+    console.log('🔗 Redirecting to subscription portal for user:', user.id);
+    
+    // Create form and submit to webhook (bypasses CORS)
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = 'https://n8n.getoperiqo.com/webhook/068ca5b1-99a3-4a3e-ba4e-3246f7a1226a';
+    
+    const input = document.createElement('input');
+    input.type = 'hidden';
+    input.name = 'user_id';
+    input.value = user.id;
+    
+    form.appendChild(input);
+    document.body.appendChild(form);
+    
+    // Submit form - this will trigger navigation/redirect
+    form.submit();
   };
 
   return (
