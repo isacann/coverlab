@@ -57,13 +57,22 @@ const Navbar = () => {
         },
         body: JSON.stringify({
           user_id: user.id
-        }),
-        redirect: 'manual' // Prevent automatic redirect
+        })
       });
 
-      // Parse response
-      const data = await response.json();
-      console.log('📦 Webhook response:', data);
+      console.log('📡 Response status:', response.status, response.statusText);
+
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
+
+      // Get response text first to debug
+      const responseText = await response.text();
+      console.log('📦 Raw response:', responseText);
+
+      // Parse JSON
+      const data = JSON.parse(responseText);
+      console.log('✅ Parsed data:', data);
 
       // 3. Check if we got a URL
       if (data.url) {
