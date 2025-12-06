@@ -50,23 +50,23 @@ const PricingPage = () => {
       credits: 50, 
       price: 299, 
       badge: null,
-      stripeUrl: 'https://buy.stripe.com/bJe14f2Zg6Up9cF1tE'
+      stripeUrl: 'https://buy.stripe.com/bJe14f2Zg6Up9cF1tE9Zm01'
     },
     { 
       credits: 100, 
       price: 499, 
       badge: 'Fırsat',
-      stripeUrl: 'https://buy.stripe.com/4gM8wH6bsbaF1Kdfku'
+      stripeUrl: 'https://buy.stripe.com/4gM8wH6bsbaF1Kdfku9Zm02'
     },
     { 
       credits: 200, 
       price: 899, 
       badge: 'En İyi Fiyat',
-      stripeUrl: 'https://buy.stripe.com/3cI6oz57o0w10G92xI'
+      stripeUrl: 'https://buy.stripe.com/3cI6oz57o0w10G92xI9Zm03'
     }
   ];
 
-  const proStripeUrl = 'https://buy.stripe.com/aFabIT1Vc0w1gF71tE';
+  const proStripeUrl = 'https://buy.stripe.com/aFabIT1Vc0w1gF71tE9Zm00';
 
   return (
     <div className="min-h-screen bg-[#0a0a0a]">
