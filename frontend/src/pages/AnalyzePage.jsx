@@ -889,7 +889,8 @@ const RecentAnalysesSection = ({ userId }) => {
           </div>
         </div>
       </div>
-    </div>
+        </div>
+      </div>
     </AccessGuard>
   );
 };
