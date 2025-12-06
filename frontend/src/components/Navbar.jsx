@@ -70,9 +70,9 @@ const Navbar = () => {
       <Toaster position="top-center" />
       <nav className="fixed top-0 left-0 right-0 z-50 bg-slate-950/40 backdrop-blur-lg border-b border-slate-800/30">
         <div className="max-w-7xl mx-auto px-6 py-4">
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between gap-8">
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-2">
+          <Link to="/" className="flex items-center gap-2 flex-shrink-0">
             <span className="text-2xl font-bold text-white tracking-tight">
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 font-extrabold italic" style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}>C</span>
               <span style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}>overLab</span>
@@ -80,7 +80,7 @@ const Navbar = () => {
           </Link>
 
           {/* Center Menu - Visible to All Users */}
-          <div className="hidden md:flex items-center gap-8 bg-slate-900/30 px-6 py-3 rounded-full border border-slate-700/30 backdrop-blur-sm">
+          <div className="hidden md:flex items-center gap-6 bg-slate-900/30 px-6 py-3 rounded-full border border-slate-700/30 backdrop-blur-sm flex-shrink-0">
             <Link 
               to="/" 
               className={`flex items-center gap-2 transition-colors ${
