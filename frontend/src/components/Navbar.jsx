@@ -48,7 +48,7 @@ const Navbar = () => {
 
     console.log('🔗 Redirecting to subscription portal for user:', user.id);
 
-    // 2. Create and submit form (bypasses CORS)
+    // 2. Wait for toast to be visible, then submit form
     setTimeout(() => {
       const form = document.createElement('form');
       form.method = 'POST';
@@ -61,10 +61,8 @@ const Navbar = () => {
       
       form.appendChild(input);
       document.body.appendChild(form);
-      
-      console.log('📤 Submitting form to webhook...');
       form.submit();
-    }, 500);
+    }, 1500);
   };
 
   return (
