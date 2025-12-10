@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useDropzone } from 'react-dropzone';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { Button } from '../components/ui/button';
-import { Upload, X, AlertCircle, TrendingUp, Users, Sparkles, Target, Eye } from 'lucide-react';
+import { Upload, X, AlertCircle, TrendingUp, Users, Sparkles, Target, Eye, Crown } from 'lucide-react';
 import { compressImageToBlob } from '../utils/imageHelpers';
 import AccessGuard from '../components/AccessGuard';
 
@@ -111,7 +112,8 @@ const MRBEAST_DEMO = {
 const MRBEAST_IMAGE = "https://customer-assets.emergentagent.com/job_coverlab-studio/artifacts/ot7391mb_6vd279giuweb1.jpg";
 
 const AnalyzePage = () => {
-  const { user } = useAuth();
+  const { user, isPro } = useAuth();
+  const navigate = useNavigate();
   const [file, setFile] = useState(null);
   const [preview, setPreview] = useState(null);
   const [title, setTitle] = useState('');
@@ -125,11 +127,11 @@ const AnalyzePage = () => {
     if (pendingData) {
       try {
         const { imageUrl, title: pendingTitle } = JSON.parse(pendingData);
-        
+
         // Set preview from URL
         setPreview(imageUrl);
         setTitle(pendingTitle || '');
-        
+
         // Convert URL to File object
         fetch(imageUrl)
           .then(res => res.blob())
@@ -141,7 +143,7 @@ const AnalyzePage = () => {
           .catch(err => {
             console.error('Failed to load image:', err);
           });
-        
+
         // Clear localStorage
         localStorage.removeItem('pendingAnalysis');
       } catch (e) {
@@ -166,7 +168,7 @@ const AnalyzePage = () => {
 
   const handleAnalyze = async () => {
     console.log('🔍 Debug - file:', !!file, 'title:', title, 'user:', user);
-    
+
     if (!file || !title.trim()) {
       alert('Lütfen resim ve başlık giriniz');
       return;
@@ -181,7 +183,7 @@ const AnalyzePage = () => {
 
     try {
       const compressedBlob = await compressImageToBlob(file);
-      
+
       const formData = new FormData();
       formData.append('file', compressedBlob, 'thumbnail.jpg');
       formData.append('title', title.trim());
@@ -192,7 +194,7 @@ const AnalyzePage = () => {
         method: 'POST',
         body: formData,
       });
-      
+
       console.log('📡 Response received!');
 
       const rawJson = await response.json();
@@ -200,7 +202,7 @@ const AnalyzePage = () => {
 
       // EXTRACT DATA - TRY ALL POSSIBLE FORMATS
       let data = null;
-      
+
       // Format 1: {"sonuc": "[{...}]"} - STRING format (n8n template hatası)
       if (rawJson.sonuc && typeof rawJson.sonuc === 'string') {
         console.log('⚠️ WARNING: sonuc is STRING, trying to parse...');
@@ -278,185 +280,229 @@ const AnalyzePage = () => {
   const displayData = result || MRBEAST_DEMO.data;
 
   return (
-    <AccessGuard requiredPlan="pro">
+    <AccessGuard>
       <div className="min-h-screen bg-slate-950 pt-24 pb-12">
         <div className="max-w-7xl mx-auto px-6">
-        {/* Header */}
-        <div className="text-center mb-12">
-          <h1 className="text-5xl font-bold text-white mb-4" style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}>
-            Thumbnail Analizi
-          </h1>
-          <p className="text-xl text-slate-400" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
-            Yapay zeka ile thumbnail'inizi analiz edin
-          </p>
-        </div>
+          {/* Header */}
+          <div className="text-center mb-12">
+            <h1 className="text-5xl font-bold text-white mb-4" style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}>
+              Thumbnail Analizi
+            </h1>
+            <p className="text-xl text-slate-400" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
+              Yapay zeka ile thumbnail'inizi analiz edin
+            </p>
+          </div>
 
-        {/* Main Content */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
-          {/* Left: Upload Section */}
-          <div className="bg-slate-900/50 backdrop-blur-sm rounded-2xl border border-slate-700/50 p-8">
-            <h2 className="text-2xl font-bold text-white mb-6" style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}>
-              Thumbnail Yükle
-            </h2>
+          {/* Main Content */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
+            {/* Left: Upload Section */}
+            <div className="bg-slate-900/50 backdrop-blur-sm rounded-2xl border border-slate-700/50 p-8">
+              <h2 className="text-2xl font-bold text-white mb-6" style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}>
+                Thumbnail Yükle
+              </h2>
 
-            {/* Dropzone */}
-            {!preview ? (
-              <div
-                {...getRootProps()}
-                className={`border-2 border-dashed rounded-xl p-12 text-center cursor-pointer transition-all ${
-                  isDragActive ? 'border-blue-500 bg-blue-500/10' : 'border-slate-600 hover:border-slate-500'
-                }`}
-              >
-                <input {...getInputProps()} />
-                <Upload className="mx-auto mb-4 text-slate-400" size={48} />
-                <p className="text-slate-300 mb-2" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
-                  Dosya sürükleyin veya tıklayın
-                </p>
-                <p className="text-sm text-slate-500" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
-                  PNG, JPG, JPEG, WebP
-                </p>
-              </div>
-            ) : (
-              <div className="relative">
-                <img src={preview} alt="Preview" className="w-full h-64 object-cover rounded-xl" />
-                <button
-                  onClick={() => {
-                    setFile(null);
-                    setPreview(null);
-                    setResult(null);
-                  }}
-                  className="absolute top-2 right-2 bg-red-500 hover:bg-red-600 text-white p-2 rounded-full"
+              {/* Dropzone */}
+              {!preview ? (
+                <div
+                  {...getRootProps()}
+                  className={`border-2 border-dashed rounded-xl p-12 text-center cursor-pointer transition-all ${isDragActive ? 'border-blue-500 bg-blue-500/10' : 'border-slate-600 hover:border-slate-500'
+                    }`}
                 >
-                  <X size={20} />
-                </button>
-              </div>
-            )}
-
-            {/* Title Input */}
-            <div className="mt-6">
-              <label className="block text-white font-semibold mb-2" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
-                Video Başlığı
-              </label>
-              <input
-                type="text"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                placeholder="Örn: Ben 1.000.000 $'lık Gemi Aldım!"
-                className="w-full bg-slate-800 text-white px-4 py-3 rounded-lg border border-slate-700 focus:border-blue-500 focus:outline-none"
-                style={{ fontFamily: 'Geist Sans, sans-serif' }}
-              />
-            </div>
-
-            {/* Analyze Button */}
-            <Button
-              onClick={handleAnalyze}
-              disabled={!file || !title.trim() || isAnalyzing}
-              className="w-full mt-6 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white py-6 text-lg font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
-              style={{ fontFamily: 'Geist Sans, sans-serif' }}
-            >
-              {isAnalyzing ? '⏳ Analiz Ediliyor...' : '🚀 Analiz Et'}
-            </Button>
-
-            {result && (
-              <Button
-                onClick={resetDemo}
-                className="w-full mt-3 bg-slate-700 hover:bg-slate-600 text-white py-3"
-                style={{ fontFamily: 'Geist Sans, sans-serif' }}
-              >
-                Yeni Analiz
-              </Button>
-            )}
-          </div>
-
-          {/* Right: Preview & Score */}
-          <div className="bg-slate-900/50 backdrop-blur-sm rounded-2xl border border-slate-700/50 p-8">
-            <h2 className="text-2xl font-bold text-white mb-6" style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}>
-              {showDemo ? 'Demo Önizleme' : 'Sonuçlar'}
-            </h2>
-
-            {/* Thumbnail Image */}
-            <div className="relative mb-6">
-              <img src={displayImage} alt="Thumbnail" className="w-full h-64 object-cover rounded-xl" />
-              {showDemo && (
-                <div className="absolute top-2 left-2 bg-blue-500 text-white px-3 py-1 rounded-full text-xs font-semibold">
-                  DEMO
+                  <input {...getInputProps()} />
+                  <Upload className="mx-auto mb-4 text-slate-400" size={48} />
+                  <p className="text-slate-300 mb-2" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
+                    Dosya sürükleyin veya tıklayın
+                  </p>
+                  <p className="text-sm text-slate-500" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
+                    PNG, JPG, JPEG, WebP
+                  </p>
+                </div>
+              ) : (
+                <div className="relative">
+                  <img src={preview} alt="Preview" className="w-full h-64 object-cover rounded-xl" />
+                  <button
+                    onClick={() => {
+                      setFile(null);
+                      setPreview(null);
+                      setResult(null);
+                    }}
+                    className="absolute top-2 right-2 bg-red-500 hover:bg-red-600 text-white p-2 rounded-full"
+                  >
+                    <X size={20} />
+                  </button>
                 </div>
               )}
-              {file && !result && (
-                <div className="absolute inset-0 bg-black/80 rounded-xl flex items-center justify-center">
-                  <div className="text-center">
-                    <AlertCircle className="mx-auto mb-3 text-blue-400" size={48} />
-                    <p className="text-white font-semibold mb-2" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
-                      Analiz Bekleniyor
-                    </p>
-                    <p className="text-sm text-slate-400" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
-                      "Analiz Et" butonuna basın
-                    </p>
+
+              {/* Title Input */}
+              <div className="mt-6">
+                <label className="block text-white font-semibold mb-2" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
+                  Video Başlığı
+                </label>
+                <input
+                  type="text"
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                  placeholder="Örn: Ben 1.000.000 $'lık Gemi Aldım!"
+                  className="w-full bg-slate-800 text-white px-4 py-3 rounded-lg border border-slate-700 focus:border-blue-500 focus:outline-none"
+                  style={{ fontFamily: 'Geist Sans, sans-serif' }}
+                />
+              </div>
+
+              {/* Analyze Button - Show upgrade for free users */}
+              {isPro ? (
+                <Button
+                  onClick={handleAnalyze}
+                  disabled={!file || !title.trim() || isAnalyzing}
+                  className="w-full mt-6 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white py-6 text-lg font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+                  style={{ fontFamily: 'Geist Sans, sans-serif' }}
+                >
+                  {isAnalyzing ? '⏳ Analiz Ediliyor...' : '🚀 Analiz Et'}
+                </Button>
+              ) : (
+                <Button
+                  onClick={() => navigate('/pricing')}
+                  className="w-full mt-6 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white py-6 text-lg font-semibold flex items-center justify-center gap-2"
+                  style={{ fontFamily: 'Geist Sans, sans-serif' }}
+                >
+                  <Crown size={20} />
+                  Pro'ya Yükselt
+                </Button>
+              )}
+
+              {result && (
+                <Button
+                  onClick={resetDemo}
+                  className="w-full mt-3 bg-slate-700 hover:bg-slate-600 text-white py-3"
+                  style={{ fontFamily: 'Geist Sans, sans-serif' }}
+                >
+                  Yeni Analiz
+                </Button>
+              )}
+            </div>
+
+            {/* Right: Preview & Score */}
+            <div className="bg-slate-900/50 backdrop-blur-sm rounded-2xl border border-slate-700/50 p-8">
+              <h2 className="text-2xl font-bold text-white mb-6" style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}>
+                {showDemo ? 'Demo Önizleme' : 'Sonuçlar'}
+              </h2>
+
+              {/* Thumbnail Image */}
+              <div className="relative mb-6">
+                <img src={displayImage} alt="Thumbnail" className="w-full h-64 object-cover rounded-xl" />
+                {showDemo && (
+                  <div className="absolute top-2 left-2 bg-blue-500 text-white px-3 py-1 rounded-full text-xs font-semibold">
+                    DEMO
+                  </div>
+                )}
+                {file && !result && !isAnalyzing && (
+                  <div className="absolute inset-0 bg-black/80 rounded-xl flex items-center justify-center">
+                    <div className="text-center">
+                      <AlertCircle className="mx-auto mb-3 text-blue-400" size={48} />
+                      <p className="text-white font-semibold mb-2" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
+                        Analiz Bekleniyor
+                      </p>
+                      <p className="text-sm text-slate-400" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
+                        "Analiz Et" butonuna basın
+                      </p>
+                    </div>
+                  </div>
+                )}
+                {isAnalyzing && (
+                  <div className="absolute inset-0 bg-black/90 rounded-xl flex items-center justify-center">
+                    <div className="text-center px-4">
+                      {/* Spinner */}
+                      <div className="relative w-20 h-20 mx-auto mb-4">
+                        <div className="absolute inset-0 border-4 border-purple-500/30 rounded-full"></div>
+                        <div className="absolute inset-0 border-4 border-purple-500 border-t-transparent rounded-full animate-spin"></div>
+                        <div className="absolute inset-0 flex items-center justify-center">
+                          <Sparkles size={28} className="text-purple-400 animate-pulse" />
+                        </div>
+                      </div>
+                      <h3 className="text-xl font-bold text-white mb-2 animate-pulse" style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}>
+                        Yapay Zeka Analiz Ediyor...
+                      </h3>
+                      <p className="text-slate-400 text-sm mb-3" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
+                        Thumbnail'iniz detaylı olarak inceleniyor
+                      </p>
+                      {/* Informative note */}
+                      <div className="bg-purple-500/10 border border-purple-500/30 rounded-lg p-3 max-w-xs mx-auto">
+                        <p className="text-purple-300 text-sm" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
+                          ⏱️ Bu işlem <span className="font-bold">1-2 dakika</span> sürebilir.
+                        </p>
+                        <p className="text-slate-400 text-xs mt-1" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
+                          Tamamlandığında <span className="text-purple-400">Profil → Laboratuvarım → Analizlerim</span> kısmına kaydedilecektir.
+                        </p>
+                      </div>
+                      <div className="flex justify-center gap-1 mt-3">
+                        <div className="w-2 h-2 bg-purple-500 rounded-full animate-bounce" style={{ animationDelay: '0s' }}></div>
+                        <div className="w-2 h-2 bg-purple-500 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                        <div className="w-2 h-2 bg-purple-500 rounded-full animate-bounce" style={{ animationDelay: '0.4s' }}></div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Score Display - Only show when we have results or demo */}
+              {(showDemo || showResults) && (
+                <div className="bg-gradient-to-br from-blue-500/20 to-purple-600/20 border border-blue-500/30 rounded-xl p-6 text-center">
+                  <div className="text-6xl font-bold text-white mb-2" style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}>
+                    {displayData.score.value}
+                  </div>
+                  <div className="text-2xl font-semibold text-blue-400 mb-4" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
+                    {displayData.score.label}
+                  </div>
+                  <div className="text-sm text-slate-300" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
+                    <div className="flex items-center justify-center gap-2 mb-2">
+                      <TrendingUp size={16} className="text-green-400" />
+                      <span>CTR Tahmini: {displayData.prediction.estimated_ctr_range}</span>
+                    </div>
+                    <div className="text-xs text-slate-400">{displayData.prediction.comparison}</div>
                   </div>
                 </div>
               )}
             </div>
+          </div>
 
-            {/* Score Display - Only show when we have results or demo */}
-            {(showDemo || showResults) && (
-              <div className="bg-gradient-to-br from-blue-500/20 to-purple-600/20 border border-blue-500/30 rounded-xl p-6 text-center">
-                <div className="text-6xl font-bold text-white mb-2" style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}>
-                  {displayData.score.value}
-                </div>
-                <div className="text-2xl font-semibold text-blue-400 mb-4" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
-                  {displayData.score.label}
-                </div>
-                <div className="text-sm text-slate-300" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
-                  <div className="flex items-center justify-center gap-2 mb-2">
-                    <TrendingUp size={16} className="text-green-400" />
-                    <span>CTR Tahmini: {displayData.prediction.estimated_ctr_range}</span>
-                  </div>
-                  <div className="text-xs text-slate-400">{displayData.prediction.comparison}</div>
-                </div>
+          {/* Recent Analyses Section */}
+          {user?.id && (
+            <RecentAnalysesSection userId={user.id} />
+          )}
+
+          {/* Analysis Results Tabs - Only show when we have results or demo */}
+          {(showDemo || showResults) && (
+            <div className="bg-slate-900/50 backdrop-blur-sm rounded-2xl border border-slate-700/50 p-8">
+              {/* Tabs */}
+              <div className="flex gap-4 mb-8 overflow-x-auto pb-2">
+                <TabButton active={activeTab === 'overview'} onClick={() => setActiveTab('overview')} icon={<Eye size={16} />}>
+                  Genel Bakış
+                </TabButton>
+                <TabButton active={activeTab === 'faces'} onClick={() => setActiveTab('faces')} icon={<Users size={16} />}>
+                  Yüzler ({displayData.faces.face_count})
+                </TabButton>
+                <TabButton active={activeTab === 'vibe'} onClick={() => setActiveTab('vibe')} icon={<Sparkles size={16} />}>
+                  Vibe Analizi
+                </TabButton>
+                <TabButton active={activeTab === 'objects'} onClick={() => setActiveTab('objects')} icon={<Target size={16} />}>
+                  Objeler ({displayData.objects.object_count})
+                </TabButton>
+                <TabButton active={activeTab === 'heatmap'} onClick={() => setActiveTab('heatmap')} icon={<AlertCircle size={16} />}>
+                  Heatmap
+                </TabButton>
               </div>
-            )}
-          </div>
+
+              {/* Tab Content */}
+              <div className="text-white">
+                {activeTab === 'overview' && <OverviewTab data={displayData} />}
+                {activeTab === 'faces' && <FacesTab data={displayData.faces} />}
+                {activeTab === 'vibe' && <VibeTab data={displayData.vibe} />}
+                {activeTab === 'objects' && <ObjectsTab data={displayData.objects} image={displayImage} />}
+                {activeTab === 'heatmap' && <HeatmapTab data={displayData.heatmap} image={displayImage} />}
+              </div>
+            </div>
+          )}
         </div>
-
-        {/* Recent Analyses Section */}
-        {user?.id && (
-          <RecentAnalysesSection userId={user.id} />
-        )}
-
-        {/* Analysis Results Tabs - Only show when we have results or demo */}
-        {(showDemo || showResults) && (
-          <div className="bg-slate-900/50 backdrop-blur-sm rounded-2xl border border-slate-700/50 p-8">
-          {/* Tabs */}
-          <div className="flex gap-4 mb-8 overflow-x-auto pb-2">
-            <TabButton active={activeTab === 'overview'} onClick={() => setActiveTab('overview')} icon={<Eye size={16} />}>
-              Genel Bakış
-            </TabButton>
-            <TabButton active={activeTab === 'faces'} onClick={() => setActiveTab('faces')} icon={<Users size={16} />}>
-              Yüzler ({displayData.faces.face_count})
-            </TabButton>
-            <TabButton active={activeTab === 'vibe'} onClick={() => setActiveTab('vibe')} icon={<Sparkles size={16} />}>
-              Vibe Analizi
-            </TabButton>
-            <TabButton active={activeTab === 'objects'} onClick={() => setActiveTab('objects')} icon={<Target size={16} />}>
-              Objeler ({displayData.objects.object_count})
-            </TabButton>
-            <TabButton active={activeTab === 'heatmap'} onClick={() => setActiveTab('heatmap')} icon={<AlertCircle size={16} />}>
-              Heatmap
-            </TabButton>
-          </div>
-
-          {/* Tab Content */}
-          <div className="text-white">
-            {activeTab === 'overview' && <OverviewTab data={displayData} />}
-            {activeTab === 'faces' && <FacesTab data={displayData.faces} />}
-            {activeTab === 'vibe' && <VibeTab data={displayData.vibe} />}
-            {activeTab === 'objects' && <ObjectsTab data={displayData.objects} image={displayImage} />}
-            {activeTab === 'heatmap' && <HeatmapTab data={displayData.heatmap} image={displayImage} />}
-          </div>
-        </div>
-        )}
       </div>
-    </div>
     </AccessGuard>
   );
 };
@@ -465,11 +511,10 @@ const AnalyzePage = () => {
 const TabButton = ({ active, onClick, icon, children }) => (
   <button
     onClick={onClick}
-    className={`flex items-center gap-2 px-6 py-3 rounded-lg font-semibold transition-all whitespace-nowrap ${
-      active
-        ? 'bg-blue-500 text-white'
-        : 'bg-slate-800 text-slate-400 hover:bg-slate-700 hover:text-white'
-    }`}
+    className={`flex items-center gap-2 px-6 py-3 rounded-lg font-semibold transition-all whitespace-nowrap ${active
+      ? 'bg-blue-500 text-white'
+      : 'bg-slate-800 text-slate-400 hover:bg-slate-700 hover:text-white'
+      }`}
     style={{ fontFamily: 'Geist Sans, sans-serif' }}
   >
     {icon}
@@ -565,7 +610,7 @@ const VibeTab = ({ data }) => (
 // Objects Tab
 const ObjectsTab = ({ data, image }) => {
   const [selectedObject, setSelectedObject] = useState(null);
-  
+
   // Renk paleti - Her obje için farklı renk
   const colors = [
     'rgb(59, 130, 246)',  // blue
@@ -583,16 +628,16 @@ const ObjectsTab = ({ data, image }) => {
           Tespit Edilen Objeler
         </h3>
         <div className="relative inline-block">
-          <img 
-            src={image} 
-            alt="Objects Detection" 
-            className="w-full max-h-96 object-contain rounded-xl" 
+          <img
+            src={image}
+            alt="Objects Detection"
+            className="w-full max-h-96 object-contain rounded-xl"
           />
           {/* Bounding Boxes */}
           {data.objects.map((obj, idx) => {
             const isSelected = selectedObject === idx;
             const color = colors[idx % colors.length];
-            
+
             return (
               <div
                 key={idx}
@@ -611,9 +656,9 @@ const ObjectsTab = ({ data, image }) => {
                 onMouseLeave={() => setSelectedObject(null)}
               >
                 {/* Label */}
-                <div 
+                <div
                   className="absolute -top-8 left-0 px-3 py-1 rounded text-xs font-bold text-white whitespace-nowrap"
-                  style={{ 
+                  style={{
                     backgroundColor: color,
                     fontFamily: 'Geist Sans, sans-serif'
                   }}
@@ -639,10 +684,10 @@ const ObjectsTab = ({ data, image }) => {
       {/* Object Details */}
       {data.objects.map((obj, idx) => {
         const color = colors[idx % colors.length];
-        
+
         return (
-          <div 
-            key={idx} 
+          <div
+            key={idx}
             className="bg-slate-800/50 rounded-xl p-6 border-l-4 transition-all hover:bg-slate-800/70"
             style={{ borderColor: color }}
           >
@@ -697,25 +742,50 @@ const HeatmapTab = ({ data, image }) => {
 
   const focusPoints = data.focus_points || [];
   const attentionFlow = data.attention_flow || [];
-  
+
   return (
     <div className="space-y-6">
-      <div className="relative">
-        <img src={image} alt="Heatmap" className="w-full h-96 object-contain rounded-xl bg-slate-800" />
-        {focusPoints.map((point, idx) => (
-          <div
-            key={idx}
-            className="absolute rounded-full border-2 border-red-500 pointer-events-none"
-            style={{
-              left: `${point.x}%`,
-              top: `${point.y}%`,
-              width: `${point.radius}px`,
-              height: `${point.radius}px`,
-              transform: 'translate(-50%, -50%)',
-              backgroundColor: `rgba(255, 0, 0, ${point.intensity * 0.3})`,
-            }}
-          />
-        ))}
+      {/* Image with heatmap overlay - proper positioning */}
+      <div className="flex justify-center bg-slate-800 rounded-xl p-4">
+        <div className="relative inline-block">
+          <img src={image} alt="Heatmap" className="max-w-full max-h-96 object-contain rounded-lg" />
+          {/* Overlay positioned relative to actual image */}
+          <div className="absolute inset-0 pointer-events-none">
+            {focusPoints.map((point, idx) => (
+              <div
+                key={idx}
+                className="absolute flex items-center justify-center"
+                style={{
+                  left: `${point.x}%`,
+                  top: `${point.y}%`,
+                  transform: 'translate(-50%, -50%)'
+                }}
+              >
+                {/* Outer glow - bigger for better visibility */}
+                <div
+                  className="absolute rounded-full animate-pulse"
+                  style={{
+                    width: `${50 + (point.intensity * 30)}px`,
+                    height: `${50 + (point.intensity * 30)}px`,
+                    background: `radial-gradient(circle, rgba(255,0,0,${point.intensity * 0.5}) 0%, rgba(255,0,0,0) 70%)`
+                  }}
+                />
+                {/* Inner circle - bigger with white border for visibility on red backgrounds */}
+                <div
+                  className="rounded-full bg-red-500/60 flex items-center justify-center shadow-lg"
+                  style={{
+                    width: '32px',
+                    height: '32px',
+                    border: '3px solid white',
+                    boxShadow: '0 0 10px rgba(0,0,0,0.5), 0 0 20px rgba(255,0,0,0.5)'
+                  }}
+                >
+                  <span className="text-white text-xs font-bold drop-shadow-md">{idx + 1}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
 
       <div className="bg-slate-800/50 rounded-xl p-6">
@@ -725,7 +795,7 @@ const HeatmapTab = ({ data, image }) => {
             focusPoints.map((point, idx) => (
               <div key={idx} className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <div 
+                  <div
                     className="w-4 h-4 rounded-full border-2 border-red-500"
                     style={{ backgroundColor: `rgba(255, 0, 0, ${point.intensity * 0.3})` }}
                   />
@@ -745,8 +815,8 @@ const HeatmapTab = ({ data, image }) => {
           <h3 className="text-lg font-bold text-blue-400 mb-4">Dikkat Akışı</h3>
           <div className="flex flex-wrap gap-2">
             {attentionFlow.map((item, idx) => (
-              <span 
-                key={idx} 
+              <span
+                key={idx}
                 className="bg-blue-500/20 border border-blue-500/30 rounded-lg px-3 py-1 text-blue-300 text-sm"
               >
                 {item}
@@ -848,8 +918,8 @@ const RecentAnalysesSection = ({ userId }) => {
   }
 
   const analysis = recentAnalyses[0];
-  const analysisData = typeof analysis.analysis_data === 'string' 
-    ? JSON.parse(analysis.analysis_data) 
+  const analysisData = typeof analysis.analysis_data === 'string'
+    ? JSON.parse(analysis.analysis_data)
     : analysis.analysis_data;
   const score = analysisData?.score?.value || 0;
   const label = analysisData?.score?.label || 'N/A';
@@ -860,7 +930,7 @@ const RecentAnalysesSection = ({ userId }) => {
         <h2 className="text-3xl font-bold text-white" style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}>
           Son Analizleriniz
         </h2>
-        <a 
+        <a
           href="/lab"
           className="text-blue-400 hover:text-blue-300 font-semibold flex items-center gap-2 transition-colors"
           style={{ fontFamily: 'Geist Sans, sans-serif' }}
@@ -876,9 +946,9 @@ const RecentAnalysesSection = ({ userId }) => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* Thumbnail */}
           <div className="relative">
-            <img 
-              src={analysis.thumbnail_url || analysisData?.input_image_url} 
-              alt={analysis.title || 'Analiz'} 
+            <img
+              src={analysis.thumbnail_url || analysisData?.input_image_url}
+              alt={analysis.title || 'Analiz'}
               className="w-full aspect-video object-cover rounded-lg"
             />
             <div className="absolute top-2 right-2 bg-blue-500 text-white px-3 py-1 rounded-full text-sm font-bold">
@@ -901,7 +971,7 @@ const RecentAnalysesSection = ({ userId }) => {
             </div>
 
             <div className="flex gap-3 mt-4">
-              <button 
+              <button
                 onClick={() => window.location.href = '/lab'}
                 className="text-blue-400 hover:text-blue-300 text-sm font-semibold flex items-center gap-1 transition-colors"
                 style={{ fontFamily: 'Geist Sans, sans-serif' }}

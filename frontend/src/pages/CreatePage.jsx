@@ -116,9 +116,9 @@ const CreatePage = () => {
       toast.error('Form alanları boş! Lütfen doldurun.');
       return;
     }
-    
+
     // Create a synthetic event to re-use handleSubmit
-    const syntheticEvent = { preventDefault: () => {} };
+    const syntheticEvent = { preventDefault: () => { } };
     handleSubmit(syntheticEvent);
   };
 
@@ -228,7 +228,7 @@ const CreatePage = () => {
       if (data.status === 'error') {
         // Safely extract error message (handle nested objects)
         let errorMessage = 'Bir hata oluştu. Lütfen tekrar deneyin.';
-        
+
         if (typeof data.message === 'string') {
           errorMessage = data.message;
         } else if (data.message && typeof data.message === 'object') {
@@ -241,7 +241,7 @@ const CreatePage = () => {
             errorMessage = JSON.stringify(data.message);
           }
         }
-        
+
         toast.error(errorMessage);
         console.error('❌ API Error:', data);
         return;
@@ -251,7 +251,7 @@ const CreatePage = () => {
       if (data.status === 'success') {
         // 1. Set the generated image
         const imageUrl = data.image_url || data.imageUrl || data.thumbnail || data.url;
-        
+
         if (!imageUrl) {
           toast.error('Görsel URL alınamadı');
           console.error('❌ No image URL in success response');
@@ -272,8 +272,8 @@ const CreatePage = () => {
         if (data.ai_suggestions) {
           try {
             // Parse if it's a JSON string, otherwise use as-is
-            const suggestions = typeof data.ai_suggestions === 'string' 
-              ? JSON.parse(data.ai_suggestions) 
+            const suggestions = typeof data.ai_suggestions === 'string'
+              ? JSON.parse(data.ai_suggestions)
               : data.ai_suggestions;
             setAiSuggestions(suggestions);
             console.log('💡 AI suggestions received:', suggestions);
@@ -286,8 +286,8 @@ const CreatePage = () => {
         // 4. Check Temporary Status
         if (data.is_temporary === true) {
           // Safely extract message
-          const messageText = typeof data.message === 'string' 
-            ? data.message 
+          const messageText = typeof data.message === 'string'
+            ? data.message
             : '⚠️ Geçici görsel oluşturuldu. Hemen indirin!';
 
           toast(messageText, {
@@ -302,13 +302,13 @@ const CreatePage = () => {
           console.log('⚠️ Temporary image generated');
         } else {
           // Full success - Permanent link
-          const messageText = typeof data.message === 'string' 
-            ? data.message 
+          const messageText = typeof data.message === 'string'
+            ? data.message
             : '✅ Thumbnail başarıyla oluşturuldu!';
 
           toast.success(messageText);
           setIsTemporary(false);
-          
+
           // Trigger confetti celebration
           setShowConfetti(true);
           setTimeout(() => setShowConfetti(false), 5000);
@@ -322,11 +322,11 @@ const CreatePage = () => {
 
     } catch (error) {
       console.error('❌ Error during submission:', error);
-      
+
       // User-friendly error message
       const errorMessage = error.message || 'Beklenmeyen bir hata oluştu';
       toast.error(errorMessage);
-      
+
     } finally {
       setIsGenerating(false);
       console.log('🏁 Generation process completed');
@@ -339,7 +339,7 @@ const CreatePage = () => {
       {showConfetti && <Confetti recycle={false} numberOfPieces={500} />}
       <div className="min-h-screen relative overflow-hidden bg-slate-950">
         {/* Background Image */}
-        <div 
+        <div
           className="absolute inset-0 bg-cover bg-center bg-no-repeat"
           style={{
             backgroundImage: 'url("https://customer-assets.emergentagent.com/job_326e649c-429d-481a-8bf3-c99e4276d28c/artifacts/bhrosu5k_8nNOHsP6PbEJMwWSth7Jb.png")',
@@ -353,18 +353,18 @@ const CreatePage = () => {
           <div className="max-w-7xl mx-auto">
             {/* Page Title */}
             <div className="text-center mb-12">
-              <h1 
+              <h1
                 className="text-4xl md:text-5xl font-bold text-white mb-3"
-                style={{ 
+                style={{
                   fontFamily: 'Plus Jakarta Sans, sans-serif',
                   textShadow: '0 4px 20px rgba(0, 0, 0, 0.8)'
                 }}
               >
                 Thumbnail Oluştur
               </h1>
-              <p 
+              <p
                 className="text-slate-300 text-lg"
-                style={{ 
+                style={{
                   fontFamily: 'Geist Sans, sans-serif',
                   textShadow: '0 2px 10px rgba(0, 0, 0, 0.8)'
                 }}
@@ -388,7 +388,7 @@ const CreatePage = () => {
                 </button>
 
                 <form onSubmit={handleSubmit} className="space-y-6">
-                  
+
                   {/* Video Konusu (Required) */}
                   <div>
                     <Label htmlFor="topic" className="text-white text-sm font-medium mb-2 block" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
@@ -436,27 +436,12 @@ const CreatePage = () => {
                     />
                   </div>
 
-                  {/* Ekstra İstek (Optional) */}
-                  <div>
-                    <Label htmlFor="extra" className="text-white text-sm font-medium mb-2 block" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
-                      Ekstra belirtmek istediğiniz bir istek (Opsiyonel)
-                    </Label>
-                    <Textarea
-                      id="extra"
-                      value={extraRequest}
-                      onChange={(e) => setExtraRequest(e.target.value)}
-                      placeholder="Örn: Arka planda mavi gökyüzü olsun, daha renkli olsun vb."
-                      className="bg-slate-800/50 border-slate-600 text-white placeholder:text-slate-400 min-h-[80px] resize-none"
-                      style={{ fontFamily: 'Geist Sans, sans-serif' }}
-                    />
-                  </div>
-
                   {/* Referans Görsel Upload */}
                   <div>
                     <Label htmlFor="imageFile" className="text-white text-sm font-medium mb-2 block" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
                       Referans Görsel Yükle (Yüz/Stil)
                     </Label>
-                    
+
                     {!previewUrl ? (
                       <div className="relative">
                         <input
@@ -486,9 +471,9 @@ const CreatePage = () => {
                     ) : (
                       <div className="space-y-4">
                         <div className="relative group bg-slate-800/50 rounded-lg p-4 border-2 border-slate-600">
-                          <img 
-                            src={previewUrl} 
-                            alt="Preview" 
+                          <img
+                            src={previewUrl}
+                            alt="Preview"
                             className="w-full h-auto max-h-64 object-contain rounded-lg"
                           />
                           <button
@@ -502,6 +487,21 @@ const CreatePage = () => {
                         </div>
                       </div>
                     )}
+                  </div>
+
+                  {/* Ekstra İstek (Optional) */}
+                  <div>
+                    <Label htmlFor="extra" className="text-white text-sm font-medium mb-2 block" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
+                      Ekstra belirtmek istediğiniz bir istek (Opsiyonel)
+                    </Label>
+                    <Textarea
+                      id="extra"
+                      value={extraRequest}
+                      onChange={(e) => setExtraRequest(e.target.value)}
+                      placeholder="Örn: Arka planda mavi gökyüzü olsun, daha renkli olsun vb."
+                      className="bg-slate-800/50 border-slate-600 text-white placeholder:text-slate-400 min-h-[80px] resize-none"
+                      style={{ fontFamily: 'Geist Sans, sans-serif' }}
+                    />
                   </div>
 
                   {/* Creator Checkbox - Only show if file uploaded */}
@@ -532,7 +532,7 @@ const CreatePage = () => {
                     style={{ fontFamily: 'Geist Sans, sans-serif' }}
                   >
                     <Wand2 className="mr-2" size={20} />
-                    {isGenerating ? 'Oluşturuluyor...' : 'Thumbnail Oluştur'}
+                    {isGenerating ? 'Oluşturuluyor...' : 'Thumbnail Oluştur (1 Kredi)'}
                   </Button>
                 </form>
               </div>
@@ -548,19 +548,28 @@ const CreatePage = () => {
                         <Wand2 size={32} className="text-cyan-400 animate-pulse" />
                       </div>
                     </div>
-                    <h3 
+                    <h3
                       className="text-2xl font-bold text-white mb-3 animate-pulse"
                       style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}
                     >
                       Thumbnail Oluşturuluyor...
                     </h3>
-                    <p 
-                      className="text-slate-400 mb-4"
+                    <p
+                      className="text-slate-400 mb-2"
                       style={{ fontFamily: 'Geist Sans, sans-serif' }}
                     >
                       Yapay zeka sizin için çalışıyor
                     </p>
-                    <div className="flex justify-center gap-1">
+                    {/* Informative note */}
+                    <div className="bg-blue-500/10 border border-blue-500/30 rounded-lg p-3 mt-4 max-w-sm mx-auto">
+                      <p className="text-blue-300 text-sm" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
+                        ⏱️ Bu işlem <span className="font-bold">1-2 dakika</span> sürebilir.
+                      </p>
+                      <p className="text-slate-400 text-xs mt-1" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
+                        Tamamlandığında <span className="text-cyan-400">Profil → Laboratuvarım → Ürettiklerim</span> kısmına kaydedilecektir.
+                      </p>
+                    </div>
+                    <div className="flex justify-center gap-1 mt-4">
                       <div className="w-2 h-2 bg-cyan-500 rounded-full animate-bounce" style={{ animationDelay: '0s' }}></div>
                       <div className="w-2 h-2 bg-cyan-500 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
                       <div className="w-2 h-2 bg-cyan-500 rounded-full animate-bounce" style={{ animationDelay: '0.4s' }}></div>
@@ -585,9 +594,9 @@ const CreatePage = () => {
 
                     {/* Generated Image with Loading Overlay */}
                     <div className="relative">
-                      <img 
-                        src={generatedImage} 
-                        alt="Generated Thumbnail" 
+                      <img
+                        src={generatedImage}
+                        alt="Generated Thumbnail"
                         className="w-full rounded-lg shadow-2xl"
                       />
                       {isTemporary && (
@@ -596,7 +605,7 @@ const CreatePage = () => {
                           Geçici
                         </div>
                       )}
-                      
+
                       {/* Loading Overlay when regenerating */}
                       {isGenerating && (
                         <div className="absolute inset-0 bg-black/70 backdrop-blur-sm rounded-lg flex items-center justify-center">
@@ -631,7 +640,7 @@ const CreatePage = () => {
                             const response = await fetch(generatedImage);
                             const blob = await response.blob();
                             const url = window.URL.createObjectURL(blob);
-                            
+
                             // Create download link
                             const link = document.createElement('a');
                             link.href = url;
@@ -639,7 +648,7 @@ const CreatePage = () => {
                             document.body.appendChild(link);
                             link.click();
                             document.body.removeChild(link);
-                            
+
                             // Cleanup
                             window.URL.revokeObjectURL(url);
                             toast.success('İndirme başladı! ✅');
@@ -733,13 +742,13 @@ const CreatePage = () => {
                     <div className="w-24 h-24 mx-auto mb-6 bg-slate-800/50 rounded-full flex items-center justify-center">
                       <Wand2 size={40} className="text-slate-500" />
                     </div>
-                    <h3 
+                    <h3
                       className="text-xl font-semibold text-slate-300 mb-2"
                       style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}
                     >
                       Önizleme Bekleniyor
                     </h3>
-                    <p 
+                    <p
                       className="text-slate-500"
                       style={{ fontFamily: 'Geist Sans, sans-serif' }}
                     >
@@ -754,7 +763,7 @@ const CreatePage = () => {
             {recentGenerations.length > 0 && (
               <div className="mt-16">
                 <div className="flex justify-between items-center mb-6">
-                  <h2 
+                  <h2
                     className="text-2xl md:text-3xl font-bold text-white"
                     style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}
                   >
@@ -773,7 +782,7 @@ const CreatePage = () => {
 
                 <div className="flex gap-6 overflow-x-auto pb-4 scrollbar-thin scrollbar-thumb-slate-700 scrollbar-track-slate-900">
                   {recentGenerations.map((gen) => (
-                    <Card 
+                    <Card
                       key={gen.id}
                       className="flex-shrink-0 w-[320px] bg-slate-900/50 backdrop-blur-sm border-slate-700/50 overflow-hidden cursor-pointer group hover:border-cyan-500 transition-all"
                       onClick={() => setLightboxImage(gen.image_url)}
@@ -802,7 +811,7 @@ const CreatePage = () => {
 
             {/* Lightbox */}
             {lightboxImage && (
-              <div 
+              <div
                 className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-4"
                 onClick={() => setLightboxImage(null)}
               >

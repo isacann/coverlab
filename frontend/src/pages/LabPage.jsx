@@ -86,13 +86,13 @@ const LabPage = () => {
   const [selectedGeneration, setSelectedGeneration] = useState(null);
   const [selectedAnalysis, setSelectedAnalysis] = useState(null);
   const [lightboxImage, setLightboxImage] = useState(null);
-  
+
   // Selection states for deletion
   const [isSelectModeGen, setIsSelectModeGen] = useState(false);
   const [isSelectModeAna, setIsSelectModeAna] = useState(false);
   const [selectedGens, setSelectedGens] = useState([]);
   const [selectedAnas, setSelectedAnas] = useState([]);
-  
+
   // Data states - REAL DATA
   const [generations, setGenerations] = useState([]);
   const [analyses, setAnalyses] = useState([]);
@@ -159,19 +159,19 @@ const LabPage = () => {
     if (diffDays < 7) return `${diffDays} gün önce`;
     return `${Math.floor(diffDays / 7)} hafta önce`;
   };
-  
+
   // Handlers for Generations
   const toggleSelectModeGen = () => {
     setIsSelectModeGen(!isSelectModeGen);
     setSelectedGens([]);
   };
-  
+
   const toggleGenSelection = (id) => {
-    setSelectedGens(prev => 
+    setSelectedGens(prev =>
       prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]
     );
   };
-  
+
   const deleteSelectedGens = async () => {
     try {
       const { error } = await supabase
@@ -189,7 +189,7 @@ const LabPage = () => {
       toast.error('Silme işlemi başarısız');
     }
   };
-  
+
   const deleteSingleGen = async (id, e) => {
     if (e) e.stopPropagation();
     try {
@@ -206,25 +206,25 @@ const LabPage = () => {
       toast.error('Silinemedi');
     }
   };
-  
+
   // Handlers for Analyses
   const toggleSelectModeAna = () => {
     setIsSelectModeAna(!isSelectModeAna);
     setSelectedAnas([]);
   };
-  
+
   const toggleAnaSelection = (id) => {
-    setSelectedAnas(prev => 
+    setSelectedAnas(prev =>
       prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]
     );
   };
-  
+
   const deleteSelectedAnas = () => {
     setAnalyses(prev => prev.filter(a => !selectedAnas.includes(a.id)));
     setSelectedAnas([]);
     setIsSelectModeAna(false);
   };
-  
+
   const deleteSingleAna = (id, e) => {
     e.stopPropagation();
     setAnalyses(prev => prev.filter(a => a.id !== id));
@@ -236,17 +236,17 @@ const LabPage = () => {
         <div className="max-w-7xl mx-auto">
           {/* Header */}
           <div className="mb-12">
-            <h1 
+            <h1
               className="text-4xl md:text-5xl font-bold text-white mb-3"
               style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}
             >
               Laboratuvarım
             </h1>
-            <p 
+            <p
               className="text-slate-400 text-lg"
               style={{ fontFamily: 'Geist Sans, sans-serif' }}
             >
-              Tüm çalışmalarınız burada saklanır
+              Tüm çalışmalarınız burada saklanır • <span className="text-orange-400">Son 30 günü geçen işlemler otomatik silinir</span>
             </p>
           </div>
 
@@ -305,7 +305,7 @@ const LabPage = () => {
                       {isSelectModeGen ? <CheckSquare size={16} className="mr-2" /> : <Square size={16} className="mr-2" />}
                       {isSelectModeGen ? 'Seçimi İptal Et' : 'Seç'}
                     </Button>
-                    
+
                     {isSelectModeGen && selectedGens.length > 0 && (
                       <span className="text-slate-400 text-sm" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
                         {selectedGens.length} öğe seçildi
@@ -315,63 +315,61 @@ const LabPage = () => {
 
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {generations.map((gen) => (
-                      <Card 
-                        key={gen.id} 
-                        className={`bg-slate-900 border-slate-700 overflow-hidden cursor-pointer group hover:border-blue-500 transition-all relative ${
-                          selectedGens.includes(gen.id) ? 'ring-2 ring-blue-500' : ''
-                        }`}
+                      <Card
+                        key={gen.id}
+                        className={`bg-slate-900 border-slate-700 overflow-hidden cursor-pointer group hover:border-blue-500 transition-all relative ${selectedGens.includes(gen.id) ? 'ring-2 ring-blue-500' : ''
+                          }`}
                         onClick={() => isSelectModeGen ? toggleGenSelection(gen.id) : setSelectedGeneration(gen)}
                       >
-                    {/* Selection Checkbox Overlay */}
-                    {isSelectModeGen && (
-                      <div className="absolute top-3 left-3 z-10">
-                        <div className={`w-6 h-6 rounded border-2 flex items-center justify-center ${
-                          selectedGens.includes(gen.id) 
-                            ? 'bg-blue-500 border-blue-500' 
-                            : 'bg-slate-800/70 border-slate-500'
-                        }`}>
-                          {selectedGens.includes(gen.id) && (
-                            <CheckSquare size={16} className="text-white" />
+                        {/* Selection Checkbox Overlay */}
+                        {isSelectModeGen && (
+                          <div className="absolute top-3 left-3 z-10">
+                            <div className={`w-6 h-6 rounded border-2 flex items-center justify-center ${selectedGens.includes(gen.id)
+                              ? 'bg-blue-500 border-blue-500'
+                              : 'bg-slate-800/70 border-slate-500'
+                              }`}>
+                              {selectedGens.includes(gen.id) && (
+                                <CheckSquare size={16} className="text-white" />
+                              )}
+                            </div>
+                          </div>
+                        )}
+
+                        <div className="relative">
+                          <img src={gen.image_url} alt={gen.title || 'Thumbnail'} className="w-full aspect-video object-cover" />
+
+                          {/* Hover Actions (Only when NOT in select mode) */}
+                          {!isSelectModeGen && (
+                            <>
+                              <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-3">
+                                <button className="bg-blue-500 hover:bg-blue-600 text-white p-3 rounded-full transition-transform hover:scale-110">
+                                  <Eye size={20} />
+                                </button>
+                                <button className="bg-slate-700 hover:bg-slate-600 text-white p-3 rounded-full transition-transform hover:scale-110">
+                                  <Download size={20} />
+                                </button>
+                              </div>
+                              {/* Delete Icon on Hover (Top Right) */}
+                              <button
+                                onClick={(e) => deleteSingleGen(gen.id, e)}
+                                className="absolute top-3 right-3 bg-red-500/90 hover:bg-red-600 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition-all hover:scale-110 z-10"
+                              >
+                                <Trash2 size={16} />
+                              </button>
+                            </>
                           )}
                         </div>
-                      </div>
-                    )}
-
-                    <div className="relative">
-                      <img src={gen.image_url} alt={gen.title || 'Thumbnail'} className="w-full aspect-video object-cover" />
-                      
-                      {/* Hover Actions (Only when NOT in select mode) */}
-                      {!isSelectModeGen && (
-                        <>
-                          <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-3">
-                            <button className="bg-blue-500 hover:bg-blue-600 text-white p-3 rounded-full transition-transform hover:scale-110">
-                              <Eye size={20} />
-                            </button>
-                            <button className="bg-slate-700 hover:bg-slate-600 text-white p-3 rounded-full transition-transform hover:scale-110">
-                              <Download size={20} />
-                            </button>
-                          </div>
-                          {/* Delete Icon on Hover (Top Right) */}
-                          <button 
-                            onClick={(e) => deleteSingleGen(gen.id, e)}
-                            className="absolute top-3 right-3 bg-red-500/90 hover:bg-red-600 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition-all hover:scale-110 z-10"
-                          >
-                            <Trash2 size={16} />
-                          </button>
-                        </>
-                      )}
-                    </div>
-                    <div className="p-4">
-                      <h3 className="text-white font-semibold mb-1" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
-                        {gen.title || 'Thumbnail'}
-                      </h3>
-                      <p className="text-slate-500 text-sm" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
-                        {formatDate(gen.created_at)}
-                      </p>
-                    </div>
-                  </Card>
-                ))}
-              </div>
+                        <div className="p-4">
+                          <h3 className="text-white font-semibold mb-1" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
+                            {gen.title || 'Thumbnail'}
+                          </h3>
+                          <p className="text-slate-500 text-sm" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
+                            {formatDate(gen.created_at)}
+                          </p>
+                        </div>
+                      </Card>
+                    ))}
+                  </div>
                 </>
               )}
 
@@ -398,7 +396,7 @@ const LabPage = () => {
                   {isSelectModeAna ? <CheckSquare size={16} className="mr-2" /> : <Square size={16} className="mr-2" />}
                   {isSelectModeAna ? 'Seçimi İptal Et' : 'Seç'}
                 </Button>
-                
+
                 {isSelectModeAna && selectedAnas.length > 0 && (
                   <span className="text-slate-400 text-sm" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
                     {selectedAnas.length} öğe seçildi
@@ -408,44 +406,35 @@ const LabPage = () => {
 
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {analyses.map((analysis) => {
-                  // Parse analysis_data if it's a string
-                  let analysisData = null;
-                  try {
-                    analysisData = typeof analysis.analysis_data === 'string' 
-                      ? JSON.parse(analysis.analysis_data) 
-                      : analysis.analysis_data;
-                  } catch (e) {
-                    console.error('Failed to parse analysis_data:', e, analysis);
-                    analysisData = {};
-                  }
-                  
-                  const score = analysisData?.score?.value || 0;
-                  const label = analysisData?.score?.label || 'N/A';
-                  
-                  console.log('Analysis card:', {
-                    id: analysis.id,
-                    thumbnail_url: analysis.thumbnail_url,
-                    input_image_url: analysisData?.input_image_url,
-                    title: analysis.title,
-                    score
+                  // Use direct column values from Supabase
+                  const score = analysis.ai_score || 0;
+                  const label = score >= 90 ? 'Mükemmel' : score >= 70 ? 'Çok İyi' : score >= 50 ? 'İyi' : 'Geliştirilmeli';
+                  const imageUrl = analysis.input_image_url || 'https://via.placeholder.com/400x225';
+                  const title = analysis.input_title || 'Untitled';
+
+                  console.log('Analysis card FULL:', analysis);
+                  console.log('JSONB fields:', {
+                    faces_data: analysis.faces_data,
+                    vibe_data: analysis.vibe_data,
+                    objects_data: analysis.objects_data,
+                    heatmap_data: analysis.heatmap_data,
+                    score_breakdown: analysis.score_breakdown
                   });
-                  
+
                   return (
-                    <Card 
-                      key={analysis.id} 
-                      className={`bg-slate-900 border-slate-700 overflow-hidden cursor-pointer group hover:border-blue-500 transition-all relative ${
-                        selectedAnas.includes(analysis.id) ? 'ring-2 ring-blue-500' : ''
-                      }`}
-                      onClick={() => isSelectModeAna ? toggleAnaSelection(analysis.id) : setSelectedAnalysis({...analysis, analysis_data: analysisData})}
+                    <Card
+                      key={analysis.id}
+                      className={`bg-slate-900 border-slate-700 overflow-hidden cursor-pointer group hover:border-blue-500 transition-all relative ${selectedAnas.includes(analysis.id) ? 'ring-2 ring-blue-500' : ''
+                        }`}
+                      onClick={() => isSelectModeAna ? toggleAnaSelection(analysis.id) : setSelectedAnalysis(analysis)}
                     >
                       {/* Selection Checkbox Overlay */}
                       {isSelectModeAna && (
                         <div className="absolute top-3 left-3 z-10">
-                          <div className={`w-6 h-6 rounded border-2 flex items-center justify-center ${
-                            selectedAnas.includes(analysis.id) 
-                              ? 'bg-blue-500 border-blue-500' 
-                              : 'bg-slate-800/70 border-slate-500'
-                          }`}>
+                          <div className={`w-6 h-6 rounded border-2 flex items-center justify-center ${selectedAnas.includes(analysis.id)
+                            ? 'bg-blue-500 border-blue-500'
+                            : 'bg-slate-800/70 border-slate-500'
+                            }`}>
                             {selectedAnas.includes(analysis.id) && (
                               <CheckSquare size={16} className="text-white" />
                             )}
@@ -454,15 +443,15 @@ const LabPage = () => {
                       )}
 
                       <div className="relative">
-                        <img 
-                          src={analysis.thumbnail_url || analysisData?.input_image_url || 'https://via.placeholder.com/400x225'} 
-                          alt={analysis.title || 'Analiz'} 
-                          className="w-full aspect-video object-cover" 
+                        <img
+                          src={imageUrl}
+                          alt={title}
+                          className="w-full aspect-video object-cover"
                         />
                         <div className="absolute top-2 right-2 bg-blue-500 text-white px-3 py-1 rounded-full text-sm font-bold">
                           {score}
                         </div>
-                        
+
                         {/* Hover Actions (Only when NOT in select mode) */}
                         {!isSelectModeAna && (
                           <>
@@ -472,7 +461,7 @@ const LabPage = () => {
                               </button>
                             </div>
                             {/* Delete Icon on Hover (Top Left, avoiding score badge) */}
-                            <button 
+                            <button
                               onClick={(e) => deleteSingleAna(analysis.id, e)}
                               className="absolute top-2 left-2 bg-red-500/90 hover:bg-red-600 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition-all hover:scale-110 z-10"
                             >
@@ -483,7 +472,7 @@ const LabPage = () => {
                       </div>
                       <div className="p-4">
                         <h3 className="text-white font-semibold mb-1 truncate" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
-                          {analysis.title || analysisData?.input_title || 'Untitled'}
+                          {title}
                         </h3>
                         <p className="text-slate-500 text-sm" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
                           {formatDate(analysis.created_at)} • {label}
@@ -507,7 +496,7 @@ const LabPage = () => {
 
           {/* Lightbox for Generations */}
           {lightboxImage && (
-            <div 
+            <div
               className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-4"
               onClick={() => setLightboxImage(null)}
             >
@@ -517,9 +506,9 @@ const LabPage = () => {
 
           {/* Generation Detail Modal */}
           {selectedGeneration && (
-            <GenerationDetailModal 
-              generation={selectedGeneration} 
-              isOpen={!!selectedGeneration} 
+            <GenerationDetailModal
+              generation={selectedGeneration}
+              isOpen={!!selectedGeneration}
               onClose={() => setSelectedGeneration(null)}
               onDelete={deleteSingleGen}
             />
@@ -527,9 +516,9 @@ const LabPage = () => {
 
           {/* Analysis Detail Modal */}
           {selectedAnalysis && (
-            <AnalysisDetailModal 
-              analysis={selectedAnalysis} 
-              isOpen={!!selectedAnalysis} 
+            <AnalysisDetailModal
+              analysis={selectedAnalysis}
+              isOpen={!!selectedAnalysis}
               onClose={() => setSelectedAnalysis(null)}
             />
           )}
