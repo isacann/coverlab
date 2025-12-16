@@ -39,15 +39,37 @@ export const AuthProvider = ({ children }) => {
     const { data: listener } = supabase.auth.onAuthStateChange(async (event, session) => {
       console.log('🔄 Auth state changed:', event, session?.user?.email || 'No user');
 
-      if (session?.user) {
-        setUser(session.user);
-        // Force fresh profile fetch on sign in to ensure latest subscription data
-        const forceRefresh = event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED';
-        await fetchProfile(session.user.id, forceRefresh);
-      } else {
+      // Only handle specific events to prevent flickering
+      if (event === 'SIGNED_OUT') {
+        // User explicitly signed out - clear everything
         setUser(null);
         setProfile(null);
+        setLoading(false);
+        return;
       }
+
+      if (event === 'SIGNED_IN' && session?.user) {
+        // Fresh sign in - set user and fetch profile
+        setUser(session.user);
+        await fetchProfile(session.user.id, true);
+        setLoading(false);
+        return;
+      }
+
+      if (event === 'TOKEN_REFRESHED' && session?.user) {
+        // Token refreshed - just update user, don't refetch profile
+        setUser(session.user);
+        setLoading(false);
+        return;
+      }
+
+      // For other events (INITIAL_SESSION, etc.), only update if we have a valid session
+      if (session?.user) {
+        setUser(session.user);
+        // Don't force refresh for unknown events
+        await fetchProfile(session.user.id, false);
+      }
+      // Don't clear user/profile for unknown events without session - might be temporary
       setLoading(false);
     });
 
@@ -57,7 +79,18 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   const fetchProfile = async (userId, forceRefresh = false) => {
-    setProfileLoading(true);
+    // Skip if we already have profile for this user (unless forced)
+    if (!forceRefresh && profile && profile.id === userId) {
+      console.log('📋 Profile already cached for user:', userId);
+      return;
+    }
+
+    // Only show loading if we don't have any profile yet
+    const showLoading = !profile;
+    if (showLoading) {
+      setProfileLoading(true);
+    }
+
     try {
       console.log('📋 Fetching profile for user:', userId, forceRefresh ? '(forced refresh)' : '');
 
@@ -97,12 +130,16 @@ export const AuthProvider = ({ children }) => {
       setProfile(data);
     } catch (error) {
       console.error("Profile fetch error:", error.message || error);
-      // Fallback for new users
-      const fallbackProfile = { id: userId, credits: 5, subscription_plan: 'free' };
-      console.log('⚠️ Using fallback profile:', fallbackProfile);
-      setProfile(fallbackProfile);
+      // Only use fallback if we don't have any profile yet
+      if (!profile) {
+        const fallbackProfile = { id: userId, credits: 5, subscription_plan: 'free' };
+        console.log('⚠️ Using fallback profile:', fallbackProfile);
+        setProfile(fallbackProfile);
+      }
     } finally {
-      setProfileLoading(false);
+      if (showLoading) {
+        setProfileLoading(false);
+      }
     }
   };
 
