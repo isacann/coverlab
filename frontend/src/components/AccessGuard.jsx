@@ -30,8 +30,8 @@ export default function AccessGuard({ children, requirePro = false }) {
         <p className="text-slate-400 mb-6 text-sm" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
           Bu aracı kullanmak için ücretsiz hesabınıza giriş yapın.
         </p>
-        <Button 
-          onClick={() => navigate("/login")} 
+        <Button
+          onClick={() => navigate("/login")}
           className="w-full bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white"
           style={{ fontFamily: 'Geist Sans, sans-serif' }}
         >
@@ -51,10 +51,10 @@ export default function AccessGuard({ children, requirePro = false }) {
           Pro Özellik
         </h2>
         <p className="text-slate-400 mb-6 text-sm" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
-          Bu özellik sadece Pro üyeler içindir. Sınırları kaldırın.
+          Bu özellik sadece Pro ve Premium üyeler içindir. Sınırları kaldırın.
         </p>
-        <Button 
-          onClick={() => navigate("/pricing")} 
+        <Button
+          onClick={() => navigate("/pricing")}
           className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white"
           style={{ fontFamily: 'Geist Sans, sans-serif' }}
         >

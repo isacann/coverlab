@@ -278,7 +278,7 @@ const TestPage = () => {
         />
 
         <div className="relative z-10 pt-20">
-          <div className="flex h-screen">
+          <div className="flex h-[calc(100vh-80px)] overflow-hidden">
             {/* LEFT SIDEBAR - CONTROLS */}
             <div
               className="w-[320px] bg-slate-900 border-r border-slate-700 flex flex-col"
@@ -395,8 +395,8 @@ const TestPage = () => {
                     {uploadedThumbnails.length < 3 && (
                       <div
                         className={`flex flex-col items-center justify-center border-2 border-dashed rounded aspect-video transition-all ${isPro
-                            ? 'border-blue-500/50 cursor-pointer hover:border-blue-500 hover:bg-slate-800/50'
-                            : 'border-slate-600/50 cursor-not-allowed opacity-50'
+                          ? 'border-blue-500/50 cursor-pointer hover:border-blue-500 hover:bg-slate-800/50'
+                          : 'border-slate-600/50 cursor-not-allowed opacity-50'
                           }`}
                         onClick={() => isPro && document.getElementById('testFileInput').click()}
                       >
@@ -447,8 +447,8 @@ const TestPage = () => {
                       onClick={() => setDevice('desktop')}
                       size="sm"
                       className={`flex-1 h-8 ${device === 'desktop'
-                          ? 'bg-blue-500 hover:bg-blue-600 text-white'
-                          : 'bg-slate-800 hover:bg-slate-700 text-slate-300'
+                        ? 'bg-blue-500 hover:bg-blue-600 text-white'
+                        : 'bg-slate-800 hover:bg-slate-700 text-slate-300'
                         }`}
                     >
                       <Monitor size={14} className="mr-1" />
@@ -458,8 +458,8 @@ const TestPage = () => {
                       onClick={() => setDevice('mobile')}
                       size="sm"
                       className={`flex-1 h-8 ${device === 'mobile'
-                          ? 'bg-blue-500 hover:bg-blue-600 text-white'
-                          : 'bg-slate-800 hover:bg-slate-700 text-slate-300'
+                        ? 'bg-blue-500 hover:bg-blue-600 text-white'
+                        : 'bg-slate-800 hover:bg-slate-700 text-slate-300'
                         }`}
                       style={{ fontFamily: 'Geist Sans, sans-serif' }}
                     >
@@ -474,8 +474,8 @@ const TestPage = () => {
                       onClick={() => setTheme('dark')}
                       size="sm"
                       className={`flex-1 h-8 ${theme === 'dark'
-                          ? 'bg-slate-700 hover:bg-slate-600 text-white'
-                          : 'bg-slate-800 hover:bg-slate-700 text-slate-400'
+                        ? 'bg-slate-700 hover:bg-slate-600 text-white'
+                        : 'bg-slate-800 hover:bg-slate-700 text-slate-400'
                         }`}
                     >
                       <Moon size={14} className="mr-1" />
@@ -485,8 +485,8 @@ const TestPage = () => {
                       onClick={() => setTheme('light')}
                       size="sm"
                       className={`flex-1 h-8 ${theme === 'light'
-                          ? 'bg-slate-200 hover:bg-slate-100 text-slate-900'
-                          : 'bg-slate-800 hover:bg-slate-700 text-slate-400'
+                        ? 'bg-slate-200 hover:bg-slate-100 text-slate-900'
+                        : 'bg-slate-800 hover:bg-slate-700 text-slate-400'
                         }`}
                     >
                       <Sun size={14} className="mr-1" />
@@ -524,10 +524,10 @@ const TestPage = () => {
                   </p>
                 </div>
 
-                {/* Video Grid - Scrollable for 60+ items */}
+                {/* Video Grid - YouTube-like layout: 3 columns */}
                 <div className={`${isMobile
-                    ? 'flex flex-col gap-4'
-                    : 'grid grid-cols-3 xl:grid-cols-4 gap-x-4 gap-y-8'
+                  ? 'flex flex-col gap-4'
+                  : 'grid grid-cols-3 gap-x-4 gap-y-10'
                   }`}>
                   {simulationList.map((video) => (
                     <VideoCard

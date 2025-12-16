@@ -11,7 +11,7 @@ const PricingPage = () => {
   const { user, profile } = useAuth();
   const navigate = useNavigate();
 
-  const isPro = profile?.subscription_plan === 'pro';
+  const isPro = ['pro', 'pre', 'premium'].includes(profile?.subscription_plan);
 
   const handleCheckout = (planType, stripeUrl) => {
     // Check if user is logged in
@@ -23,7 +23,7 @@ const PricingPage = () => {
 
     // Add user ID to Stripe URL
     const checkoutUrl = `${stripeUrl}?client_reference_id=${user.id}`;
-    
+
     // Redirect to Stripe
     window.location.href = checkoutUrl;
   };
@@ -42,37 +42,47 @@ const PricingPage = () => {
       { text: 'Sınırsız YouTube Önizleme Testi', available: true, highlight: true },
       { text: 'Ekstra Kredi Satın Alma Hakkı', available: true },
       { text: 'AI Başlık ve Açıklama Önerileri', available: true }
+    ],
+    premium: [
+      { text: '+100 Kredi (Her Ay Yenilenir)', available: true, highlight: true },
+      { text: 'Sınırsız AI Analiz & Skorlama', available: true, highlight: true },
+      { text: 'Sınırsız YouTube Önizleme Testi', available: true, highlight: true },
+      { text: 'Ekstra Kredi Satın Alma Hakkı', available: true },
+      { text: 'AI Başlık ve Açıklama Önerileri', available: true }
     ]
   };
 
   const addonPackages = [
-    { 
-      credits: 50, 
-      price: 299, 
+    {
+      credits: 50,
+      price: 299,
       badge: null,
       stripeUrl: 'https://buy.stripe.com/bJe14f2Zg6Up9cF1tE9Zm01'
     },
-    { 
-      credits: 100, 
-      price: 499, 
+    {
+      credits: 200,
+      price: 1149,
       badge: 'Fırsat',
-      stripeUrl: 'https://buy.stripe.com/4gM8wH6bsbaF1Kdfku9Zm02'
+      stripeUrl: 'https://buy.stripe.com/7sYdR1gQ6diNdsVc8i9Zm05'
     },
-    { 
-      credits: 200, 
-      price: 899, 
+    {
+      credits: 500,
+      price: 2799,
       badge: 'En İyi Fiyat',
-      stripeUrl: 'https://buy.stripe.com/3cI6oz57o0w10G92xI9Zm03'
+      stripeUrl: 'https://buy.stripe.com/8x2cMXarI1A52Ohegq9Zm04'
     }
   ];
 
   const proStripeUrl = 'https://buy.stripe.com/aFabIT1Vc0w1gF71tE9Zm00';
+  const premiumStripeUrl = 'https://buy.stripe.com/fZueV5bvM4MhcoRgoy9Zm06';
+
+  const isPremium = profile?.subscription_plan === 'premium';
 
   return (
     <div className="min-h-screen bg-[#0a0a0a]">
       <Toaster position="top-center" />
       {/* Background */}
-      <div 
+      <div
         className="fixed inset-0 bg-cover bg-center bg-no-repeat opacity-10"
         style={{
           backgroundImage: 'url("https://customer-assets.emergentagent.com/job_326e649c-429d-481a-8bf3-c99e4276d28c/artifacts/bhrosu5k_8nNOHsP6PbEJMwWSth7Jb.png")',
@@ -84,13 +94,13 @@ const PricingPage = () => {
         <div className="max-w-6xl mx-auto">
           {/* Header Section */}
           <div className="text-center mb-16">
-            <h1 
+            <h1
               className="text-5xl md:text-6xl font-bold text-white mb-4"
               style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}
             >
               Planını Seç, Viral Olmaya Başla.
             </h1>
-            <p 
+            <p
               className="text-xl text-slate-400 max-w-2xl mx-auto"
               style={{ fontFamily: 'Geist Sans, sans-serif' }}
             >
@@ -99,12 +109,12 @@ const PricingPage = () => {
           </div>
 
           {/* Main Plan Grid */}
-          <div className={`grid ${!isPro ? 'md:grid-cols-2' : ''} gap-8 mb-20 ${isPro ? 'justify-center' : ''}`}>
-            {/* FREE PLAN - BAŞLANGIÇ - Hide for Pro users */}
-            {!isPro && (
+          <div className={`grid ${!(isPro || isPremium) ? 'md:grid-cols-3' : 'md:grid-cols-2'} gap-8 mb-20 ${(isPro || isPremium) ? 'max-w-4xl mx-auto' : ''}`}>
+            {/* FREE PLAN - BAŞLANGIÇ - Hide for Pro/Premium users */}
+            {!(isPro || isPremium) && (
               <Card className="bg-slate-900 border-slate-700 relative">
                 <CardHeader>
-                  <CardTitle 
+                  <CardTitle
                     className="text-2xl text-white mb-2"
                     style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}
                   >
@@ -115,13 +125,13 @@ const PricingPage = () => {
                   </CardDescription>
                   <div className="mt-6">
                     <div className="flex items-baseline gap-2">
-                      <span 
+                      <span
                         className="text-5xl font-bold text-white"
                         style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}
                       >
                         0 TL
                       </span>
-                      <span 
+                      <span
                         className="text-slate-400 text-lg"
                         style={{ fontFamily: 'Geist Sans, sans-serif' }}
                       >
@@ -130,7 +140,7 @@ const PricingPage = () => {
                     </div>
                   </div>
                 </CardHeader>
-                
+
                 <CardContent>
                   <ul className="space-y-4">
                     {features.free.map((feature, idx) => (
@@ -140,7 +150,7 @@ const PricingPage = () => {
                         ) : (
                           <X size={20} className="text-slate-600 flex-shrink-0 mt-0.5" />
                         )}
-                        <span 
+                        <span
                           className={`text-sm ${feature.available ? 'text-slate-300' : 'text-slate-600'}`}
                           style={{ fontFamily: 'Geist Sans, sans-serif' }}
                         >
@@ -152,8 +162,8 @@ const PricingPage = () => {
                 </CardContent>
 
                 <CardFooter>
-                  <Button 
-                    variant="outline" 
+                  <Button
+                    variant="outline"
                     disabled
                     className="w-full border-slate-600 text-slate-400 cursor-not-allowed"
                     style={{ fontFamily: 'Geist Sans, sans-serif' }}
@@ -178,7 +188,7 @@ const PricingPage = () => {
               <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-cyan-500/10 rounded-lg blur-xl -z-10"></div>
 
               <CardHeader>
-                <CardTitle 
+                <CardTitle
                   className="text-2xl text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-400 mb-2"
                   style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}
                 >
@@ -189,13 +199,13 @@ const PricingPage = () => {
                 </CardDescription>
                 <div className="mt-6">
                   <div className="flex items-baseline gap-2">
-                    <span 
+                    <span
                       className="text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-400"
                       style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}
                     >
                       199 TL
                     </span>
-                    <span 
+                    <span
                       className="text-slate-400 text-lg"
                       style={{ fontFamily: 'Geist Sans, sans-serif' }}
                     >
@@ -204,13 +214,13 @@ const PricingPage = () => {
                   </div>
                 </div>
               </CardHeader>
-              
+
               <CardContent>
                 <ul className="space-y-4">
                   {features.pro.map((feature, idx) => (
                     <li key={idx} className="flex items-start gap-3">
                       <Check size={20} className="text-blue-500 flex-shrink-0 mt-0.5" />
-                      <span 
+                      <span
                         className={`text-sm ${feature.highlight ? 'text-white font-semibold' : 'text-slate-300'}`}
                         style={{ fontFamily: 'Geist Sans, sans-serif' }}
                       >
@@ -222,11 +232,11 @@ const PricingPage = () => {
               </CardContent>
 
               <CardFooter>
-                <Button 
-                  className={`w-full ${isPro 
-                    ? 'bg-slate-700 text-slate-400 cursor-not-allowed border-slate-600' 
+                <Button
+                  className={`w-full ${isPro
+                    ? 'bg-slate-700 text-slate-400 cursor-not-allowed border-slate-600'
                     : 'bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white border-0 shadow-lg shadow-blue-500/50'
-                  }`}
+                    }`}
                   style={{ fontFamily: 'Geist Sans, sans-serif' }}
                   disabled={isPro}
                   onClick={() => !isPro && handleCheckout('pro', proStripeUrl)}
@@ -245,13 +255,95 @@ const PricingPage = () => {
                 </Button>
               </CardFooter>
             </Card>
+
+            {/* PREMIUM PLAN */}
+            <Card className="bg-slate-900 border-2 border-purple-500 relative shadow-xl shadow-purple-500/10">
+              {/* PREMIUM Badge */}
+              <div className="absolute -top-4 left-1/2 -translate-x-1/2">
+                <Badge className="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-4 py-1 text-xs font-bold border-0" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
+                  <Crown size={14} className="mr-1" />
+                  PREMIUM
+                </Badge>
+              </div>
+
+              {/* Glow Effect */}
+              <div className="absolute inset-0 bg-gradient-to-r from-purple-500/10 to-pink-500/10 rounded-lg blur-xl -z-10"></div>
+
+              <CardHeader>
+                <CardTitle
+                  className="text-2xl text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400 mb-2"
+                  style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}
+                >
+                  PREMIUM COVERLAB
+                </CardTitle>
+                <CardDescription className="text-slate-400" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
+                  İçerik profesyonelleri için
+                </CardDescription>
+                <div className="mt-6">
+                  <div className="flex items-baseline gap-2">
+                    <span
+                      className="text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400"
+                      style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}
+                    >
+                      749 TL
+                    </span>
+                    <span
+                      className="text-slate-400 text-lg"
+                      style={{ fontFamily: 'Geist Sans, sans-serif' }}
+                    >
+                      / Ay
+                    </span>
+                  </div>
+                </div>
+              </CardHeader>
+
+              <CardContent>
+                <ul className="space-y-4">
+                  {features.premium.map((feature, idx) => (
+                    <li key={idx} className="flex items-start gap-3">
+                      <Check size={20} className="text-purple-500 flex-shrink-0 mt-0.5" />
+                      <span
+                        className={`text-sm ${feature.highlight ? 'text-white font-semibold' : 'text-slate-300'}`}
+                        style={{ fontFamily: 'Geist Sans, sans-serif' }}
+                      >
+                        {feature.text}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </CardContent>
+
+              <CardFooter>
+                <Button
+                  className={`w-full ${isPremium
+                    ? 'bg-slate-700 text-slate-400 cursor-not-allowed border-slate-600'
+                    : 'bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white border-0 shadow-lg shadow-purple-500/50'
+                    }`}
+                  style={{ fontFamily: 'Geist Sans, sans-serif' }}
+                  disabled={isPremium}
+                  onClick={() => !isPremium && handleCheckout('premium', premiumStripeUrl)}
+                >
+                  {isPremium ? (
+                    <>
+                      <Check size={18} className="mr-2" />
+                      Mevcut Planınız
+                    </>
+                  ) : (
+                    <>
+                      <Crown size={18} className="mr-2" />
+                      Premium&apos;a Yükselt
+                    </>
+                  )}
+                </Button>
+              </CardFooter>
+            </Card>
           </div>
 
           {/* ADD-ONS SECTION */}
           <div className="mt-20">
             {/* Section Header */}
             <div className="text-center mb-12">
-              <h2 
+              <h2
                 className="text-3xl font-bold text-white mb-4"
                 style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}
               >
@@ -260,7 +352,7 @@ const PricingPage = () => {
               <div className="flex items-center justify-center gap-2 text-slate-400">
                 <Lock size={16} />
                 <p className="text-sm" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
-                  Sadece PRO üyeler satın alabilir.
+                  Sadece Pro ve Premium üyeler satın alabilir.
                 </p>
               </div>
             </div>
@@ -276,18 +368,18 @@ const PricingPage = () => {
                       </Badge>
                     </div>
                   )}
-                  
+
                   <CardHeader className="text-center pb-4">
                     <div className="w-16 h-16 mx-auto mb-4 bg-blue-500/10 rounded-full flex items-center justify-center border-2 border-blue-500/30">
                       <Zap size={32} className="text-blue-400" />
                     </div>
-                    <CardTitle 
+                    <CardTitle
                       className="text-3xl text-white mb-2"
                       style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}
                     >
                       {pkg.credits} Kredi
                     </CardTitle>
-                    <CardDescription 
+                    <CardDescription
                       className="text-2xl text-blue-400 font-bold"
                       style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}
                     >
@@ -296,12 +388,12 @@ const PricingPage = () => {
                   </CardHeader>
 
                   <CardFooter>
-                    <Button 
+                    <Button
                       variant="outline"
-                      className={`w-full ${isPro 
-                        ? 'border-blue-500 text-blue-400 hover:bg-blue-500/10' 
+                      className={`w-full ${isPro
+                        ? 'border-blue-500 text-blue-400 hover:bg-blue-500/10'
                         : 'border-slate-600 text-slate-500 cursor-not-allowed'
-                      }`}
+                        }`}
                       style={{ fontFamily: 'Geist Sans, sans-serif' }}
                       disabled={!isPro}
                       onClick={() => isPro && handleCheckout('addon', pkg.stripeUrl)}
@@ -311,7 +403,7 @@ const PricingPage = () => {
                       ) : (
                         <>
                           <Lock size={16} className="mr-2" />
-                          Sadece PRO Üyeler
+                          Sadece Pro ve Premium Üyeler
                         </>
                       )}
                     </Button>

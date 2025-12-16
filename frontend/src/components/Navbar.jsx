@@ -3,7 +3,7 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { Button } from './ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from './ui/dropdown-menu';
-import { Home, Wand2, BarChart3, FlaskConical, Settings, LogOut, Zap, FolderOpen, Play, CreditCard, Wallet, Loader2, Menu, X, Receipt } from 'lucide-react';
+import { Home, Wand2, BarChart3, FlaskConical, Settings, LogOut, Zap, FolderOpen, Play, CreditCard, Wallet, Loader2, Menu, X, Receipt, Video } from 'lucide-react';
 import toast, { Toaster } from 'react-hot-toast';
 
 const Navbar = () => {
@@ -206,6 +206,27 @@ const Navbar = () => {
                 <Play size={20} />
                 <span className="text-sm">Test</span>
               </Link>
+
+              {/* AI Video - NEW Feature */}
+              <Link
+                to="/ai-video"
+                className={`relative flex items-center gap-2 transition-all group ${isActive('/ai-video')
+                  ? 'text-white font-semibold'
+                  : 'text-slate-300 hover:text-white'
+                  }`}
+                style={{ fontFamily: 'Geist Sans, sans-serif' }}
+              >
+                {/* Glow effect */}
+                <div className="absolute -inset-2 bg-gradient-to-r from-purple-600/20 to-pink-600/20 rounded-full blur-lg opacity-0 group-hover:opacity-100 transition-opacity" />
+                <div className="relative flex items-center gap-2">
+                  <Video size={20} className="text-purple-400" />
+                  <span className="text-sm bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent font-medium">AI Video</span>
+                  {/* NEW Badge */}
+                  <span className="absolute -top-3 -right-8 px-1.5 py-0.5 bg-gradient-to-r from-green-500 to-emerald-500 text-[9px] font-bold text-white rounded-full uppercase tracking-wider animate-pulse shadow-lg shadow-green-500/50">
+                    YENİ
+                  </span>
+                </div>
+              </Link>
             </div>
 
             {/* Right Side - Conditional Rendering */}
@@ -225,25 +246,31 @@ const Navbar = () => {
                 // Logged In User - Show Profile Dropdown
                 <DropdownMenu open={isDropdownOpen} onOpenChange={setIsDropdownOpen}>
                   <DropdownMenuTrigger asChild>
-                    <button className={`flex items-center gap-3 px-4 py-2 rounded-full transition-all min-w-[140px] ${profile?.subscription_plan === 'pro'
-                      ? 'bg-slate-800/50 hover:bg-slate-800 border border-orange-500/30 hover:border-orange-500/50'
-                      : 'bg-slate-800/50 hover:bg-slate-800 border border-slate-700/30'
+                    <button className={`flex items-center gap-3 px-3 py-2 rounded-full transition-all ${['pre', 'premium'].includes(profile?.subscription_plan)
+                        ? 'bg-slate-800/50 hover:bg-slate-800 border border-purple-500/40'
+                        : profile?.subscription_plan === 'pro'
+                          ? 'bg-slate-800/50 hover:bg-slate-800 border border-orange-500/30'
+                          : 'bg-slate-800/50 hover:bg-slate-800 border border-slate-700/30'
                       }`}>
                       {/* User Avatar */}
                       <img
                         src={user?.user_metadata?.avatar_url || 'https://ui-avatars.com/api/?name=' + (user?.email || 'User')}
                         alt="User Avatar"
-                        className={`w-8 h-8 rounded-full flex-shrink-0 ${profile?.subscription_plan === 'pro' ? 'ring-1 ring-orange-400/40' : ''}`}
+                        className="w-8 h-8 rounded-full flex-shrink-0"
                       />
                       <div className="flex flex-col items-start flex-1 min-w-0">
                         {/* User Name */}
                         <span className="text-white text-sm font-medium truncate max-w-[100px]" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
                           {user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'User'}
                         </span>
-                        {/* Pro/Free Badge */}
+                        {/* Plan Badge */}
                         {profileLoading ? (
                           <span className="text-[10px] font-bold text-slate-400 -mt-0.5 animate-pulse">
                             ...
+                          </span>
+                        ) : ['pre', 'premium'].includes(profile?.subscription_plan) ? (
+                          <span className="text-[10px] font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400 -mt-0.5">
+                            PREMIUM
                           </span>
                         ) : profile?.subscription_plan === 'pro' ? (
                           <span className="text-[10px] font-bold text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-pink-400 -mt-0.5">
@@ -283,8 +310,8 @@ const Navbar = () => {
                       Laboratuvarım
                     </DropdownMenuItem>
 
-                    {/* Subscription - Only for Pro users */}
-                    {profile?.subscription_plan === 'pro' && (
+                    {/* Subscription - For Pro/Pre/Premium users */}
+                    {['pro', 'pre', 'premium'].includes(profile?.subscription_plan) && (
                       <DropdownMenuItem
                         onClick={handleSubscription}
                         disabled={isRedirecting}
@@ -362,6 +389,20 @@ const Navbar = () => {
                 >
                   <Play size={20} />
                   <span>Test</span>
+                </Link>
+                {/* AI Video - NEW Feature */}
+                <Link
+                  to="/ai-video"
+                  className={`relative flex items-center gap-3 px-4 py-3 rounded-lg transition-colors overflow-visible ${isActive('/ai-video') ? 'bg-gradient-to-r from-purple-900/50 to-pink-900/50 text-white font-semibold' : 'text-slate-300 hover:bg-slate-800/50'
+                    }`}
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  <Video size={20} className="text-purple-400" />
+                  <span className="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent font-medium">AI Video</span>
+                  {/* NEW Badge */}
+                  <span className="ml-2 px-2 py-0.5 bg-gradient-to-r from-green-500 to-emerald-500 text-[10px] font-bold text-white rounded-full uppercase tracking-wider animate-pulse shadow-lg shadow-green-500/50">
+                    YENİ
+                  </span>
                 </Link>
                 <Link
                   to="/pricing"

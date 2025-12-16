@@ -112,7 +112,7 @@ const CreatePage = () => {
 
   // Re-generate with same settings
   const handleRegenerate = () => {
-    if (!topic.trim() || !title.trim()) {
+    if (!topic.trim()) {
       toast.error('Form alanları boş! Lütfen doldurun.');
       return;
     }
@@ -136,7 +136,7 @@ const CreatePage = () => {
     e.preventDefault();
 
     // Step 1: Validation
-    if (!topic.trim() || !title.trim()) {
+    if (!topic.trim()) {
       toast.error('Lütfen zorunlu alanları doldurun');
       return;
     }
@@ -167,7 +167,7 @@ const CreatePage = () => {
       const payload = {
         user_id: user?.id || 'anonymous',
         topic: topic,
-        title: title,
+        title: topic, // Backend expects title, we send topic value
         thumbnail_text: thumbText.trim() || null,
         extra: extraRequest.trim() || null,
         reference: base64String || null,
@@ -400,22 +400,6 @@ const CreatePage = () => {
                       onChange={(e) => setTopic(e.target.value)}
                       placeholder="Örn: Video içerisinde İstanbuldan otostop ile yola çıkıp 0tl ile dünya turu yapmaya çalışıyorum"
                       className="bg-slate-800/50 border-slate-600 text-white placeholder:text-slate-400 min-h-[100px] resize-none"
-                      style={{ fontFamily: 'Geist Sans, sans-serif' }}
-                      required
-                    />
-                  </div>
-
-                  {/* Video Başlığı (Required) */}
-                  <div>
-                    <Label htmlFor="title" className="text-white text-sm font-medium mb-2 block" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
-                      Video Başlığınız? <span className="text-red-400">*</span>
-                    </Label>
-                    <Input
-                      id="title"
-                      value={title}
-                      onChange={(e) => setTitle(e.target.value)}
-                      placeholder="Örn: 0TL ile Dünya turuna çıktım"
-                      className="bg-slate-800/50 border-slate-600 text-white placeholder:text-slate-400"
                       style={{ fontFamily: 'Geist Sans, sans-serif' }}
                       required
                     />
@@ -671,7 +655,7 @@ const CreatePage = () => {
                           // Save image URL to localStorage for analyze page
                           localStorage.setItem('pendingAnalysis', JSON.stringify({
                             imageUrl: generatedImage,
-                            title: title || topic || 'Oluşturulan Thumbnail'
+                            title: topic || 'Oluşturulan Thumbnail'
                           }));
                           navigate('/analiz');
                           toast.success('Analiz sayfasına yönlendiriliyorsunuz...');

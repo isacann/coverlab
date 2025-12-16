@@ -14,6 +14,7 @@ export const AuthProvider = ({ children }) => {
     const checkUser = async () => {
       try {
         console.log('🔍 Checking for active session...');
+
         const { data: { session } } = await supabase.auth.getSession();
 
         if (session?.user) {
@@ -116,7 +117,8 @@ export const AuthProvider = ({ children }) => {
   const signOut = async () => {
     try {
       console.log('🔓 Signing out...');
-      // First sign out from Supabase
+
+      // Sign out from Supabase
       const { error } = await supabase.auth.signOut();
       if (error) {
         console.error("Supabase signOut error:", error);
@@ -143,7 +145,9 @@ export const AuthProvider = ({ children }) => {
     profile,
     loading,
     profileLoading,
-    isPro: profile?.subscription_plan === 'pro',
+    isPro: ['pro', 'pre', 'premium'].includes(profile?.subscription_plan),
+    isPremium: profile?.subscription_plan === 'premium',
+    subscriptionPlan: profile?.subscription_plan || 'free',
     credits: profile?.credits || 0,
     signOut,
     setUser,

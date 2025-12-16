@@ -16,6 +16,7 @@ import PricingPage from './pages/PricingPage';
 import LoginPage from './pages/LoginPage';
 import AuthCallback from './pages/AuthCallback';
 import LabPage from './pages/LabPage';
+import AIVideoPage from './pages/AIVideoPage';
 
 const Home = () => {
   return (
@@ -56,22 +57,23 @@ function App() {
             <Route path="/pricing" element={<><Navbar /><PricingPage /></>} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/auth/callback" element={<AuthCallback />} />
-            
+
             {/* Tool Pages - Turkish URLs */}
             <Route path="/olustur" element={<><Navbar /><CreatePage /></>} />
             <Route path="/analiz" element={<><Navbar /><AnalyzePage /></>} />
             <Route path="/test" element={<><Navbar /><TestPage /></>} />
             <Route path="/lab" element={<><Navbar /><LabPage /></>} />
-            
+            <Route path="/ai-video" element={<><Navbar /><AIVideoPage /></>} />
+
             {/* Dashboard - Protected */}
-            <Route 
-              path="/dashboard" 
+            <Route
+              path="/dashboard"
               element={
                 <ProtectedRoute>
                   <Navbar />
                   <Dashboard />
                 </ProtectedRoute>
-              } 
+              }
             />
           </Routes>
         </AuthProvider>

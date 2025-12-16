@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
 import { Card } from '../components/ui/card';
 import { Button } from '../components/ui/button';
-import { Eye, Download, Trash2, CheckSquare, Square, Loader2, Wand2 } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { Eye, Download, Trash2, CheckSquare, Square, Loader2, Wand2, Video, Clock, Play, ExternalLink, Zap, ChevronDown, ChevronUp, FileText } from 'lucide-react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import AnalysisDetailModal from '../components/modals/AnalysisDetailModal';
 import GenerationDetailModal from '../components/modals/GenerationDetailModal';
 import AccessGuard from '../components/AccessGuard';
@@ -78,9 +78,164 @@ const mockAnalyses = [
   },
 ];
 
+// VideoCard Component - separate component to use hooks properly
+const VideoCard = ({ video, formatDate, navigate }) => {
+  const [showScenario, setShowScenario] = useState(false);
+
+  const isProcessing = video.status === 'pending' || video.status === 'processing';
+  const isCompleted = video.status === 'completed';
+  const isFailed = video.status === 'failed';
+
+  return (
+    <Card
+      className={`bg-slate-900 border-slate-700 overflow-hidden group hover:border-purple-500/50 transition-all ${isProcessing ? 'ring-2 ring-purple-500/30 animate-pulse' : ''
+        }`}
+    >
+      {/* Video Preview / Placeholder */}
+      <div className="relative aspect-video bg-gradient-to-br from-purple-900/50 to-pink-900/50 overflow-hidden">
+        {/* Video Thumbnail - using video element for completed videos */}
+        {isCompleted && video.video_url && (
+          <video
+            src={video.video_url}
+            className="absolute inset-0 w-full h-full object-cover"
+            muted
+            preload="metadata"
+            onLoadedMetadata={(e) => {
+              e.target.currentTime = 1;
+            }}
+          />
+        )}
+
+        {isCompleted && video.video_url ? (
+          <div className="absolute inset-0 flex items-center justify-center bg-black/40 group-hover:bg-black/20 transition-colors">
+            <a
+              href={video.video_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="bg-white/20 hover:bg-white/30 backdrop-blur-sm text-white p-4 rounded-full transition-all hover:scale-110"
+            >
+              <Play size={32} fill="white" />
+            </a>
+          </div>
+        ) : (
+          <div className="absolute inset-0 flex items-center justify-center">
+            {isProcessing ? (
+              <div className="text-center">
+                <Loader2 size={40} className="text-purple-400 animate-spin mx-auto mb-2" />
+                <p className="text-purple-300 text-sm">
+                  {video.status === 'pending' ? 'Sıraya alındı...' : 'İşleniyor...'}
+                </p>
+              </div>
+            ) : isFailed ? (
+              <div className="text-center">
+                <div className="w-16 h-16 bg-red-500/20 rounded-full flex items-center justify-center mx-auto mb-2">
+                  <span className="text-3xl">❌</span>
+                </div>
+                <p className="text-red-400 text-sm">Başarısız</p>
+              </div>
+            ) : (
+              <Video size={40} className="text-slate-600" />
+            )}
+          </div>
+        )}
+
+        {/* Status Badge */}
+        <div className={`absolute top-3 right-3 px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1 ${isProcessing ? 'bg-purple-500 text-white' :
+          isCompleted ? 'bg-green-500 text-white' :
+            isFailed ? 'bg-red-500 text-white' :
+              'bg-slate-600 text-white'
+          }`}>
+          {isProcessing && <Loader2 size={12} className="animate-spin" />}
+          {video.status === 'pending' && 'Sırada'}
+          {video.status === 'processing' && 'İşleniyor'}
+          {video.status === 'completed' && '✓ Tamamlandı'}
+          {video.status === 'failed' && 'Başarısız'}
+        </div>
+
+        {/* Credits Badge */}
+        {video.credits_spent && (
+          <div className="absolute top-3 left-3 px-2 py-1 rounded-full text-xs font-bold bg-blue-500/80 text-white flex items-center gap-1">
+            <Zap size={12} />
+            {video.credits_spent} kredi
+          </div>
+        )}
+      </div>
+
+      {/* Video Info */}
+      <div className="p-4">
+        <h3 className="text-white font-semibold mb-2 line-clamp-2" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
+          {video.prompt || 'Video'}
+        </h3>
+
+        <div className="flex items-center justify-between text-sm mb-3">
+          <div className="flex items-center gap-2 text-slate-400">
+            <Clock size={14} />
+            <span>{video.duration} sn</span>
+            {video.has_narrator && (
+              <span className="text-purple-400">• 🎙️ {video.language?.toUpperCase()}</span>
+            )}
+          </div>
+          <span className="text-slate-500 text-xs">
+            {formatDate(video.created_at)}
+          </span>
+        </div>
+
+        {/* AI Scenario Section */}
+        {video.ai_scenario && (
+          <div className="mb-3">
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                setShowScenario(!showScenario);
+              }}
+              className="flex items-center gap-2 text-sm text-purple-400 hover:text-purple-300 transition-colors w-full"
+            >
+              <FileText size={14} />
+              <span>AI Senaryo</span>
+              {showScenario ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+            </button>
+            {showScenario && (
+              <div className="mt-2 p-3 bg-slate-800/50 rounded-lg border border-slate-700/50 max-h-32 overflow-y-auto">
+                <p className="text-slate-300 text-xs leading-relaxed whitespace-pre-wrap">
+                  {video.ai_scenario}
+                </p>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Action Buttons for completed videos */}
+        {isCompleted && video.video_url && (
+          <div className="flex gap-2">
+            <a
+              href={video.video_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex-1 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white text-center py-2 rounded-lg text-sm font-medium transition-all flex items-center justify-center gap-2"
+            >
+              <ExternalLink size={14} />
+              İzle
+            </a>
+            <a
+              href={video.video_url}
+              download
+              className="flex-1 bg-slate-700 hover:bg-slate-600 text-white text-center py-2 rounded-lg text-sm font-medium transition-all flex items-center justify-center gap-2"
+            >
+              <Download size={14} />
+              İndir
+            </a>
+          </div>
+        )}
+      </div>
+    </Card>
+  );
+};
+
 const LabPage = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const initialTab = searchParams.get('tab') || 'generations';
 
   // State Management
   const [selectedGeneration, setSelectedGeneration] = useState(null);
@@ -96,16 +251,48 @@ const LabPage = () => {
   // Data states - REAL DATA
   const [generations, setGenerations] = useState([]);
   const [analyses, setAnalyses] = useState([]);
+  const [videos, setVideos] = useState([]);
   const [isLoadingGens, setIsLoadingGens] = useState(true);
   const [isLoadingAnas, setIsLoadingAnas] = useState(true);
+  const [isLoadingVideos, setIsLoadingVideos] = useState(true);
 
   // Fetch data on mount
   useEffect(() => {
     if (user?.id) {
       fetchGenerations();
       fetchAnalyses();
+      fetchVideos();
     }
   }, [user]);
+
+  // Poll for video status updates
+  const fetchVideos = useCallback(async () => {
+    if (!user?.id) return;
+    try {
+      setIsLoadingVideos(true);
+      const { data, error } = await supabase
+        .from('ai_videos')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      setVideos(data || []);
+    } catch (error) {
+      console.error('Error fetching videos:', error);
+    } finally {
+      setIsLoadingVideos(false);
+    }
+  }, [user?.id]);
+
+  // Auto-refresh videos if there are pending/processing ones
+  useEffect(() => {
+    const hasPendingVideos = videos.some(v => v.status === 'pending' || v.status === 'processing');
+    if (!hasPendingVideos) return;
+
+    const intervalId = setInterval(fetchVideos, 5000); // Every 5 seconds
+    return () => clearInterval(intervalId);
+  }, [videos, fetchVideos]);
 
   const fetchGenerations = async () => {
     try {
@@ -251,13 +438,17 @@ const LabPage = () => {
           </div>
 
           {/* Tabs */}
-          <Tabs defaultValue="generations" className="w-full">
+          <Tabs defaultValue={initialTab} className="w-full">
             <TabsList className="bg-slate-900 mb-8" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
               <TabsTrigger value="generations" className="data-[state=active]:bg-blue-500 data-[state=active]:text-white">
                 Ürettiklerim ({generations.length})
               </TabsTrigger>
               <TabsTrigger value="analyses" className="data-[state=active]:bg-blue-500 data-[state=active]:text-white">
                 Analizlerim ({analyses.length})
+              </TabsTrigger>
+              <TabsTrigger value="videos" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-500 data-[state=active]:to-pink-500 data-[state=active]:text-white">
+                <Video size={16} className="mr-2" />
+                Videolarım ({videos.length})
               </TabsTrigger>
             </TabsList>
 
@@ -489,6 +680,49 @@ const LabPage = () => {
                   <p className="text-slate-500 text-lg" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
                     Henüz bir analiz yok
                   </p>
+                </div>
+              )}
+            </TabsContent>
+
+            {/* Videos Tab */}
+            <TabsContent value="videos">
+              {isLoadingVideos ? (
+                <div className="flex flex-col items-center justify-center py-20">
+                  <Loader2 className="w-12 h-12 text-purple-400 animate-spin mb-4" />
+                  <p className="text-slate-400" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
+                    Videolar yükleniyor...
+                  </p>
+                </div>
+              ) : videos.length === 0 ? (
+                <div className="flex flex-col items-center justify-center py-20">
+                  <div className="w-24 h-24 bg-gradient-to-br from-purple-500/20 to-pink-500/20 rounded-full flex items-center justify-center mb-6">
+                    <Video size={40} className="text-purple-400" />
+                  </div>
+                  <h3 className="text-2xl font-bold text-white mb-3" style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}>
+                    Henüz video oluşturmadınız
+                  </h3>
+                  <p className="text-slate-400 mb-6" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
+                    AI Video sayfasından ilk videonuzu oluşturun
+                  </p>
+                  <Button
+                    onClick={() => navigate('/ai-video')}
+                    className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white px-8 py-6 text-lg font-semibold"
+                    style={{ fontFamily: 'Geist Sans, sans-serif' }}
+                  >
+                    <Video className="mr-2" size={20} />
+                    AI Video Oluştur
+                  </Button>
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {videos.map((video) => (
+                    <VideoCard
+                      key={video.id}
+                      video={video}
+                      formatDate={formatDate}
+                      navigate={navigate}
+                    />
+                  ))}
                 </div>
               )}
             </TabsContent>
