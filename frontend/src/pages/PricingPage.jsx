@@ -11,7 +11,10 @@ const PricingPage = () => {
   const { user, profile } = useAuth();
   const navigate = useNavigate();
 
-  const isPro = ['pro', 'pre', 'premium'].includes(profile?.subscription_plan);
+  // Separate checks for different plan tiers
+  const isProPlan = profile?.subscription_plan === 'pro';
+  const isPremiumPlan = ['pre', 'premium'].includes(profile?.subscription_plan);
+  const isPro = isProPlan || isPremiumPlan; // Any paid plan
 
   const handleCheckout = (planType, stripeUrl) => {
     // Check if user is logged in
@@ -233,18 +236,23 @@ const PricingPage = () => {
 
               <CardFooter>
                 <Button
-                  className={`w-full ${isPro
+                  className={`w-full ${isProPlan
                     ? 'bg-slate-700 text-slate-400 cursor-not-allowed border-slate-600'
                     : 'bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white border-0 shadow-lg shadow-blue-500/50'
                     }`}
                   style={{ fontFamily: 'Geist Sans, sans-serif' }}
-                  disabled={isPro}
-                  onClick={() => !isPro && handleCheckout('pro', proStripeUrl)}
+                  disabled={isProPlan || isPremiumPlan}
+                  onClick={() => !isProPlan && !isPremiumPlan && handleCheckout('pro', proStripeUrl)}
                 >
-                  {isPro ? (
+                  {isProPlan ? (
                     <>
                       <Check size={18} className="mr-2" />
                       Mevcut Planınız
+                    </>
+                  ) : isPremiumPlan ? (
+                    <>
+                      <Crown size={18} className="mr-2" />
+                      Premium Planınız Var
                     </>
                   ) : (
                     <>
@@ -315,15 +323,15 @@ const PricingPage = () => {
 
               <CardFooter>
                 <Button
-                  className={`w-full ${isPremium
+                  className={`w-full ${isPremiumPlan
                     ? 'bg-slate-700 text-slate-400 cursor-not-allowed border-slate-600'
                     : 'bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white border-0 shadow-lg shadow-purple-500/50'
                     }`}
                   style={{ fontFamily: 'Geist Sans, sans-serif' }}
-                  disabled={isPremium}
-                  onClick={() => !isPremium && handleCheckout('premium', premiumStripeUrl)}
+                  disabled={isPremiumPlan}
+                  onClick={() => !isPremiumPlan && handleCheckout('premium', premiumStripeUrl)}
                 >
-                  {isPremium ? (
+                  {isPremiumPlan ? (
                     <>
                       <Check size={18} className="mr-2" />
                       Mevcut Planınız
