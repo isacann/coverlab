@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState, useRef } from "react";
 import { supabase } from "../utils/supabase";
 
 const AuthContext = createContext();
@@ -9,22 +9,27 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [profileLoading, setProfileLoading] = useState(false);
 
+  // Refs to prevent race conditions
+  const isFetchingProfile = useRef(false);
+  const lastFetchedUserId = useRef(null);
+  const isInitialized = useRef(false);
+
   useEffect(() => {
-    // Check active session
+    // Check active session - only runs once on mount
     const checkUser = async () => {
+      if (isInitialized.current) return;
+      isInitialized.current = true;
+
       try {
         console.log('🔍 Checking for active session...');
-
         const { data: { session } } = await supabase.auth.getSession();
 
         if (session?.user) {
-          console.log('✅ Session found:', session.user.email, 'ID:', session.user.id);
+          console.log('✅ Session found:', session.user.email);
           setUser(session.user);
           await fetchProfile(session.user.id);
         } else {
           console.log('❌ No active session');
-          setUser(null);
-          setProfile(null);
         }
       } catch (error) {
         console.error("Auth init error:", error);
@@ -35,42 +40,41 @@ export const AuthProvider = ({ children }) => {
 
     checkUser();
 
-    // Listen for auth state changes
-    const { data: listener } = supabase.auth.onAuthStateChange(async (event, session) => {
-      console.log('🔄 Auth state changed:', event, session?.user?.email || 'No user');
+    // Listen for auth state changes - minimal handling
+    const { data: listener } = supabase.auth.onAuthStateChange((event, session) => {
+      console.log('🔄 Auth event:', event);
 
-      // Only handle specific events to prevent flickering
+      // Only handle explicit sign out
       if (event === 'SIGNED_OUT') {
-        // User explicitly signed out - clear everything
+        console.log('👋 User signed out - clearing state');
         setUser(null);
         setProfile(null);
+        lastFetchedUserId.current = null;
         setLoading(false);
         return;
       }
 
+      // Only handle fresh sign in
       if (event === 'SIGNED_IN' && session?.user) {
-        // Fresh sign in - set user and fetch profile
+        console.log('👤 User signed in:', session.user.email);
         setUser(session.user);
-        await fetchProfile(session.user.id, true);
+        // Only fetch if different user
+        if (lastFetchedUserId.current !== session.user.id) {
+          fetchProfile(session.user.id);
+        }
         setLoading(false);
         return;
       }
 
+      // For TOKEN_REFRESHED - just update user object, keep profile
       if (event === 'TOKEN_REFRESHED' && session?.user) {
-        // Token refreshed - just update user, don't refetch profile
         setUser(session.user);
-        setLoading(false);
+        // Don't refetch profile - it's fine
         return;
       }
 
-      // For other events (INITIAL_SESSION, etc.), only update if we have a valid session
-      if (session?.user) {
-        setUser(session.user);
-        // Don't force refresh for unknown events
-        await fetchProfile(session.user.id, false);
-      }
-      // Don't clear user/profile for unknown events without session - might be temporary
-      setLoading(false);
+      // For all other events - do nothing to prevent flickering
+      // The profile we have is fine, don't touch it
     });
 
     return () => {
@@ -78,103 +82,77 @@ export const AuthProvider = ({ children }) => {
     };
   }, []);
 
-  const fetchProfile = async (userId, forceRefresh = false) => {
-    // Skip if we already have profile for this user (unless forced)
-    if (!forceRefresh && profile && profile.id === userId) {
-      console.log('📋 Profile already cached for user:', userId);
+  const fetchProfile = async (userId) => {
+    // Prevent concurrent fetches
+    if (isFetchingProfile.current) {
+      console.log('⏳ Profile fetch already in progress, skipping');
       return;
     }
 
-    // Only show loading if we don't have any profile yet
-    const showLoading = !profile;
-    if (showLoading) {
+    // Skip if we already have this user's profile
+    if (lastFetchedUserId.current === userId && profile) {
+      console.log('📋 Profile already loaded for this user');
+      return;
+    }
+
+    isFetchingProfile.current = true;
+
+    // Only show loading on initial load
+    if (!profile) {
       setProfileLoading(true);
     }
 
     try {
-      console.log('📋 Fetching profile for user:', userId, forceRefresh ? '(forced refresh)' : '');
+      console.log('📋 Fetching profile for:', userId);
 
-      // Add timeout to prevent hanging queries
-      const timeoutPromise = new Promise((_, reject) =>
-        setTimeout(() => reject(new Error('Query timeout after 10s')), 10000)
-      );
-
-      // Use AbortController to ensure fresh request (bypasses any potential caching)
-      const abortController = new AbortController();
-
-      const queryPromise = supabase
+      const { data, error } = await supabase
         .from('profiles')
         .select('*')
         .eq('id', userId)
-        .abortSignal(abortController.signal)
         .single();
 
-      const { data, error } = await Promise.race([queryPromise, timeoutPromise]);
-
       if (error) {
-        console.error('❌ Profile fetch error:', error.message, error.code, error);
-        throw error;
+        console.error('❌ Profile fetch error:', error.message);
+        // Keep existing profile if we have one
+        if (!profile) {
+          setProfile({ id: userId, credits: 2, subscription_plan: 'free' });
+        }
+      } else if (data) {
+        console.log('✅ Profile loaded:', data.subscription_plan, 'credits:', data.credits);
+        setProfile(data);
+        lastFetchedUserId.current = userId;
       }
-
-      if (!data) {
-        console.error('❌ Profile fetch returned null data');
-        throw new Error('No profile data returned');
-      }
-
-      console.log('✅ Profile fetched successfully:', {
-        id: data.id,
-        email: data.email,
-        credits: data.credits,
-        subscription_plan: data.subscription_plan
-      });
-      setProfile(data);
     } catch (error) {
-      console.error("Profile fetch error:", error.message || error);
-      // Only use fallback if we don't have any profile yet
-      if (!profile) {
-        const fallbackProfile = { id: userId, credits: 2, subscription_plan: 'free' };
-        console.log('⚠️ Using fallback profile:', fallbackProfile);
-        setProfile(fallbackProfile);
-      }
+      console.error("Profile fetch error:", error);
+      // Keep existing profile
     } finally {
-      if (showLoading) {
-        setProfileLoading(false);
-      }
+      isFetchingProfile.current = false;
+      setProfileLoading(false);
     }
   };
 
-  // Force refresh profile data - useful after subscription changes
+  // Manual refresh - for after purchases, etc.
   const refreshProfile = async () => {
-    if (user) {
-      console.log('🔄 Manually refreshing profile...');
-      await fetchProfile(user.id, true);
-    }
+    if (!user) return;
+
+    console.log('🔄 Manual profile refresh requested');
+    lastFetchedUserId.current = null; // Force refetch
+    await fetchProfile(user.id);
   };
 
   const signOut = async () => {
     try {
       console.log('🔓 Signing out...');
-
-      // Sign out from Supabase
-      const { error } = await supabase.auth.signOut();
-      if (error) {
-        console.error("Supabase signOut error:", error);
-      }
-
-      // Clear local state
-      setUser(null);
-      setProfile(null);
-
-      console.log('✅ Sign out successful, redirecting...');
-      // Force full page reload to clear all state
-      window.location.href = "/";
+      await supabase.auth.signOut();
+      // State will be cleared by onAuthStateChange handler
     } catch (error) {
       console.error("Logout error:", error);
-      // Force logout even if API fails
+      // Force clear on error
       setUser(null);
       setProfile(null);
-      window.location.href = "/";
+      lastFetchedUserId.current = null;
     }
+    window.location.href = "/";
   };
 
   const value = {
@@ -183,13 +161,13 @@ export const AuthProvider = ({ children }) => {
     loading,
     profileLoading,
     isPro: ['pro', 'pre', 'premium'].includes(profile?.subscription_plan),
-    isPremium: profile?.subscription_plan === 'premium',
+    isPremium: ['pre', 'premium'].includes(profile?.subscription_plan),
     subscriptionPlan: profile?.subscription_plan || 'free',
     credits: profile?.credits || 0,
     signOut,
     setUser,
     setProfile,
-    refreshProfile, // Expose refresh function for manual profile updates
+    refreshProfile,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
