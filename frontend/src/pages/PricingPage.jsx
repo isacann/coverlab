@@ -30,7 +30,7 @@ const PricingPage = () => {
 
   const features = {
     free: [
-      { text: '5 Kredi (Tek Seferlik Tanımlanır)', available: true },
+      { text: '2 Kredi (Tek Seferlik Tanımlanır)', available: true },
       { text: 'Temel Thumbnail Oluşturma', available: true },
       { text: 'AI Analiz & Skorlama', available: false },
       { text: 'YouTube Önizleme Testi', available: false },

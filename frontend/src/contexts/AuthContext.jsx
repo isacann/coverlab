@@ -132,7 +132,7 @@ export const AuthProvider = ({ children }) => {
       console.error("Profile fetch error:", error.message || error);
       // Only use fallback if we don't have any profile yet
       if (!profile) {
-        const fallbackProfile = { id: userId, credits: 5, subscription_plan: 'free' };
+        const fallbackProfile = { id: userId, credits: 2, subscription_plan: 'free' };
         console.log('⚠️ Using fallback profile:', fallbackProfile);
         setProfile(fallbackProfile);
       }
