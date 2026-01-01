@@ -35,12 +35,15 @@ const PricingPage = () => {
     free: [
       { text: '2 Kredi (Tek Seferlik Tanımlanır)', available: true },
       { text: 'Temel Thumbnail Oluşturma', available: true },
+      { text: '720p HD Kalite', available: true },
+      { text: '2K Ultra HD Kalite', available: false },
       { text: 'AI Analiz & Skorlama', available: false },
       { text: 'YouTube Önizleme Testi', available: false },
       { text: 'Ekstra Kredi Satın Alma', available: false }
     ],
     pro: [
       { text: '+25 Kredi (Her Ay Yenilenir)', available: true, highlight: true },
+      { text: '2K Ultra HD Kalite', available: true, highlight: true },
       { text: 'Sınırsız AI Analiz & Skorlama', available: true, highlight: true },
       { text: 'Sınırsız YouTube Önizleme Testi', available: true, highlight: true },
       { text: 'Ekstra Kredi Satın Alma Hakkı', available: true },
@@ -48,6 +51,7 @@ const PricingPage = () => {
     ],
     premium: [
       { text: '+100 Kredi (Her Ay Yenilenir)', available: true, highlight: true },
+      { text: '2K Ultra HD Kalite', available: true, highlight: true },
       { text: 'Sınırsız AI Analiz & Skorlama', available: true, highlight: true },
       { text: 'Sınırsız YouTube Önizleme Testi', available: true, highlight: true },
       { text: 'Ekstra Kredi Satın Alma Hakkı', available: true },

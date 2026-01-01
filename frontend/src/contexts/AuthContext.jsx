@@ -166,7 +166,8 @@ export const AuthProvider = ({ children }) => {
     credits: profile?.credits || 0,
     signOut,
     setUser,
-    setProfile,
+    // SECURITY: setProfile removed to prevent client-side manipulation
+    // Credits and subscription should ONLY be updated server-side (n8n/Supabase)
     refreshProfile,
   };
 

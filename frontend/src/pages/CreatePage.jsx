@@ -15,7 +15,7 @@ import Confetti from 'react-confetti';
 import { supabase } from '../utils/supabase';
 
 const CreatePage = () => {
-  const { credits, user, setProfile } = useAuth();
+  const { credits, user, refreshProfile, isPro } = useAuth();
   const navigate = useNavigate();
 
   // Form State
@@ -171,7 +171,8 @@ const CreatePage = () => {
         thumbnail_text: thumbText.trim() || null,
         extra: extraRequest.trim() || null,
         reference: base64String || null,
-        creator_status: isCreator ? 'true' : 'false'
+        creator_status: isCreator ? 'true' : 'false',
+        quality: isPro ? '2k' : '720p' // Pro/Premium = 2K UHD, Free = 720p HD
       };
 
       // Step 4: API Call (NO TIMEOUT - Let it run as long as needed)
@@ -261,12 +262,10 @@ const CreatePage = () => {
         setGeneratedImage(imageUrl);
         console.log('🖼️ Image URL set:', imageUrl);
 
-        // 2. Decrement credits (Visual update)
-        setProfile((prev) => ({
-          ...prev,
-          credits: Math.max(0, (prev?.credits || 0) - 1)
-        }));
-        console.log('💰 Credits decremented');
+        // 2. SECURITY: Credit decrement now handled server-side by n8n
+        // Just refresh the profile to get updated credits from database
+        // This prevents client-side credit manipulation
+        console.log('💰 Credits will be updated from server via refreshProfile');
 
         // 3. Handle AI Suggestions (if present) - SAFELY PARSE
         if (data.ai_suggestions) {
@@ -313,6 +312,9 @@ const CreatePage = () => {
           setShowConfetti(true);
           setTimeout(() => setShowConfetti(false), 5000);
           console.log('🎉 Permanent image generated - Confetti!');
+
+          // SECURITY: Refresh profile to get updated credits from server
+          await refreshProfile();
         }
       } else {
         // Unknown status
@@ -507,6 +509,40 @@ const CreatePage = () => {
                       />
                     </div>
                   )}
+
+                  {/* Quality Indicator Badge */}
+                  <div className={`mb-4 p-3 rounded-xl border ${isPro
+                    ? 'bg-gradient-to-r from-cyan-500/10 to-blue-500/10 border-cyan-500/30'
+                    : 'bg-slate-800/50 border-slate-600/50'}`}
+                  >
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <span className="text-lg">{isPro ? '✨' : '📺'}</span>
+                        <span className="text-sm font-medium" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
+                          {isPro ? (
+                            <span className="text-cyan-400">2K Ultra HD Kalite</span>
+                          ) : (
+                            <span className="text-slate-400">720p HD Kalite</span>
+                          )}
+                        </span>
+                      </div>
+                      {!isPro && (
+                        <button
+                          type="button"
+                          onClick={() => navigate('/pricing')}
+                          className="text-xs text-cyan-400 hover:text-cyan-300 underline"
+                          style={{ fontFamily: 'Geist Sans, sans-serif' }}
+                        >
+                          Pro'ya Yükselt →
+                        </button>
+                      )}
+                    </div>
+                    {!isPro && (
+                      <p className="text-xs text-slate-500 mt-1" style={{ fontFamily: 'Geist Sans, sans-serif' }}>
+                        Pro üyelikle 2K Ultra HD kalitede thumbnail oluşturun
+                      </p>
+                    )}
+                  </div>
 
                   {/* Submit Button */}
                   <Button
