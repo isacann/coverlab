@@ -16,7 +16,7 @@ import PricingPage from './pages/PricingPage';
 import LoginPage from './pages/LoginPage';
 import AuthCallback from './pages/AuthCallback';
 import LabPage from './pages/LabPage';
-import AIVideoPage from './pages/AIVideoPage';
+// import AIVideoPage from './pages/AIVideoPage';
 
 const Home = () => {
   return (
@@ -63,7 +63,7 @@ function App() {
             <Route path="/analiz" element={<><Navbar /><AnalyzePage /></>} />
             <Route path="/test" element={<><Navbar /><TestPage /></>} />
             <Route path="/lab" element={<><Navbar /><LabPage /></>} />
-            <Route path="/ai-video" element={<><Navbar /><AIVideoPage /></>} />
+            {/* <Route path="/ai-video" element={<><Navbar /><AIVideoPage /></>} /> */}
 
             {/* Dashboard - Protected */}
             <Route

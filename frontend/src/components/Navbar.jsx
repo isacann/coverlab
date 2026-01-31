@@ -208,25 +208,19 @@ const Navbar = () => {
               </Link>
 
               {/* AI Video - NEW Feature */}
-              <Link
-                to="/ai-video"
-                className={`relative flex items-center gap-2 transition-all group ${isActive('/ai-video')
-                  ? 'text-white font-semibold'
-                  : 'text-slate-300 hover:text-white'
-                  }`}
+              {/* AI Video - NEW Feature */}
+              <div
+                className="relative flex items-center gap-2 transition-all group opacity-70 cursor-not-allowed"
                 style={{ fontFamily: 'Geist Sans, sans-serif' }}
               >
-                {/* Glow effect */}
-                <div className="absolute -inset-2 bg-gradient-to-r from-purple-600/20 to-pink-600/20 rounded-full blur-lg opacity-0 group-hover:opacity-100 transition-opacity" />
+                {/* Glow effect - Reduced for disabled state */}
+                <div className="absolute -inset-2 bg-gradient-to-r from-purple-600/10 to-pink-600/10 rounded-full blur-lg opacity-0" />
                 <div className="relative flex items-center gap-2">
-                  <Video size={20} className="text-purple-400" />
-                  <span className="text-sm bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent font-medium">AI Video</span>
-                  {/* NEW Badge */}
-                  <span className="absolute -top-3 -right-8 px-1.5 py-0.5 bg-gradient-to-r from-green-500 to-emerald-500 text-[9px] font-bold text-white rounded-full uppercase tracking-wider animate-pulse shadow-lg shadow-green-500/50">
-                    YENİ
-                  </span>
+                  <Video size={20} className="text-purple-400/70" />
+                  <span className="text-sm text-slate-400 font-medium">AI Video (yakında)</span>
+                  {/* NEW Badge - Kept but maybe less prominent or just kept as is if desired, but user said 'restrict' so I'll keep it simple */}
                 </div>
-              </Link>
+              </div>
             </div>
 
             {/* Right Side - Conditional Rendering */}
@@ -391,19 +385,14 @@ const Navbar = () => {
                   <span>Test</span>
                 </Link>
                 {/* AI Video - NEW Feature */}
-                <Link
-                  to="/ai-video"
-                  className={`relative flex items-center gap-3 px-4 py-3 rounded-lg transition-colors overflow-visible ${isActive('/ai-video') ? 'bg-gradient-to-r from-purple-900/50 to-pink-900/50 text-white font-semibold' : 'text-slate-300 hover:bg-slate-800/50'
-                    }`}
-                  onClick={() => setIsMobileMenuOpen(false)}
+                {/* AI Video - NEW Feature */}
+                <div
+                  className="relative flex items-center gap-3 px-4 py-3 rounded-lg transition-colors overflow-visible text-slate-500 cursor-not-allowed"
+                  onClick={(e) => e.preventDefault()}
                 >
-                  <Video size={20} className="text-purple-400" />
-                  <span className="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent font-medium">AI Video</span>
-                  {/* NEW Badge */}
-                  <span className="ml-2 px-2 py-0.5 bg-gradient-to-r from-green-500 to-emerald-500 text-[10px] font-bold text-white rounded-full uppercase tracking-wider animate-pulse shadow-lg shadow-green-500/50">
-                    YENİ
-                  </span>
-                </Link>
+                  <Video size={20} className="text-purple-400/50" />
+                  <span className="text-slate-500 font-medium">AI Video (yakında)</span>
+                </div>
                 <Link
                   to="/pricing"
                   className="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-300 hover:bg-slate-800/50 transition-colors"
